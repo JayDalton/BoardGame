@@ -1,0 +1,22 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+   "configurations": [
+      {
+         "type": "default",
+         "cwd": "${workspaceRoot}",
+         "project": "CMakeLists.txt",
+         "projectTarget": "DontWorry.exe (${workspaceFolder}/Debug/DontWorry.exe)",
+         "name": "DontWorry Debug",
+         "args": [ "-c", "-x=value" ]
+      },
+      {
+         "type": "default",
+         "cwd": "${workspaceRoot}",
+         "project": "CMakeLists.txt",
+         "projectTarget": "DontWorry.exe (${workspaceFolder}/RelWithDebInfo/DontWorry.exe)",
+         "name": "DontWorry Release",
+         "args": [ "-c", "-x=value" ]
+      }
+   ]
+}
