@@ -3,12 +3,9 @@
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
 
-#define GLM_FORCE_MESSAGES // eport the configuration as part of the build log
+//#define GLM_FORCE_MESSAGES // eport the configuration as part of the build log
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
-
-#include <gl/GL.h>
-#include <gl/GLU.h>
 
 glm::mat4 camera(float Translate, glm::vec2 const& Rotate)
 {

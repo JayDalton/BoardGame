@@ -3,26 +3,25 @@ cmake_minimum_required(VERSION 3.18)
 project(LudoBoard CXX)
 message(STATUS ${PROJECT_NAME})
 
-# find_package(fmt CONFIG REQUIRED)
-# find_package(OpenGL REQUIRED)
-find_package(glm CONFIG REQUIRED)
-
 find_package(Corrade REQUIRED Main)
-find_package(Magnum REQUIRED GL Shaders Sdl2Application)
-# set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)find_package(Magnum REQUIRED GL Primitives SceneGraph Shaders ShaderTools target_link_libraries)
+find_package(Magnum REQUIRED 
+    GL 
+    MeshTools 
+    Primitives 
+    Shaders 
+    Sdl2Application)
 
 set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
 add_executable(${PROJECT_NAME} WIN32)
 
-# target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
-# target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
-target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Corrade::Main
     Magnum::Application
     Magnum::GL
     Magnum::Magnum
+    Magnum::MeshTools
+    Magnum::Primitives
     Magnum::Shaders)
 
 target_sources(${PROJECT_NAME} PRIVATE
