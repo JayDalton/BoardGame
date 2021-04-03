@@ -30,3 +30,4 @@ message(STATUS "Unity builds are ${CMAKE_UNITY_BUILD}")
 # Prepare the build
 # add_subdirectory(source/common)
 add_subdirectory(source/DontWorry)
+add_subdirectory(source/LudoBoard)
