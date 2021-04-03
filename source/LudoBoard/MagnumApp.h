@@ -15,7 +15,12 @@
 #include <Magnum/MeshTools/Interleave.h>
 #include <Magnum/MeshTools/CompressIndices.h>
 #include <Magnum/Platform/Sdl2Application.h>
+#include <Magnum/Primitives/Cone.h>
 #include <Magnum/Primitives/Cube.h>
+#include <Magnum/Primitives/Capsule.h>
+#include <Magnum/Primitives/Cylinder.h>
+#include <Magnum/Primitives/Icosphere.h>
+#include <Magnum/Primitives/UVSphere.h>
 #include <Magnum/Shaders/Phong.h>
 #include <Magnum/Trade/MeshData.h>
 
