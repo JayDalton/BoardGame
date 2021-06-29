@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 
 //#define GLM_FORCE_MESSAGES // eport the configuration as part of the build log
@@ -83,19 +83,34 @@ void init(void)
 }
 
 
+void drawContent(sf::RenderWindow& window)
+{
+   // Coords
+   sf::Vertex line1[] =
+   {
+      sf::Vertex(sf::Vector2f(000.f, 300.f)),
+      sf::Vertex(sf::Vector2f(800.f, 300.f)),
+   };
+   window.draw(line1, 2, sf::Lines);
+
+   sf::Vertex line2[] =
+   {
+      sf::Vertex(sf::Vector2f(400.f, 000.f)),
+      sf::Vertex(sf::Vector2f(400.f, 600.f)),
+   };
+   window.draw(line2, 2, sf::Lines);
+
+}
+
 int main()
 {
-   sf::Window window(sf::VideoMode(800, 600), "SFML OpenGL", sf::Style::Default, sf::ContextSettings(32));
-   window.setVerticalSyncEnabled(true);
-
-   // activate the window
-   window.setActive(true);
+   sf::RenderWindow window(sf::VideoMode(800, 600), "SFML OpenGL");
+   window.setVerticalSyncEnabled(true); // ???
 
    // load resources, initialize the OpenGL states, ...
 
    // run the main loop
-   bool running = true;
-   while (running)
+   while (window.isOpen())
    {
       // handle events
       sf::Event event;
@@ -103,20 +118,27 @@ int main()
       {
          if (event.type == sf::Event::Closed)
          {
-            // end the program
-            running = false;
+            window.close();
          }
-         else if (event.type == sf::Event::Resized)
+
+         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
          {
-            // adjust the viewport when the window is resized
-            glViewport(0, 0, event.size.width, event.size.height);
+            window.close();
          }
+
+         //else if (event.type == sf::Event::Resized)
+         //{
+         //   // adjust the viewport when the window is resized
+         //   glViewport(0, 0, event.size.width, event.size.height);
+         //}
       }
 
       // clear the buffers
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      window.clear(sf::Color::Black);
 
       // draw...
+      drawContent(window);
 
       // end the current frame (internally swaps the front and back buffers)
       window.display();
