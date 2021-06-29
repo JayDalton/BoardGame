@@ -9,7 +9,12 @@ TriangleExample::TriangleExample(const Arguments& arguments)
    GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
    GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
 
-   Trade::MeshData cube = Primitives::cubeSolid();
+   //Trade::MeshData cube = Primitives::cubeSolid();
+   //Trade::MeshData cube = Primitives::coneSolid(1, 30, 2);
+   //Trade::MeshData cube = Primitives::cylinderSolid(1, 3, 2);
+   //Trade::MeshData cube = Primitives::icosphereSolid(2);
+   //Trade::MeshData cube = Primitives::uvSphereSolid(30, 30, {});
+   Trade::MeshData cube = Primitives::capsule3DSolid(5, 5, 5, 2, {});
 
    GL::Buffer vertices;
    vertices.setData(MeshTools::interleave(
