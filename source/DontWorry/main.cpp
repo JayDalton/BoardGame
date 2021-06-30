@@ -82,6 +82,29 @@ void init(void)
 
 }
 
+class MyEntity : public sf::Drawable, public sf::Transformable
+{
+public:
+
+   // add functions to play with the entity's geometry / colors / texturing...
+
+private:
+
+   void draw(sf::RenderTarget& target, sf::RenderStates states) const override
+   {
+      // apply the transform
+      states.transform *= getTransform();
+
+      // apply the tileset texture
+      states.texture = &m_tileset;
+
+      // draw the vertex array
+      target.draw(m_vertices, states);
+   }
+
+   sf::VertexArray m_vertices;
+   sf::Texture m_tileset;
+};
 
 void drawContent(sf::RenderWindow& window)
 {
@@ -92,6 +115,8 @@ void drawContent(sf::RenderWindow& window)
       sf::Vertex(sf::Vector2f(800.f, 300.f)),
    };
    window.draw(line1, 2, sf::Lines);
+
+   window;
 
    sf::Vertex line2[] =
    {
