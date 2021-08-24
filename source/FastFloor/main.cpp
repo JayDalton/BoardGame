@@ -1,192 +1,264 @@
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
-#define OLC_PGE_APPLICATION
-#include "engine/olcPixelGameEngine.h"
+#include <iostream>
 
-#define OLC_PGEX_TRANSFORMEDVIEW
-#include "engine/olcPGEX_TransformedView.h"
+#include "sdl2.h"
 
 
-class CircleVsRect : public olc::PixelGameEngine
+auto main(int, char* []) -> int
 {
-public:
-   CircleVsRect()
-   {
-      sAppName = "Circle Vs Rectangle";
+   using std::cerr;
+   using std::endl;
+
+   auto sys = sdl2::make_sdlsystem(SDL_INIT_EVERYTHING);
+   if (!sys) {
+      cerr << "Error creating SDL2 system: " << SDL_GetError() << endl;
+      return 1;
    }
 
-private:
-   olc::TileTransformedView tv;
-
-   struct sWorldObject
-   {
-      olc::vf2d vPos;
-      olc::vf2d vVel;
-      float fRadius = 0.5f;
-   };
-
-   sWorldObject object;
-
-   std::string sWorldMap =
-      "################################"
-      "#..............................#"
-      "#.......#####.#.....#####......#"
-      "#.......#...#.#.....#..........#"
-      "#.......#...#.#.....#..........#"
-      "#.......#####.#####.#####......#"
-      "#..............................#"
-      "#.....#####.#####.#####..##....#"
-      "#.........#.#...#.....#.#.#....#"
-      "#.....#####.#...#.#####...#....#"
-      "#.....#.....#...#.#.......#....#"
-      "#.....#####.#####.#####.#####..#"
-      "#..............................#"
-      "#..............................#"
-      "#..#.#..........#....#.........#"
-      "#..#.#..........#....#.........#"
-      "#..#.#.......#####.#######.....#"
-      "#..#.#..........#....#.........#"
-      "#..#.#.............###.#.#.....#"
-      "#..#.##########................#"
-      "#..#..........#....#.#.#.#.....#"
-      "#..#.####.###.#................#"
-      "#..#.#......#.#................#"
-      "#..#.#.####.#.#....###..###....#"
-      "#..#.#......#.#....#......#....#"
-      "#..#.########.#....#......#....#"
-      "#..#..........#....#......#....#"
-      "#..############....#......#....#"
-      "#..................########....#"
-      "#..............................#"
-      "#..............................#"
-      "################################";
-
-   olc::vi2d vWorldSize = { 32, 32 };
-
-   bool bFollowObject = false;
-
-public:
-   bool OnUserCreate() override
-   {
-      // Create "Tiled World", where each tile is 32x32 screen pixels. Coordinates
-      // for drawing will exist in unit-tile space from now on...
-      tv = olc::TileTransformedView({ ScreenWidth(), ScreenHeight() }, { 32, 32 });		
-      object.vPos = { 3.0f, 3.0f };
-      return true;
+   auto win = sdl2::make_window("Hello World!", 100, 100, 620, 387, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+   if (!win) {
+      cerr << "Error creating window: " << SDL_GetError() << endl;
+      return 1;
    }
 
-   bool OnUserUpdate(float fElapsedTime) override
+   auto ren
+      = sdl2::make_renderer(win.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+   if (!ren) {
+      cerr << "Error creating renderer: " << SDL_GetError() << endl;
+      return 1;
+   }
+
+   auto file = SDL_RWFromFile("img/grumpy-cat.bmp", "rb");
+   if (file == nullptr) {
+      cerr << "Error reading file: " << SDL_GetError() << endl;
+      return 1;
+   }
+
+   auto bmp = sdl2::make_bmp(file);
+   if (!bmp) {
+      cerr << "Error creating surface: " << SDL_GetError() << endl;
+      return 1;
+   }
+
+   auto tex = sdl2::make_texture(ren.get(), bmp.get());
+   if (!tex) {
+      cerr << "Error creating texture: " << SDL_GetError() << endl;
+      return 1;
+   }
+
+   SDL_Rect dest{ 50, 50, 70, 20 };
+
+   int close = 0;
+   int speed = 300;
+ 
+   // annimation loop
+   while (!close) 
    {
-      // Control of Player Object
-      object.vVel = { 0.0f, 0.0f };
-      if (GetKey(olc::Key::W).bHeld) object.vVel += { 0.0f, -1.0f };
-      if (GetKey(olc::Key::S).bHeld) object.vVel += { 0.0f, +1.0f };
-      if (GetKey(olc::Key::A).bHeld) object.vVel += { -1.0f, 0.0f };
-      if (GetKey(olc::Key::D).bHeld) object.vVel += { +1.0f, 0.0f };
+      SDL_Event event;
 
-      if (object.vVel.mag2() > 0)
-         object.vVel = object.vVel.norm() * (GetKey(olc::Key::SHIFT).bHeld ? 5.0f : 2.0f);
-
-      if (GetKey(olc::Key::SPACE).bReleased) bFollowObject = !bFollowObject;
-
-
-      // Where will object be worst case?
-      olc::vf2d vPotentialPosition = object.vPos + object.vVel * fElapsedTime;
-
-      // Extract region of world cells that could have collision this frame
-      olc::vi2d vCurrentCell = object.vPos.floor();
-      olc::vi2d vTargetCell = vPotentialPosition;
-      olc::vi2d vAreaTL = (vCurrentCell.min(vTargetCell) - olc::vi2d(1, 1)).max({ 0,0 });
-      olc::vi2d vAreaBR = (vCurrentCell.max(vTargetCell) + olc::vi2d(1, 1)).min(vWorldSize);
-
-      olc::vf2d vRayToNearest;
-
-      // Iterate through each cell in test area
-      olc::vi2d vCell;
-      for (vCell.y = vAreaTL.y; vCell.y <= vAreaBR.y; vCell.y++)
+      // Events management
+      while (SDL_PollEvent(&event)) 
       {
-         for (vCell.x = vAreaTL.x; vCell.x <= vAreaBR.x; vCell.x++)
+         switch (event.type) 
          {
-            // Check if the cell is actually solid...
-            if (sWorldMap[vCell.y * vWorldSize.x + vCell.x] == '#')
-            {
-               // ...it is! So work out nearest point to future player position, around perimeter
-               // of cell rectangle. We can test the distance to this point to see if we have
-               // collided. 
 
-               olc::vf2d vNearestPoint;
-               vNearestPoint.x = std::max(float(vCell.x), std::min(vPotentialPosition.x, float(vCell.x + 1)));
-               vNearestPoint.y = std::max(float(vCell.y), std::min(vPotentialPosition.y, float(vCell.y + 1)));
+         case SDL_QUIT:
+            // handling of close button
+            close = 1;
+            break;
 
-               olc::vf2d vRayToNearest = vNearestPoint - vPotentialPosition;
-               float fOverlap = object.fRadius - vRayToNearest.mag();
-               if (std::isnan(fOverlap)) fOverlap = 0;
-
-               // If overlap is positive, then a collision has occurred, so we displace backwards by the 
-               // overlap amount. The potential position is then tested against other tiles in the area
-               // therefore "statically" resolving the collision
-               if (fOverlap > 0)
-               {
-                  // Statically resolve the collision
-                  vPotentialPosition = vPotentialPosition - vRayToNearest.norm() * fOverlap;
-               }
+         case SDL_KEYDOWN:
+            // keyboard API for key pressed
+            switch (event.key.keysym.scancode) {
+            case SDL_SCANCODE_W:
+            case SDL_SCANCODE_UP:
+               dest.y -= speed / 30;
+               break;
+            case SDL_SCANCODE_A:
+            case SDL_SCANCODE_LEFT:
+               dest.x -= speed / 30;
+               break;
+            case SDL_SCANCODE_S:
+            case SDL_SCANCODE_DOWN:
+               dest.y += speed / 30;
+               break;
+            case SDL_SCANCODE_D:
+            case SDL_SCANCODE_RIGHT:
+               dest.x += speed / 30;
+               break;
+            default:
+               break;
             }
          }
       }
 
-      // Set the objects new position to the allowed potential position
-      object.vPos = vPotentialPosition;
+      // right boundary
+      if (dest.x + dest.w > 1000)
+         dest.x = 1000 - dest.w;
 
+      // left boundary
+      if (dest.x < 0)
+         dest.x = 0;
 
-      // Clear World
-      Clear(olc::VERY_DARK_BLUE);
+      // bottom boundary
+      if (dest.y + dest.h > 1000)
+         dest.y = 1000 - dest.h;
 
-      if (bFollowObject)
-      {
-         tv.SetWorldOffset(object.vPos - tv.ScaleToWorld(olc::vf2d(ScreenWidth()/2.0f, ScreenHeight()/2.0f)));
-         DrawString({ 10,10 }, "Following Object");
-      }
+      // upper boundary
+      if (dest.y < 0)
+         dest.y = 0;
 
-      // Handle Pan & Zoom
-      if (GetMouse(2).bPressed) tv.StartPan(GetMousePos());
-      if (GetMouse(2).bHeld) tv.UpdatePan(GetMousePos());
-      if (GetMouse(2).bReleased) tv.EndPan(GetMousePos());
-      if (GetMouseWheel() > 0) tv.ZoomAtScreenPos(2.0f, GetMousePos());
-      if (GetMouseWheel() < 0) tv.ZoomAtScreenPos(0.5f, GetMousePos());
+      // clears the screen
+      SDL_RenderClear(ren.get());
+      //SDL_RenderCopy(ren.get(), tex, nullptr, &dest);
+      SDL_RenderCopy(ren.get(), tex.get(), nullptr, nullptr);
 
-      // Draw World
-      olc::vi2d vTL = tv.GetTopLeftTile().max({ 0,0 });
-      olc::vi2d vBR = tv.GetBottomRightTile().min(vWorldSize);
-      olc::vi2d vTile;
-      for (vTile.y = vTL.y; vTile.y < vBR.y; vTile.y++)
-         for (vTile.x = vTL.x; vTile.x < vBR.x; vTile.x++)
-         {
-            if (sWorldMap[vTile.y * vWorldSize.x + vTile.x] == '#')
-            {
-               tv.DrawRect(vTile, { 1.0f, 1.0f }, olc::WHITE);
-               tv.DrawLine(vTile, vTile + olc::vf2d(1.0f, 1.0f), olc::WHITE);
-               tv.DrawLine(vTile + olc::vf2d(0.0f, 1.0f), vTile + olc::vf2d(1.0f, 0.0f), olc::WHITE);
-            }
-         }
+      //SDL_SetRenderDrawColor(ren.get(), 255, 0, 0, 128);
+      //SDL_RenderFillRect(ren.get(), &dest);
 
-      tv.FillRectDecal(vAreaTL, vAreaBR - vAreaTL + olc::vi2d(1,1), olc::Pixel(0,255,255,32));
+      // triggers the double buffers
+      // for multiple rendering
+      SDL_RenderPresent(ren.get());
 
-      // Draw Boundary
-      tv.DrawCircle(object.vPos, object.fRadius, olc::WHITE);
-
-      // Draw Velocity
-      if (object.vVel.mag2() > 0)
-      {
-         tv.DrawLine(object.vPos, object.vPos + object.vVel.norm() * object.fRadius, olc::MAGENTA);
-      }
-
-      return true;
+      // calculates to 60 fps
+      SDL_Delay(1000 / 60);
    }
-};
 
-int main()
-{
-   CircleVsRect demo;
-   if (demo.Construct(640, 480, 2, 2))
-      demo.Start();
    return 0;
 }
+
+//int main(int argc, char* argv[])
+//{
+//   // retutns zero on success else non-zero
+//   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+//      printf("error initializing SDL: %s\n", SDL_GetError());
+//   }
+//   SDL_Window* win = SDL_CreateWindow("GAME",
+//      SDL_WINDOWPOS_CENTERED,
+//      SDL_WINDOWPOS_CENTERED,
+//      1000, 1000, 0);
+//
+//   // triggers the program that controls
+//   // your graphics hardware and sets flags
+//   Uint32 render_flags = SDL_RENDERER_ACCELERATED;
+//
+//   // creates a renderer to render our images
+//   SDL_Renderer* rend = SDL_CreateRenderer(win, -1, render_flags);
+//
+//   // creates a surface to load an image into the main memory
+//   SDL_Surface* surface = nullptr;
+//
+//   // please provide a path for your image
+//   //surface = IMG_Load("path");
+//
+//   // loads image to our graphics hardware memory.
+//   SDL_Texture* tex = SDL_CreateTextureFromSurface(rend, surface);
+//
+//   // clears main-memory
+//   SDL_FreeSurface(surface);
+//
+//   // let us control our image position
+//   // so that we can move it with our keyboard.
+//   SDL_Rect dest;
+//
+//   // connects our texture with dest to control position
+//   SDL_QueryTexture(tex, NULL, NULL, &dest.w, &dest.h);
+//
+//   // adjust height and width of our image box.
+//   dest.w /= 6;
+//   dest.h /= 6;
+//
+//   // sets initial x-position of object
+//   dest.x = (1000 - dest.w) / 2;
+//
+//   // sets initial y-position of object
+//   dest.y = (1000 - dest.h) / 2;
+//
+//   // controls annimation loop
+//   int close = 0;
+//
+//   // speed of box
+//   int speed = 300;
+//
+//   // annimation loop
+//   while (!close) {
+//      SDL_Event event;
+//
+//      // Events management
+//      while (SDL_PollEvent(&event)) {
+//         switch (event.type) {
+//
+//         case SDL_QUIT:
+//            // handling of close button
+//            close = 1;
+//            break;
+//
+//         case SDL_KEYDOWN:
+//            // keyboard API for key pressed
+//            switch (event.key.keysym.scancode) {
+//            case SDL_SCANCODE_W:
+//            case SDL_SCANCODE_UP:
+//               dest.y -= speed / 30;
+//               break;
+//            case SDL_SCANCODE_A:
+//            case SDL_SCANCODE_LEFT:
+//               dest.x -= speed / 30;
+//               break;
+//            case SDL_SCANCODE_S:
+//            case SDL_SCANCODE_DOWN:
+//               dest.y += speed / 30;
+//               break;
+//            case SDL_SCANCODE_D:
+//            case SDL_SCANCODE_RIGHT:
+//               dest.x += speed / 30;
+//               break;
+//            default:
+//               break;
+//            }
+//         }
+//      }
+//
+//      // right boundary
+//      if (dest.x + dest.w > 1000)
+//         dest.x = 1000 - dest.w;
+//
+//      // left boundary
+//      if (dest.x < 0)
+//         dest.x = 0;
+//
+//      // bottom boundary
+//      if (dest.y + dest.h > 1000)
+//         dest.y = 1000 - dest.h;
+//
+//      // upper boundary
+//      if (dest.y < 0)
+//         dest.y = 0;
+//
+//      // clears the screen
+//      SDL_RenderClear(rend);
+//      SDL_RenderCopy(rend, tex, NULL, &dest);
+//
+//      // triggers the double buffers
+//      // for multiple rendering
+//      SDL_RenderPresent(rend);
+//
+//      // calculates to 60 fps
+//      SDL_Delay(1000 / 60);
+//   }
+//
+//   // destroy texture
+//   SDL_DestroyTexture(tex);
+//
+//   // destroy renderer
+//   SDL_DestroyRenderer(rend);
+//
+//   // destroy window
+//   SDL_DestroyWindow(win);
+//
+//   // close SDL
+//   SDL_Quit();
+//
+//   return 0;
+//}
