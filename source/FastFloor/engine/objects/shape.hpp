@@ -12,13 +12,10 @@ namespace ogl {
   {
     public:
       Shape();
-      virtual ~Shape();
-      Shape(const Shape& shape);
-      Shape& operator=(const Shape& shape);
+      virtual ~Shape() = default;
 
       virtual void render() const = 0;
       //virtual void update() const = 0;
-
   };
 }
 

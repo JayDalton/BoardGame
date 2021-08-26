@@ -1,14 +1,11 @@
-/*###############################################################################
-Kodierung: UTF-8 ohne BOM - äüö
-###############################################################################*/
+#pragma once 
 
-#ifndef OGL_POLYLINE_HPP
-#define OGL_POLYLINE_HPP
+#include "../shape.hpp"
 
-#include <vector>
-#include "shape.hpp"
+#include <SDL2/SDL_opengl.h>
 
-namespace ogl {
+namespace ogl 
+{
   class PolyLine : public Shape
   {
     public:
@@ -29,11 +26,10 @@ namespace ogl {
 
       void setColor(GLfloat r = 1.0f, GLfloat g = 1.0f, GLfloat b = 1.0f);
 
-      void render() const;
+      void render() const override;
 
     private:
       std::vector<glm::vec3> plist;
   };
 }
 
-#endif

@@ -1,14 +1,6 @@
-/*###############################################################################
-  Kodierung: UTF-8 ohne BOM - äüö
-###############################################################################*/
+#pragma once
 
-#ifndef OGL_CAMERA_HPP
-#define OGL_CAMERA_HPP
-
-#include <vector>
-#include <iostream>
-
-#include <SFML/OpenGL.hpp>
+#include <SDL2/SDL_opengl.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
@@ -18,10 +10,6 @@ namespace ogl {
 
   class Camera
   {
-    private:
-      glm::mat4 matrix;
-      glm::mat4 lookat;
-
     public:
       Camera(
         glm::mat4 mtx = glm::perspective(60.0f, 4.0f / 3.0f, 0.1f, 1000.0f), 
@@ -42,8 +30,10 @@ namespace ogl {
 
       glm::mat4 mtx() const;
 
+    private:
+      glm::mat4 matrix;
+      glm::mat4 lookat;
+
   };
 
 }
-
-#endif

@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "shape.hpp"
+#include "../shape.hpp"
 
 namespace ogl 
 {

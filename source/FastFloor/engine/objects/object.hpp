@@ -11,8 +11,8 @@ namespace ogl
       }
 
    private:
-      const unsigned int m_id{ 0 };
-      static unsigned int counter{ 0 };
+      unsigned int m_id{ 0 };
+      inline static unsigned int counter{ 0 };
   };
 }
 

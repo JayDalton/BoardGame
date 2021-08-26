@@ -1,13 +1,5 @@
-/*###############################################################################
-  Kodierung: UTF-8 ohne BOM - äüö
-###############################################################################*/
-
 #include "area.hpp"
 
-//############################################################################
-/**
-*/
-//############################################################################
 ogl::Area::Area(GLfloat au, GLfloat av, GLuint tu, GLuint tv, GLfloat cr, GLfloat cg, GLfloat cb, GLfloat ca)
   : Rectangle(au, av), Texture(tu, tv, cr, cg, cb, ca)
 {
@@ -15,10 +7,6 @@ ogl::Area::Area(GLfloat au, GLfloat av, GLuint tu, GLuint tv, GLfloat cr, GLfloa
   Texture::bind();
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 ogl::Area::Area(GLfloat au, GLfloat av, const Texture *tex)
   : Rectangle(au, av), Texture(*tex)
 {
@@ -26,10 +14,6 @@ ogl::Area::Area(GLfloat au, GLfloat av, const Texture *tex)
   Texture::bind();
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 ogl::Area::Area(GLfloat au, GLfloat av, const Texture &tex)
   : Rectangle(au, av), Texture(tex)
 {
@@ -37,19 +21,11 @@ ogl::Area::Area(GLfloat au, GLfloat av, const Texture &tex)
   Texture::bind();
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 ogl::Area::~Area()
 {
   Texture::free();
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 ogl::Area::Area(const Area& original)
   : Rectangle(original), Texture(original)
 {
@@ -57,10 +33,6 @@ ogl::Area::Area(const Area& original)
   Texture::bind();
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 ogl::Area& ogl::Area::operator=(const Area& original)
 {
   if(this != &original) {
@@ -72,10 +44,6 @@ ogl::Area& ogl::Area::operator=(const Area& original)
   return *this;
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 void ogl::Area::setTexture(const Texture *tex)
 {
   Texture::free();
@@ -84,10 +52,6 @@ void ogl::Area::setTexture(const Texture *tex)
   Texture::bind();
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 void ogl::Area::setTexture(const Texture &tex)
 {
   Texture::free();
@@ -96,30 +60,18 @@ void ogl::Area::setTexture(const Texture &tex)
   Texture::bind();
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 void ogl::Area::fill(GLfloat cr, GLfloat cg, GLfloat cb, GLfloat ca)
 {
   Texture::fill(cr, cg, cb, ca);
   Texture::bind();
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 void ogl::Area::draw(GLint x, GLint y, const ogl::Texture* tex, GLfloat cr, GLfloat cg, GLfloat cb, GLfloat ca)
 {
   Texture::draw(x, y, tex, cr, cg, cb, ca);
   Texture::bind();
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 bool ogl::Area::strike(glm::vec3 p1, glm::vec3 p2, Texture *tex)
 {
   bool result = false;
@@ -134,10 +86,6 @@ bool ogl::Area::strike(glm::vec3 p1, glm::vec3 p2, Texture *tex)
   return result;
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 void ogl::Area::render() const
 {
   glEnable(GL_BLEND);

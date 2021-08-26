@@ -1,13 +1,11 @@
-/*###############################################################################
-Kodierung: UTF-8 ohne BOM - äüö
-###############################################################################*/
+#pragma once 
 
-#ifndef OGL_LINE_HPP
-#define OGL_LINE_HPP
+#include "../shape.hpp"
 
-#include "shape.hpp"
+#include <SDL2/SDL_opengl.h>
 
-namespace ogl {
+namespace ogl 
+{
   class Line : public Shape
   {
     public:
@@ -25,11 +23,10 @@ namespace ogl {
       void setP2(glm::vec3 p);
       glm::vec3 getP2() const;
 
-      void render() const;
+      void render() const override;
 
     private:
 
   };
 }
 
-#endif

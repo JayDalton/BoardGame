@@ -1,14 +1,9 @@
-/*###############################################################################
-  Kodierung: UTF-8 ohne BOM - äüö
-###############################################################################*/
-
-#ifndef OGL_AREA_HPP
-#define OGL_AREA_HPP
+#pragma once
 
 #include <SFML/OpenGL.hpp>
 
 #include "rectangle.hpp"
-#include "texture.hpp"
+#include "../texture.hpp"
 
 namespace ogl {
 
@@ -53,5 +48,3 @@ namespace ogl {
   };
 
 }
-
-#endif
