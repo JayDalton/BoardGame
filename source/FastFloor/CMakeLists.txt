@@ -18,12 +18,12 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 target_sources(${PROJECT_NAME} PRIVATE
-   "buffer.cpp"
-   "buffer.h"
-   "engine.cpp" 
-   "engine.h"
+   "engine/buffer.cpp"
+   "engine/buffer.h"
+   "engine/engine.cpp" 
+   "engine/engine.h"
+   "engine/sdl2.h"
    "game.cpp"
    "game.h"
    "main.cpp"
-   "sdl2.h"
 )

@@ -30,7 +30,7 @@ bool GameEngine::construct(int x, int y, int w, int h)
    Uint32 windowFlags{ SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL };
 
    if (auto win = sdl2::make_window(m_title.data(), 
-      SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
+      SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
       w, h, windowFlags))
    {
       m_window = std::move(win); // Context ???
@@ -38,7 +38,11 @@ bool GameEngine::construct(int x, int y, int w, int h)
       
       /* Loading Extensions */
       glewExperimental = GL_TRUE;
-      glewInit();
+      if (glewInit())
+      {
+         cerr << "GLEW init failed" << endl;
+         return false;
+      }
    }
    else
    {
@@ -65,6 +69,7 @@ void GameEngine::setWindowTitle(std::string label)
 {
    SDL_SetWindowTitle(m_window.get(), std::format("{} {}", m_title, label).c_str());
 }
+
 
 void GameEngine::start()
 {
