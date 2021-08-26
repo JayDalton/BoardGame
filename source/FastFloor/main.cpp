@@ -2,8 +2,8 @@
 
 auto main(int, char* []) -> int
 {
-   FastFloor game;
-   if (game.construct("Hello!"))
+   FastFloor game("FastFloor");
+   if (game.construct(100, 100, 620, 387))
    {
       game.start();
    }

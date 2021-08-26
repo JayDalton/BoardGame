@@ -5,17 +5,11 @@
 class FastFloor : public GameEngine
 {
 public:
+   FastFloor(std::string_view title);
 
-   bool createUser() override
-   {
-      return true;
-   }
-
-   bool updateUser() override
-   {
-
-      return true;
-   }
+   bool createUser() override;
+   
+   bool updateUser() override;
 
 private:
 };
