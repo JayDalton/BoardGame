@@ -1,5 +1,6 @@
 #include "engine.h"
 
+
 GameEngine::GameEngine(std::string_view title)
    : m_title(title)
 {
@@ -22,11 +23,12 @@ bool GameEngine::construct(int x, int y, int w, int h)
    }
 
 
-   Uint32 windowFlags{ SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE };
+   Uint32 windowFlags{ SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL };
 
    if (auto win = sdl2::make_window(m_title.data(), x, y, w, h, windowFlags))
    {
       m_window = std::move(win);
+      SDL_GLContext Context = SDL_GL_CreateContext(m_window.get());
    }
    else
    {
@@ -133,35 +135,41 @@ void GameEngine::start()
 
       updateUser();
 
-      // right boundary
-      if (dest.x + dest.w > 1000)
-         dest.x = 1000 - dest.w;
+      //// right boundary
+      //if (dest.x + dest.w > 1000)
+      //   dest.x = 1000 - dest.w;
 
-      // left boundary
-      if (dest.x < 0)
-         dest.x = 0;
+      //// left boundary
+      //if (dest.x < 0)
+      //   dest.x = 0;
 
-      // bottom boundary
-      if (dest.y + dest.h > 1000)
-         dest.y = 1000 - dest.h;
+      //// bottom boundary
+      //if (dest.y + dest.h > 1000)
+      //   dest.y = 1000 - dest.h;
 
-      // upper boundary
-      if (dest.y < 0)
-         dest.y = 0;
+      //// upper boundary
+      //if (dest.y < 0)
+      //   dest.y = 0;
 
-      // clears the screen
-      SDL_RenderClear(m_render.get());
-      SDL_RenderCopy(m_render.get(), tex.get(), nullptr, &dest);
+      //// clears the screen
+      //SDL_RenderClear(m_render.get());
+      //SDL_RenderCopy(m_render.get(), tex.get(), nullptr, &dest);
 
-      //SDL_SetRenderDrawColor(ren.get(), 255, 0, 0, 128);
-      //SDL_RenderFillRect(ren.get(), &dest);
+      ////SDL_SetRenderDrawColor(ren.get(), 255, 0, 0, 128);
+      ////SDL_RenderFillRect(ren.get(), &dest);
 
-      // triggers the double buffers
-      // for multiple rendering
-      SDL_RenderPresent(m_render.get());
+      //// triggers the double buffers
+      //// for multiple rendering
+      //SDL_RenderPresent(m_render.get());
 
-      // calculates to 60 fps
-      SDL_Delay(1000 / 60);
+      //// calculates to 60 fps
+      //SDL_Delay(1000 / 60);
+
+      glViewport(0, 0, 600, 400);
+      glClearColor(1.f, 0.f, 1.f, 0.f);
+      glClear(GL_COLOR_BUFFER_BIT);
+
+      SDL_GL_SwapWindow(m_window.get());
    }
 
 }

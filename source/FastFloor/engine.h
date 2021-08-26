@@ -11,10 +11,12 @@
 
 #include <glm/glm.hpp>
 
+#include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_opengl.h>
 
 #include "sdl2.h"
 
