@@ -18,6 +18,8 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 target_sources(${PROJECT_NAME} PRIVATE
+   "buffer.cpp"
+   "buffer.h"
    "engine.cpp" 
    "engine.h"
    "game.cpp"

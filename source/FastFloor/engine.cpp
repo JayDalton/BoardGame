@@ -12,7 +12,7 @@ bool GameEngine::construct(int x, int y, int w, int h)
    using std::cerr;
    using std::endl;
 
-   if (auto system = sdl2::make_sdlsystem(SDL_INIT_EVERYTHING))
+   if (auto system = sdl2::make_sdlsystem(SDL_INIT_VIDEO | SDL_INIT_TIMER))
    {
       m_system = std::move(system);
    }
@@ -22,13 +22,23 @@ bool GameEngine::construct(int x, int y, int w, int h)
       return false;
    }
 
+   /* Setting up OpenGL version and profile details for context creation */
+   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);   
 
    Uint32 windowFlags{ SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL };
 
-   if (auto win = sdl2::make_window(m_title.data(), x, y, w, h, windowFlags))
+   if (auto win = sdl2::make_window(m_title.data(), 
+      SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
+      w, h, windowFlags))
    {
-      m_window = std::move(win);
+      m_window = std::move(win); // Context ???
       SDL_GLContext Context = SDL_GL_CreateContext(m_window.get());
+      
+      /* Loading Extensions */
+      glewExperimental = GL_TRUE;
+      glewInit();
    }
    else
    {
@@ -84,6 +94,15 @@ void GameEngine::start()
    int close = 0;
    int speed = 300;
 
+
+   /* The following code is for error checking.
+   *  If OpenGL has initialised properly, this should print 1.
+   *  Remove it in production code.
+   */
+   GLuint vertex_buffer;
+   glGenBuffers(1, &vertex_buffer);
+   printf("%u\n", vertex_buffer);
+   /* Error checking ends here */
 
    // annimation loop
    while (!close)
