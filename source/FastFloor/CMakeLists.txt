@@ -18,6 +18,16 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 target_sources(${PROJECT_NAME} PRIVATE
+   "engine/objects/geometry.cpp"
+   "engine/objects/geometry.hpp"
+   "engine/objects/object.cpp"
+   "engine/objects/object.hpp"
+   "engine/objects/rectangle.cpp"
+   "engine/objects/rectangle.hpp"
+   "engine/objects/shape.cpp"
+   "engine/objects/shape.hpp"
+   "engine/objects/transform.cpp"
+   "engine/objects/transform.hpp"
    "engine/buffer.cpp"
    "engine/buffer.h"
    "engine/engine.cpp" 
