@@ -1,9 +1,8 @@
 #pragma once
 
-#include <SDL2/SDL_opengl.h>
-
-namespace ogl {
-
+namespace ogl 
+{
+   // Ident
    struct Object
    {
       Object()

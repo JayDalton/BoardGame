@@ -1,7 +1,3 @@
-/*###############################################################################
-Kodierung: UTF-8 ohne BOM - äüö
-###############################################################################*/
-
 #include "rectangle.hpp"
 
 const GLuint ogl::Rectangle::INDICES[] = {0, 1, 3, 1, 2, 3};
@@ -45,27 +41,15 @@ ogl::Rectangle::Rectangle(GLfloat u, GLfloat v, GLfloat r, GLfloat g, GLfloat b)
   }
 }
 
-//############################################################################
-/** 
-*/
-//############################################################################  
 ogl::Rectangle::~Rectangle()
 {
 }
 
-//############################################################################
-/** 
-*/
-//############################################################################  
 ogl::Rectangle::Rectangle(const Rectangle& original)
   : Shape(original)
 {
 }
 
-//############################################################################
-/** 
-*/
-//############################################################################  
 ogl::Rectangle& ogl::Rectangle::operator=(const Rectangle& original)
 {
   if(this != &original) {
@@ -90,19 +74,11 @@ std::vector<glm::vec3> ogl::Rectangle::vertices() const
   return result;
 }
 
-//############################################################################
-/** 
-*/
-//############################################################################  
 glm::vec3 ogl::Rectangle::getBase() const
 {
   return glm::vec3(glm::vec3(buffer[ 0], buffer[ 1], buffer[ 2]));
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 GLuint ogl::Rectangle::getWidth() const
 {
   glm::vec3 E1 (glm::vec3(buffer[ 0], buffer[ 1], buffer[ 2]));
@@ -111,10 +87,6 @@ GLuint ogl::Rectangle::getWidth() const
   return glm::distance(E1, E2);
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 GLuint ogl::Rectangle::getHeight() const
 {
   glm::vec3 E1 (glm::vec3(buffer[ 0], buffer[ 1], buffer[ 2]));
@@ -123,10 +95,6 @@ GLuint ogl::Rectangle::getHeight() const
   return glm::distance(E1, E3);
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 bool ogl::Rectangle::intersect(glm::vec3 P1, glm::vec3 P2, glm::vec3 &PI) const
 {
   bool result = false;
@@ -166,10 +134,6 @@ bool ogl::Rectangle::intersect(glm::vec3 P1, glm::vec3 P2, glm::vec3 &PI) const
   return result;
 }
 
-//############################################################################
-/**
-*/
-//############################################################################
 void ogl::Rectangle::render() const
 {
   glEnableClientState(GL_VERTEX_ARRAY);
