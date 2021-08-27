@@ -4,6 +4,23 @@
 #include "objects/shapes/cuboid.hpp"
 #include "objects/shapes/rectangle.hpp"
 
+// settings
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+
+const char *vertexShaderSource = "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "}\0";
+const char *fragmentShaderSource = "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "}\n\0";
+
 
 GameEngine::GameEngine(std::string_view title)
    : m_title(title)
@@ -30,7 +47,7 @@ bool GameEngine::construct(int w, int h)
    }
 
    /* Setting up OpenGL version and profile details for context creation */
-   //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
@@ -69,35 +86,6 @@ bool GameEngine::construct(int w, int h)
    }
    auto error = glGetError();
 
-   if (GLEW_VERSION_2_1)
-   {
-      auto error = glGetError();
-   }
-
-   if (GLEW_VERSION_3_2)
-   {
-      auto error = glGetError();
-   }
-
-   if (GLEW_VERSION_3_3)
-   {
-      auto error = glGetError();
-   }
-
-   if (GLEW_VERSION_4_4)
-   {
-      auto error = glGetError();
-   }
-
-   if (GLEW_VERSION_4_5)
-   {
-      auto error = glGetError();
-   }
-
-   if (GLEW_VERSION_4_6)
-   {
-      auto error = glGetError();
-   }
 
    //Use Vsync
    if (SDL_GL_SetSwapInterval(1) < 0)
@@ -107,15 +95,15 @@ bool GameEngine::construct(int w, int h)
    }
    error = glGetError();
    //Initialize OpenGL
-   initWindow();
+   //initWindow();
    //initOpenGL();
 
-   if (!initOpenGL())
-   {
-      cout << std::format("Unable to initialize OpenGL!\n");
-      return false;
-   }
-   error = glGetError();
+   //if (!initOpenGL())
+   //{
+   //   cout << std::format("Unable to initialize OpenGL!\n");
+   //   return false;
+   //}
+   //error = glGetError();
 
    Uint32 renderFlags{ SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC };
 
@@ -131,12 +119,12 @@ bool GameEngine::construct(int w, int h)
    }
    error = glGetError();
 
-   initCamera();
+   //initCamera();
    error = glGetError();
    //initLights();
    error = glGetError();
    error = glGetError();
-   initGeometry();
+   //initGeometry();
    error = glGetError();
 
    cout << "init geometry " << (StopClock::now() - start) << endl;
@@ -159,51 +147,78 @@ void GameEngine::start()
    auto error = glGetError();
    const auto start = StopClock::now();
 
-   auto file = SDL_RWFromFile("img/grumpy-cat.bmp", "rb");
-   if (file == nullptr) {
-      cerr << "Error reading file: " << SDL_GetError() << endl;
-      return;
-   }
    error = glGetError();
 
-   auto bmp = sdl2::make_bmp(file);
-   if (!bmp) {
-      cerr << "Error creating surface: " << SDL_GetError() << endl;
-      return;
-   }
-   error = glGetError();
+   unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+    // check for shader compile errors
+    int success;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+    // fragment shader
+    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+    // check for shader compile errors
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+    // link shaders
+    unsigned int shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+    // check for linking errors
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
 
-   auto tex = sdl2::make_texture(m_render.get(), bmp.get());
-   if (!tex) {
-      cerr << "Error creating texture: " << SDL_GetError() << endl;
-      return;
-   }
-   error = glGetError();
+    // set up vertex data (and buffer(s)) and configure vertex attributes
+    // ------------------------------------------------------------------
+    // add a new set of vertices to form a second triangle (a total of 6 vertices); the vertex attribute configuration remains the same (still one 3-float position vector per vertex)
+    float vertices[] = {
+        // first triangle
+        -0.9f, -0.5f, 0.0f,  // left 
+        -0.0f, -0.5f, 0.0f,  // right
+        -0.45f, 0.5f, 0.0f,  // top 
+        // second triangle
+         0.0f, -0.5f, 0.0f,  // left
+         0.9f, -0.5f, 0.0f,  // right
+         0.45f, 0.5f, 0.0f   // top 
+    }; 
 
-   // An array of 3 vectors which represents 3 vertices
-   static const GLfloat g_vertex_buffer_data[] = {
-      -1.0f, -1.0f, 0.0f,
-      1.0f, -1.0f, 0.0f,
-      0.0f,  1.0f, 0.0f,
-   };
+    unsigned int VBO, VAO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+    glBindVertexArray(VAO);
 
-   // This will identify our vertex buffer
-   GLuint vertexbuffer;
-   // Generate 1 buffer, put the resulting identifier in vertexbuffer
-   glGenBuffers(1, &vertexbuffer);
-   // The following commands will talk about our 'vertexbuffer' buffer
-   glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-   // Give our vertices to OpenGL.
-   glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-   error = glGetError();
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
 
-   auto programID = loadShader("shader/SimpleVertexShader", "shader/SimpleFragmentShader");
+    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+    glBindBuffer(GL_ARRAY_BUFFER, 0); 
 
-   if (auto error = glGetError())
-   {
-      cout << std::format("Error {} {}\n", error, *gluErrorString(error));
-   }
+    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+    glBindVertexArray(0); 
+
 
    m_timer = StopClock::now();
 
@@ -221,49 +236,17 @@ void GameEngine::start()
       //OnUpdate(getDuration(m_timer));
       // timer reset?
 
-      auto [width, height] = getWindowSize();
+      //auto [width, height] = getWindowSize();
 
-      if (auto error = glGetError())
-      {
-         cout << std::format("Error {} {}\n", error, *gluErrorString(error));
-      }
+      glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+      glClear(GL_COLOR_BUFFER_BIT);
 
-      glViewport(0, 0, width, height);
-      //glClearColor(1.f, 0.f, 1.f, 0.f);
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-      //OnRender();
-      error = glGetError();
+      // draw our first triangle
+      glUseProgram(shaderProgram);
+      glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+      glDrawArrays(GL_TRIANGLES, 0, 6); // set the count to 6 since we're drawing 6 vertices now (2 triangles); not 3!
+      // glBindVertexArray(0); // no need to unbind it every time 
 
-      // Use our shader
-      //glUseProgram(programID);
-      error = glGetError();
-
-      // 1st attribute buffer : vertices
-      glEnableVertexAttribArray(0);
-      glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-      glVertexAttribPointer(
-         0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-         3,                  // size
-         GL_FLOAT,           // type
-         GL_FALSE,           // normalized?
-         0,                  // stride
-         (void*)0            // array buffer offset
-      );
-
-      if (auto error = glGetError())
-      {
-         cout << std::format("Error {} {}\n", error, *gluErrorString(error));
-      }
-      // Draw the triangle !
-      glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
-      if (auto error = glGetError())
-      {
-         bool a1 = GL_INVALID_ENUM == error;
-         bool a2 = GL_INVALID_VALUE == error;
-         bool a3 = GL_INVALID_OPERATION == error;
-         cout << std::format("Error {} {}\n", error, *gluErrorString(error));
-      }
-      glDisableVertexAttribArray(0);
       if (auto error = glGetError())
       {
          cout << std::format("Error {} {}\n", error, *gluErrorString(error));
@@ -285,6 +268,10 @@ void GameEngine::start()
       // calculates to 60 fps
       SDL_Delay(1000 / 60);
    }
+
+   glDeleteVertexArrays(1, &VAO);
+   glDeleteBuffers(1, &VBO);
+   glDeleteProgram(shaderProgram);
 }
 
 GameEngine::Duration GameEngine::getDuration(const StopClock::time_point& start)
