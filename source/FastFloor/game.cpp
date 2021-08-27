@@ -15,7 +15,7 @@ bool FastFloor::updateUser()
 {
    static int counter{ 0 };
 
-   setWindowTitle(std::format("{:5}", counter++));
+   //setWindowTitle(std::format("{:5}", counter++));
 
    return true;
 }

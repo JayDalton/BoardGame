@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <SDL2/SDL_opengl.h>
 
 #include "object.hpp"
@@ -17,5 +19,7 @@ namespace ogl {
       virtual void render() const = 0;
       //virtual void update() const = 0;
   };
+
+  using ShapePtr = std::unique_ptr<Shape>;
 }
 

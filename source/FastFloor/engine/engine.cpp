@@ -1,5 +1,9 @@
 #include "engine.h"
 
+#include "objects/shapes/line.hpp"
+#include "objects/shapes/cuboid.hpp"
+#include "objects/shapes/rectangle.hpp"
+
 
 GameEngine::GameEngine(std::string_view title)
    : m_title(title)
@@ -9,12 +13,16 @@ GameEngine::GameEngine(std::string_view title)
 
 bool GameEngine::construct(int x, int y, int w, int h)
 {
+   using std::cout;
    using std::cerr;
    using std::endl;
+
+   auto tp1 = std::chrono::steady_clock::now();
 
    if (auto system = sdl2::make_sdlsystem(SDL_INIT_VIDEO | SDL_INIT_TIMER))
    {
       m_system = std::move(system);
+      cout << "init system " << tp1 - std::chrono::steady_clock::now();
    }
    else
    {
@@ -62,14 +70,18 @@ bool GameEngine::construct(int x, int y, int w, int h)
       return false;
    }
 
+   initCamera();
+   initLights();
+   initGeometry();
+
    return true;
 }
 
 void GameEngine::setWindowTitle(std::string label)
 {
-   SDL_SetWindowTitle(m_window.get(), std::format("{} {}", m_title, label).c_str());
+   SDL_SetWindowTitle(m_window.get(), 
+      std::format("{} {}", m_title, label).c_str());
 }
-
 
 void GameEngine::start()
 {
@@ -94,106 +106,190 @@ void GameEngine::start()
       return;
    }
 
-   SDL_Rect dest{ 50, 50, 70, 20 };
+   auto getDuration = [](const StopClock::time_point& start) {
+      return std::chrono::duration_cast<Duration>(StopClock::now() - start);
+   };
 
-   int close = 0;
-   int speed = 300;
-
-
-   /* The following code is for error checking.
-   *  If OpenGL has initialised properly, this should print 1.
-   *  Remove it in production code.
-   */
-   GLuint vertex_buffer;
-   glGenBuffers(1, &vertex_buffer);
-   printf("%u\n", vertex_buffer);
-   /* Error checking ends here */
+   m_timer = StopClock::now();
 
    // annimation loop
-   while (!close)
+   while (m_running)
    {
-      // Handle Timing
-      m_tp2 = std::chrono::steady_clock::now();
-   
-      std::chrono::duration<float> elapsedTime = m_tp2 - m_tp1;
-      auto elapsedTime2 = m_tp2 - m_tp1;
-
-      m_tp1 = m_tp2;
-
       SDL_Event event;
-      // Events management
       while (SDL_PollEvent(&event))
       {
-         switch (event.type)
-         {
-
-         case SDL_QUIT:
-            // handling of close button
-            close = 1;
-            break;
-
-         case SDL_KEYDOWN:
-            // keyboard API for key pressed
-            switch (event.key.keysym.scancode) {
-            case SDL_SCANCODE_W:
-            case SDL_SCANCODE_UP:
-               dest.y -= speed / 30;
-               break;
-            case SDL_SCANCODE_A:
-            case SDL_SCANCODE_LEFT:
-               dest.x -= speed / 30;
-               break;
-            case SDL_SCANCODE_S:
-            case SDL_SCANCODE_DOWN:
-               dest.y += speed / 30;
-               break;
-            case SDL_SCANCODE_D:
-            case SDL_SCANCODE_RIGHT:
-               dest.x += speed / 30;
-               break;
-            default:
-               break;
-            }
-         }
+         OnEvent(event);
       }
+
+      OnReceive(); // io server
 
       updateUser();
 
-      //// right boundary
-      //if (dest.x + dest.w > 1000)
-      //   dest.x = 1000 - dest.w;
+      OnUpdate(getDuration(m_timer));
 
-      //// left boundary
-      //if (dest.x < 0)
-      //   dest.x = 0;
+      OnRender();
 
-      //// bottom boundary
-      //if (dest.y + dest.h > 1000)
-      //   dest.y = 1000 - dest.h;
+      //glViewport(0, 0, 600, 400);
+      //glClearColor(1.f, 0.f, 1.f, 0.f);
+      //glClear(GL_COLOR_BUFFER_BIT);
 
-      //// upper boundary
-      //if (dest.y < 0)
-      //   dest.y = 0;
+      SDL_GL_SwapWindow(m_window.get());
 
-      //// clears the screen
-      //SDL_RenderClear(m_render.get());
-      //SDL_RenderCopy(m_render.get(), tex.get(), nullptr, &dest);
+      using namespace std::literals;
 
-      ////SDL_SetRenderDrawColor(ren.get(), 255, 0, 0, 128);
-      ////SDL_RenderFillRect(ren.get(), &dest);
-
-      //// triggers the double buffers
-      //// for multiple rendering
-      //SDL_RenderPresent(m_render.get());
+      m_frames++;
+      if (1s < getDuration(m_timer))
+      {
+         setWindowTitle(std::format(" FPS {:5}", m_frames));
+         std::cout << m_frames << " fps" << std::endl;
+         m_timer = StopClock::now();
+         m_frames = 0;
+      }
 
       //// calculates to 60 fps
       //SDL_Delay(1000 / 60);
-
-      glViewport(0, 0, 600, 400);
-      glClearColor(1.f, 0.f, 1.f, 0.f);
-      glClear(GL_COLOR_BUFFER_BIT);
-
-      SDL_GL_SwapWindow(m_window.get());
    }
 
+}
+
+void GameEngine::OnEvent(const SDL_Event& event)
+{
+   switch (event.type)
+   {
+
+   case SDL_QUIT:
+      // handling of close button
+      m_running = false;
+      break;
+
+   case SDL_KEYDOWN:
+      // keyboard API for key pressed
+      switch (event.key.keysym.scancode) {
+      case SDL_SCANCODE_ESCAPE:
+         m_running = false;
+         return;
+      case SDL_SCANCODE_W:
+      case SDL_SCANCODE_UP:
+         break;
+      case SDL_SCANCODE_A:
+      case SDL_SCANCODE_LEFT:
+         break;
+      case SDL_SCANCODE_S:
+      case SDL_SCANCODE_DOWN:
+         break;
+      case SDL_SCANCODE_D:
+      case SDL_SCANCODE_RIGHT:
+         break;
+      default:
+         break;
+      }
+   }
+
+}
+
+void GameEngine::OnReceive()
+{
+
+}
+
+void GameEngine::OnUpdate(Duration duration)
+{
+
+}
+
+void GameEngine::OnRender()
+{
+   auto [width, height] = getWindowSize();
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+   // MainWindow
+   glViewport(0, 0, width, height);
+   for (auto& shape : m_shapes) 
+   {
+      glLoadMatrixf(glm::value_ptr(m_camera.mtx() * shape->getMatrix()));
+      shape->render();
+   }
+
+   //// ViewPort buttom-left
+   //glViewport(0, 0, windowSize.x / 4, windowSize.y / 4);
+   //for (std::vector<ogl::Shape*>::iterator it = objs2d->begin(); it != objs2d->end(); ++it) {
+   //   glLoadMatrixf(glm::value_ptr(screen.mtx() * (*it)->getMatrix()));
+   //   (*it)->render();
+   //}
+
+   //window->display();
+
+}
+
+void GameEngine::initCamera()
+{
+   m_camera = ogl::Camera(
+      glm::perspective(60.0f, 4.0f / 3.0f, 0.1f, 1000.0f),
+      glm::vec3(0.0f, 0.0f, 8.0f),
+      glm::vec3(0.0f, 0.0f, 0.0f),
+      glm::vec3(0.0f, 1.0f, 0.0f)
+   );
+
+   m_screen = ogl::Camera(
+      glm::ortho(-40.0f, 40.0f, -30.0f, 30.0f, 0.1f, 1000.0f),
+      glm::vec3(0.0f, 0.0f, 1.0f),
+      glm::vec3(0.0f, 0.0f, 0.0f),
+      glm::vec3(0.0f, 1.0f, 0.0f)
+   );
+}
+
+void GameEngine::initLights()
+{
+   GLfloat mat_ambient[] = { 0.4f, 0.4f, 0.4f, 1.0f };
+   GLfloat mat_diffuse[] = { 0.4f, 0.8f, 0.4f, 1.0f };
+   GLfloat mat_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+   GLfloat mat_shininess[] = { 50.0f };
+
+   glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+   glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+   GLfloat light_ambient[] = { 0.5f, 0.5f, 0.5f, 1.0 };
+   GLfloat light_diffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+   GLfloat light_specular[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+   GLfloat light_position[] = { 0.0f, 0.0f, 10.0f, 1.0f };
+
+   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+   glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+   glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+   glEnable(GL_COLOR_MATERIAL);
+   glEnable(GL_LIGHTING);
+   glEnable(GL_LIGHT0);
+}
+
+void GameEngine::initGeometry()
+{
+   m_shapes.push_back(
+      std::make_unique<ogl::Line>(
+         glm::vec3(0.0f, 0.0f, 0.0f),
+         glm::vec3(0.0f, 0.0f, -50.0f),
+         1.0f, 0.0f, 0.0f
+      )
+   );
+
+   m_shapes.push_back(
+      std::make_unique<ogl::Rectangle>(
+         220.0f, 55.0f, 1.0f, 0.0f, 0.0f
+      )
+   );
+
+}
+
+std::pair<int, int> GameEngine::getWindowSize()
+{
+   int width{ 0 };
+   int height{ 0 };
+
+   SDL_GetWindowSize(m_window.get(), &width, &height);
+   SDL_GL_GetDrawableSize(m_window.get(), &width, &height);
+
+   return { width, height };
 }
