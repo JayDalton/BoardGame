@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <memory>
-#include <format>
+#include <filesystem>
 #include <format>
 #include <iostream>
 #include <string>
@@ -23,6 +23,8 @@
 
 #include "objects/camera.hpp"
 #include "objects/shape.hpp"
+#include "engine/image.h"
+#include "shader.h"
 
 namespace ogl 
 {
@@ -53,8 +55,9 @@ protected:
    Duration getDuration(const StopClock::time_point& start);
 
 private:
-   void OnEvent(const SDL_Event& event);
-   void OnReceive();
+   void OnReceiveLocal();
+   void OnReceiveServer();
+   
    void OnUpdate(Duration duration);
    void OnRender();
 
@@ -83,6 +86,7 @@ private:
    std::chrono::time_point<StopClock> m_timer;
    std::chrono::time_point<StopClock> m_tp1;
 
+   void* m_context{ nullptr };
    sdl2::sdlsystem_ptr_t m_system{ nullptr, nullptr };
    sdl2::window_ptr_t m_window{ nullptr, nullptr };
    sdl2::renderer_ptr_t m_render{ nullptr, nullptr };

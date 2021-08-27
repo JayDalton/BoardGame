@@ -4,6 +4,9 @@
 #include "objects/shapes/cuboid.hpp"
 #include "objects/shapes/rectangle.hpp"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "image.h"
+
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -18,29 +21,22 @@ const char *fragmentShaderSource = "#version 330 core\n"
     "out vec4 FragColor;\n"
     "void main()\n"
     "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "   FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
     "}\n\0";
 
 
 GameEngine::GameEngine(std::string_view title)
-   : m_title(title)
+   : m_title(title), m_system(sdl2::make_sdlsystem(SDL_INIT_VIDEO | SDL_INIT_TIMER))
 {
 
 }
 
-bool GameEngine::construct(int w, int h)
+bool GameEngine::construct(int width, int height)
 {
    using std::cout;
    using std::endl;
 
-   const auto start = StopClock::now();
-
-   if (auto system = sdl2::make_sdlsystem(SDL_INIT_VIDEO | SDL_INIT_TIMER))
-   {
-      m_system = std::move(system);
-      cout << "init system " << (StopClock::now() - start) << endl;
-   }
-   else
+   if (m_system == nullptr)
    {
       cout << "Error creating SDL2 system: " << SDL_GetError() << endl;
       return false;
@@ -51,40 +47,33 @@ bool GameEngine::construct(int w, int h)
    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
-   Uint32 windowFlags{ SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL };
-
    if (auto win = sdl2::make_window(m_title.data(), 
-      SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-      w, h, windowFlags))
+      SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 
+      { SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL }))
    {
       m_window = std::move(win); // Context ???
-      cout << "init window " << (StopClock::now() - start) << endl;
    }
-   else
+
+   if (!m_window)
    {
       cout << "Error creating window: " << SDL_GetError() << endl;
       return false;
    }
 
-   if (!SDL_GL_CreateContext(m_window.get()))
+   m_context = SDL_GL_CreateContext(m_window.get());
+   if (!m_context)
    {
       cout << "Error creating context: " << SDL_GetError() << endl;
       return false;
    }
 
-   int get1 = 0, get2 = 0;
-
-   auto res1 = SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &get1);
-   auto res2 = SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &get2);
-
    /* Loading Extensions */
    glewExperimental = GL_TRUE;
-   if (auto res = glewInit())
+   if (auto error = glewInit())
    {
-      cout << std::format("GLEW init failed: {}", res) << endl;
+      cout << std::format("GLEW init failed: {}", error) << endl;
       return false;
    }
-   auto error = glGetError();
 
 
    //Use Vsync
@@ -93,8 +82,7 @@ bool GameEngine::construct(int w, int h)
       cout << "Warning: Unable to set VSync! SDL Error: " << SDL_GetError() << endl;
       return false;
    }
-   error = glGetError();
-   //Initialize OpenGL
+
    //initWindow();
    //initOpenGL();
 
@@ -110,24 +98,17 @@ bool GameEngine::construct(int w, int h)
    if (auto ren = sdl2::make_renderer(m_window.get(), -1, renderFlags))
    {
       m_render = std::move(ren);
-      cout << "init render " << (StopClock::now() - start) << endl;
    }
-   else
+
+   if (!m_render)
    {
       cout << "Error creating renderer: " << SDL_GetError() << endl;
       return false;
    }
-   error = glGetError();
 
-   //initCamera();
-   error = glGetError();
+   initCamera();
    //initLights();
-   error = glGetError();
-   error = glGetError();
    //initGeometry();
-   error = glGetError();
-
-   cout << "init geometry " << (StopClock::now() - start) << endl;
 
    return true;
 }
@@ -149,75 +130,106 @@ void GameEngine::start()
 
    error = glGetError();
 
-   unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    // check for shader compile errors
-    int success;
-    char infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-    // fragment shader
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    // check for shader compile errors
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-    // link shaders
-    unsigned int shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-    // check for linking errors
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-    }
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    Shader ourShader("shader/texture.vs", "shader/texture.fs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     // add a new set of vertices to form a second triangle (a total of 6 vertices); the vertex attribute configuration remains the same (still one 3-float position vector per vertex)
     float vertices[] = {
-        // first triangle
-        -0.9f, -0.5f, 0.0f,  // left 
-        -0.0f, -0.5f, 0.0f,  // right
-        -0.45f, 0.5f, 0.0f,  // top 
-        // second triangle
-         0.0f, -0.5f, 0.0f,  // left
-         0.9f, -0.5f, 0.0f,  // right
-         0.45f, 0.5f, 0.0f   // top 
-    }; 
+       // positions          // colors           // texture coords
+        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+       -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+       -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+    };
+    unsigned int indices[] = {
+       0, 1, 3, // first triangle
+       1, 2, 3  // second triangle
+    };
 
-    unsigned int VBO, VAO;
+    unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+    glGenBuffers(1, &EBO);
+
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    // texture coord attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
 
-    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-    glBindVertexArray(0); 
+    // load and create a texture 
+        // -------------------------
+    unsigned int texture1, texture2;
+    // texture 1
+    // ---------
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // note that we set the container wrapping method to GL_CLAMP_TO_EDGE
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load image, create texture and generate mipmaps
+    int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
+    unsigned char* data = stbi_load("images/container.jpg", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+       glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+       std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+    // texture 2
+    // ---------
+    glGenTextures(1, &texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// we want to repeat the awesomeface pattern so we kept it at GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load image, create texture and generate mipmaps
+    data = stbi_load("images/awesomeface.png", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+       // note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
+       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+       glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+       std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+    // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
+    // -------------------------------------------------------------------------------------------
+    ourShader.use(); // don't forget to activate/use the shader before setting uniforms!
+    // either set it manually like so:
+    glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0);
+    // or set it via the texture class
+    ourShader.setInt("texture2", 1);
 
 
    m_timer = StopClock::now();
@@ -225,32 +237,33 @@ void GameEngine::start()
    // annimation loop
    while (m_running)
    {
-      SDL_Event event;
-      while (SDL_PollEvent(&event))
-      {
-         OnEvent(event);
-      }
+      OnReceiveLocal();
+      OnReceiveServer();
 
-      //OnReceive(); // io server
       //updateUser();
-      //OnUpdate(getDuration(m_timer));
-      // timer reset?
+      OnUpdate(getDuration(m_timer));
+      //OnRender();
 
-      //auto [width, height] = getWindowSize();
+      // Renderziel
+      auto [width, height] = getWindowSize();
+      glViewport(0, 0, width, height);
 
+      // Hintergrund
       glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
       glClear(GL_COLOR_BUFFER_BIT);
 
-      // draw our first triangle
-      glUseProgram(shaderProgram);
-      glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-      glDrawArrays(GL_TRIANGLES, 0, 6); // set the count to 6 since we're drawing 6 vertices now (2 triangles); not 3!
-      // glBindVertexArray(0); // no need to unbind it every time 
 
-      if (auto error = glGetError())
-      {
-         cout << std::format("Error {} {}\n", error, *gluErrorString(error));
-      }
+      // bind textures on corresponding texture units
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, texture1);
+      glActiveTexture(GL_TEXTURE1);
+      glBindTexture(GL_TEXTURE_2D, texture2);
+
+      // render container
+      ourShader.use();
+      glBindVertexArray(VAO);
+      glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 
       SDL_GL_SwapWindow(m_window.get());
 
@@ -259,9 +272,8 @@ void GameEngine::start()
       m_frames++;
       if (1s < getDuration(m_timer))
       {
-         setWindowTitle(std::format(" FPS {:5}", m_frames));
-         cout << m_frames << " fps" << std::endl;
          m_timer = StopClock::now();
+         setWindowTitle(std::format(" FPS {:5}", m_frames));
          m_frames = 0;
       }
 
@@ -271,7 +283,10 @@ void GameEngine::start()
 
    glDeleteVertexArrays(1, &VAO);
    glDeleteBuffers(1, &VBO);
-   glDeleteProgram(shaderProgram);
+   glDeleteBuffers(1, &EBO);
+
+   SDL_GL_DeleteContext(m_context);
+   SDL_Quit();
 }
 
 GameEngine::Duration GameEngine::getDuration(const StopClock::time_point& start)
@@ -279,44 +294,46 @@ GameEngine::Duration GameEngine::getDuration(const StopClock::time_point& start)
    return std::chrono::duration_cast<Duration>(StopClock::now() - start);
 }
 
-void GameEngine::OnEvent(const SDL_Event& event)
+void GameEngine::OnReceiveLocal()
 {
-   switch (event.type)
+   SDL_Event event;
+   while (SDL_PollEvent(&event))
    {
+      switch (event.type)
+      {
 
-   case SDL_QUIT:
-      // handling of close button
-      m_running = false;
-      break;
-
-   case SDL_KEYDOWN:
-      // keyboard API for key pressed
-      switch (event.key.keysym.scancode) {
-      case SDL_SCANCODE_ESCAPE:
+      case SDL_QUIT:
+         // handling of close button
          m_running = false;
-         return;
-      case SDL_SCANCODE_W:
-      case SDL_SCANCODE_UP:
          break;
-      case SDL_SCANCODE_A:
-      case SDL_SCANCODE_LEFT:
-         break;
-      case SDL_SCANCODE_S:
-      case SDL_SCANCODE_DOWN:
-         break;
-      case SDL_SCANCODE_D:
-      case SDL_SCANCODE_RIGHT:
-         break;
-      default:
-         break;
+
+      case SDL_KEYDOWN:
+         // keyboard API for key pressed
+         switch (event.key.keysym.scancode) {
+         case SDL_SCANCODE_ESCAPE:
+            m_running = false;
+            return;
+         case SDL_SCANCODE_W:
+         case SDL_SCANCODE_UP:
+            break;
+         case SDL_SCANCODE_A:
+         case SDL_SCANCODE_LEFT:
+            break;
+         case SDL_SCANCODE_S:
+         case SDL_SCANCODE_DOWN:
+            break;
+         case SDL_SCANCODE_D:
+         case SDL_SCANCODE_RIGHT:
+            break;
+         default:
+            break;
+         }
       }
    }
-
 }
 
-void GameEngine::OnReceive()
+void GameEngine::OnReceiveServer()
 {
-
 }
 
 void GameEngine::OnUpdate(Duration duration)
