@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 #include <memory>
 #include <format>
 #include <format>
@@ -58,10 +59,11 @@ private:
    void OnRender();
 
    void initWindow();
-   void initOpenGL();
+   bool initOpenGL();
    void initCamera();
    void initLights();
 
+   unsigned loadShader(std::string_view vertex, std::string_view fragment);
    void initTextures();
    void initGeometry();
 
@@ -71,6 +73,8 @@ private:
    std::string m_title;
    bool m_running{ true };
    unsigned m_frames{ 0 };
+
+   bool m_rendering{ true };
 
    std::vector<ogl::ShapePtr> m_shapes;
    ogl::Camera m_camera;
