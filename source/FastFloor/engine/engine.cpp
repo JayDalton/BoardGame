@@ -11,18 +11,18 @@ GameEngine::GameEngine(std::string_view title)
 
 }
 
-bool GameEngine::construct(int x, int y, int w, int h)
+bool GameEngine::construct(int w, int h)
 {
    using std::cout;
    using std::cerr;
    using std::endl;
 
-   auto tp1 = std::chrono::steady_clock::now();
+   const auto start = StopClock::now();
 
    if (auto system = sdl2::make_sdlsystem(SDL_INIT_VIDEO | SDL_INIT_TIMER))
    {
       m_system = std::move(system);
-      cout << "init system " << tp1 - std::chrono::steady_clock::now();
+      cout << "init system " << (StopClock::now() - start);
    }
    else
    {
@@ -51,6 +51,7 @@ bool GameEngine::construct(int x, int y, int w, int h)
          cerr << "GLEW init failed" << endl;
          return false;
       }
+      cout << "init window " << (StopClock::now() - start);
    }
    else
    {
@@ -63,6 +64,7 @@ bool GameEngine::construct(int x, int y, int w, int h)
    if (auto ren = sdl2::make_renderer(m_window.get(), -1, renderFlags))
    {
       m_render = std::move(ren);
+      cout << "init render " << (StopClock::now() - start);
    }
    else
    {
@@ -73,6 +75,8 @@ bool GameEngine::construct(int x, int y, int w, int h)
    initCamera();
    initLights();
    initGeometry();
+
+   cout << "init geometry " << (StopClock::now() - start);
 
    return true;
 }
@@ -86,7 +90,10 @@ void GameEngine::setWindowTitle(std::string label)
 void GameEngine::start()
 {
    using std::cerr;
+   using std::cout;
    using std::endl;
+
+   const auto start = StopClock::now();
 
    auto file = SDL_RWFromFile("img/grumpy-cat.bmp", "rb");
    if (file == nullptr) {
@@ -105,10 +112,6 @@ void GameEngine::start()
       cerr << "Error creating texture: " << SDL_GetError() << endl;
       return;
    }
-
-   auto getDuration = [](const StopClock::time_point& start) {
-      return std::chrono::duration_cast<Duration>(StopClock::now() - start);
-   };
 
    m_timer = StopClock::now();
 
@@ -146,10 +149,14 @@ void GameEngine::start()
          m_frames = 0;
       }
 
-      //// calculates to 60 fps
-      //SDL_Delay(1000 / 60);
+      // calculates to 60 fps
+      SDL_Delay(1000 / 60);
    }
+}
 
+GameEngine::Duration GameEngine::getDuration(const StopClock::time_point& start)
+{
+   return std::chrono::duration_cast<Duration>(StopClock::now() - start);
 }
 
 void GameEngine::OnEvent(const SDL_Event& event)
@@ -194,13 +201,16 @@ void GameEngine::OnReceive()
 
 void GameEngine::OnUpdate(Duration duration)
 {
-
+   for (auto& shape : m_shapes)
+   {
+      shape->update(duration);
+   }
 }
 
 void GameEngine::OnRender()
 {
    auto [width, height] = getWindowSize();
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+   //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
    // MainWindow
    glViewport(0, 0, width, height);

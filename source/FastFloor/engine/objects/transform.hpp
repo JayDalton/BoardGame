@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <vector>
 #include <iostream>
 
@@ -11,14 +12,17 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-namespace ogl {
+namespace ogl 
+{
+   using Duration = std::chrono::milliseconds;
+   using StopClock = std::chrono::steady_clock;
+   using TimePoint = StopClock::time_point;
 
-  class Transform
-  {
-    public:
+   class Transform
+   {
+   public:
       Transform();
-      virtual ~Transform();
-      Transform(const Transform& geom);
+      Transform(const Transform& trans);
       Transform& operator=(const Transform& trans);
 
       void setRotX(GLfloat angle = 360.0f);
@@ -29,7 +33,7 @@ namespace ogl {
       void setPath(std::vector<glm::vec3> vertices);
       void setTime(GLfloat time);
 
-      void update(GLfloat delta);
+      void update(Duration delta);
 
       void setPathAnimation();
       void setRingAnimation();
@@ -44,7 +48,7 @@ namespace ogl {
 
       bool isActive();
 
-    public:
+   public:
       //static enum GAME_STATE {
       //  GS_WAIT_FOR_PLAYERS = 0,
       //  GS_READY,
@@ -55,10 +59,10 @@ namespace ogl {
       //  GS_FINAL_STATUS
       //}; 
 
-    protected:
+   protected:
       glm::mat4 matrix;
 
-    private:
+   private:
       bool animate;
       bool looping;
 
@@ -77,11 +81,11 @@ namespace ogl {
       GLfloat rot_Y_scale;
       GLfloat rot_Z_scale;
 
-    private:
+   private:
       glm::mat4 rotateX(GLfloat scale);
       glm::mat4 rotateY(GLfloat scale);
       glm::mat4 rotateZ(GLfloat scale);
 
-  };
+   };
 
 }

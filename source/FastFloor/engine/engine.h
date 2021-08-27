@@ -23,12 +23,19 @@
 #include "objects/camera.hpp"
 #include "objects/shape.hpp"
 
+namespace ogl 
+{
+   //auto getDuration = [](const StopClock::time_point& start) {
+   //   return std::chrono::duration_cast<Duration>(StopClock::now() - start);
+   //};
+};
+
 class GameEngine
 {
 public:
    GameEngine(std::string_view title);
 
-   bool construct(int x, int y, int w, int h);
+   bool construct(int w, int h);
 
    void setWindowTitle(std::string label);
 
@@ -41,6 +48,8 @@ protected:
    //using Duration = std::chrono::microseconds;
    using Duration = std::chrono::milliseconds;
    using StopClock = std::chrono::steady_clock;
+
+   Duration getDuration(const StopClock::time_point& start);
 
 private:
    void OnEvent(const SDL_Event& event);
