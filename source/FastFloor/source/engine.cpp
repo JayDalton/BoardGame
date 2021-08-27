@@ -1,28 +1,32 @@
 #include "engine.h"
 
-#include "objects/shapes/line.hpp"
-#include "objects/shapes/cuboid.hpp"
-#include "objects/shapes/rectangle.hpp"
+#include "shapes/line.hpp"
+#include "shapes/cuboid.hpp"
+#include "shapes/rectangle.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "image.h"
+//#include "image.h"
+#include <stb_image.h>
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const char *vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    "}\0";
-const char *fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
-    "}\n\0";
+//// camera
+//glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+//glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+//glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+//bool firstMouse = true;
+//float yaw = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
+//float pitch = 0.0f;
+//float lastX = 800.0f / 2.0;
+//float lastY = 600.0 / 2.0;
+//float fov = 45.0f;
+
+//// timing
+//float deltaTime = 0.0f;	// time between current frame and last frame
+//float lastFrame = 0.0f;
 
 
 GameEngine::GameEngine(std::string_view title)
@@ -75,23 +79,12 @@ bool GameEngine::construct(int width, int height)
       return false;
    }
 
-
    //Use Vsync
    if (SDL_GL_SetSwapInterval(1) < 0)
    {
       cout << "Warning: Unable to set VSync! SDL Error: " << SDL_GetError() << endl;
       return false;
    }
-
-   //initWindow();
-   //initOpenGL();
-
-   //if (!initOpenGL())
-   //{
-   //   cout << std::format("Unable to initialize OpenGL!\n");
-   //   return false;
-   //}
-   //error = glGetError();
 
    Uint32 renderFlags{ SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC };
 
@@ -105,6 +98,8 @@ bool GameEngine::construct(int width, int height)
       cout << "Error creating renderer: " << SDL_GetError() << endl;
       return false;
    }
+
+   //glEnable(GL_DEPTH_TEST);
 
    initCamera();
    //initLights();
@@ -241,8 +236,15 @@ void GameEngine::start()
       OnReceiveServer();
 
       //updateUser();
-      OnUpdate(getDuration(m_timer));
+      OnUpdateWorld(getDuration(m_timer));
       //OnRender();
+
+      glm::mat4 trans = glm::mat4(1.0f);
+      trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+      trans = glm::rotate(trans, (float)SDL_GetTicks(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+      unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
+      glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
       // Renderziel
       auto [width, height] = getWindowSize();
@@ -296,6 +298,8 @@ GameEngine::Duration GameEngine::getDuration(const StopClock::time_point& start)
 
 void GameEngine::OnReceiveLocal()
 {
+   float cameraSpeed = m_deltaTime * 2.5;
+
    SDL_Event event;
    while (SDL_PollEvent(&event))
    {
@@ -315,19 +319,75 @@ void GameEngine::OnReceiveLocal()
             return;
          case SDL_SCANCODE_W:
          case SDL_SCANCODE_UP:
+            m_cameraPos += cameraSpeed * m_cameraFront;
             break;
          case SDL_SCANCODE_A:
          case SDL_SCANCODE_LEFT:
+            m_cameraPos -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed;
             break;
          case SDL_SCANCODE_S:
          case SDL_SCANCODE_DOWN:
+            m_cameraPos -= cameraSpeed * m_cameraFront;
             break;
          case SDL_SCANCODE_D:
          case SDL_SCANCODE_RIGHT:
+            m_cameraPos += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed;
             break;
          default:
             break;
          }
+         break;
+
+      case SDL_MOUSEMOTION:
+      {
+         auto xpos = event.motion.x;
+         auto ypos = event.motion.y;
+
+         if (m_mouse.firstMouse)
+         {
+            m_mouse.lastX = xpos;
+            m_mouse.lastY = ypos;
+            m_mouse.firstMouse = false;
+         }
+
+         float xoffset = xpos - m_mouse.lastX;
+         float yoffset = m_mouse.lastY - ypos; // reversed since y-coordinates go from bottom to top
+         m_mouse.lastX = xpos;
+         m_mouse.lastY = ypos;
+
+         float sensitivity = 0.1f; // change this value to your liking
+         xoffset *= sensitivity;
+         yoffset *= sensitivity;
+
+         m_mouse.yaw += xoffset;
+         m_mouse.pitch += yoffset;
+
+         // make sure that when pitch is out of bounds, screen doesn't get flipped
+         if (m_mouse.pitch > 89.0f)
+            m_mouse.pitch = 89.0f;
+         if (m_mouse.pitch < -89.0f)
+            m_mouse.pitch = -89.0f;
+
+         glm::vec3 front;
+         front.x = cos(glm::radians(m_mouse.yaw)) * cos(glm::radians(m_mouse.pitch));
+         front.y = sin(glm::radians(m_mouse.pitch));
+         front.z = sin(glm::radians(m_mouse.yaw)) * cos(glm::radians(m_mouse.pitch));
+         m_cameraFront = glm::normalize(front);
+      }
+      break;
+
+      case SDL_MOUSEWHEEL:
+      {
+         auto yoffset = event.wheel.y;
+         m_mouse.fov -= (float)yoffset;
+
+         if (m_mouse.fov < 1.0f)
+            m_mouse.fov = 1.0f;
+
+         if (m_mouse.fov > 45.0f)
+            m_mouse.fov = 45.0f;
+      }
+         break;
       }
    }
 }
@@ -336,7 +396,7 @@ void GameEngine::OnReceiveServer()
 {
 }
 
-void GameEngine::OnUpdate(Duration duration)
+void GameEngine::OnUpdateWorld(Duration duration)
 {
    for (auto& shape : m_shapes)
    {
@@ -344,19 +404,19 @@ void GameEngine::OnUpdate(Duration duration)
    }
 }
 
-void GameEngine::OnRender()
+void GameEngine::OnRenderWorld()
 {
-   auto [width, height] = getWindowSize();
-   //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+   //auto [width, height] = getWindowSize();
+   ////glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-   // MainWindow
-   glViewport(0, 0, width, height);
-   for (auto& shape : m_shapes) 
-   {
-      //auto matrix{ m_camera.mtx() * shape->getMatrix() };
-      //glLoadMatrixf(glm::value_ptr(matrix));
-      shape->render();
-   }
+   //// MainWindow
+   //glViewport(0, 0, width, height);
+   //for (auto& shape : m_shapes) 
+   //{
+   //   //auto matrix{ m_camera.mtx() * shape->getMatrix() };
+   //   //glLoadMatrixf(glm::value_ptr(matrix));
+   //   shape->render();
+   //}
 
    //// ViewPort buttom-left
    //glViewport(0, 0, windowSize.x / 4, windowSize.y / 4);
@@ -376,66 +436,12 @@ void GameEngine::initWindow()
 
 bool GameEngine::initOpenGL()
 {
-   //using std::cerr;
    using std::cout;
    using std::endl;
 
-   //glShadeModel(GL_SMOOTH);                    // shading method: GL_SMOOTH or GL_FLAT
-
-   //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);                   // background color
-   //glClearDepth(1.0f);                         // 0 is near, 1 is far
-   //glEnable(GL_DEPTH_TEST);
-   //glDepthFunc(GL_LEQUAL);
-
-   //glEnable(GL_CULL_FACE);
-   //glEnable(GL_NORMALIZE);
-   //glEnable(GL_COLOR_MATERIAL);
-   //glPixelStorei(GL_UNPACK_ALIGNMENT, 4);      // 4-byte pixel alignment
-
-   //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-   //glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-   //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-   //glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
-   //glClearStencil(0);                          // clear stencil buffer
+   glEnable(GL_DEPTH_TEST);
 
    bool success = true;
-   GLenum error = GL_NO_ERROR;
-
-   ////Initialize Projection Matrix
-   //glMatrixMode(GL_PROJECTION);
-   //glLoadIdentity();
-
-   ////Check for error
-   //error = glGetError();
-   //if (error != GL_NO_ERROR)
-   //{
-   //   cout << std::format("Error initializing OpenGL! {}\n", *gluErrorString(error));
-   //   success = false;
-   //}
-
-   ////Initialize Modelview Matrix
-   //glMatrixMode(GL_MODELVIEW);
-   //glLoadIdentity();
-
-   ////Check for error
-   //error = glGetError();
-   //if (error != GL_NO_ERROR)
-   //{
-   //   cout << std::format("Error initializing OpenGL! {}\n", *gluErrorString(error));
-   //   success = false;
-   //}
-
-   //Initialize clear color
-   glClearColor(0.f, 0.f, 0.f, 1.f);
-
-   //Check for error
-   error = glGetError();
-   if (error != GL_NO_ERROR)
-   {
-      cout << std::format("Error initializing OpenGL! {}\n", *gluErrorString(error));
-      success = false;
-   }
 
    return success;
 }

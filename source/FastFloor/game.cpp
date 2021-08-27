@@ -1,6 +1,5 @@
 #include "game.h"
 
-
 FastFloor::FastFloor(std::string_view title)
    : GameEngine(title)
 {

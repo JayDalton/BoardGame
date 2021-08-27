@@ -1,14 +1,6 @@
 #pragma once 
 
-#include "../shape.hpp"
-
-#include <SDL2/SDL_opengl.h>
-
-#include <vector>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
+#include "shape.hpp"
 
 namespace ogl {
 
@@ -38,8 +30,7 @@ namespace ogl {
       bool intersect(glm::vec3 p1, glm::vec3 p2, glm::vec3 &pI, GLuint &plane) const;
       glm::vec3 center() const;
 
-      void render() const;
-
+      void render() const override;
   };
 
 }

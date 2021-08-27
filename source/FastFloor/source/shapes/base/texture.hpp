@@ -8,8 +8,6 @@
 #include <sstream>
 #include <fstream>
 
-#include "object.hpp"
-
 namespace ogl {
 
   class Texture

@@ -1,8 +1,8 @@
 #pragma once 
 
-#include "../shape.hpp"
+#include "shape.hpp"
 
-#include <SDL2/SDL_opengl.h>
+//#include <SDL2/SDL_opengl.h>
 
 namespace ogl 
 {

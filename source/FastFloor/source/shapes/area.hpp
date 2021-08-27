@@ -1,9 +1,9 @@
 #pragma once
 
-#include <SFML/OpenGL.hpp>
+//#include <SDL2/SDL_opengl.h>
 
 #include "rectangle.hpp"
-#include "../texture.hpp"
+#include "shape.hpp"
 
 namespace ogl {
 
@@ -42,7 +42,7 @@ namespace ogl {
         GLfloat ra = 1
       );
 
-      void render() const;
+      void render() const override;
       bool strike(glm::vec3 p1, glm::vec3 p2, Texture *tex);
 
   };

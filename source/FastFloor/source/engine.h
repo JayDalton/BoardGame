@@ -11,6 +11,8 @@
 #include <string_view>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
@@ -22,9 +24,7 @@
 #include "sdl2.h"
 
 #include "objects/camera.hpp"
-#include "objects/shape.hpp"
-#include "engine/image.h"
-#include "shader.h"
+#include "shapes/shape.hpp"
 
 namespace ogl 
 {
@@ -58,8 +58,8 @@ private:
    void OnReceiveLocal();
    void OnReceiveServer();
    
-   void OnUpdate(Duration duration);
-   void OnRender();
+   void OnUpdateWorld(Duration duration);
+   void OnRenderWorld();
 
    void initWindow();
    bool initOpenGL();
@@ -78,6 +78,25 @@ private:
    unsigned m_frames{ 0 };
 
    bool m_rendering{ true };
+
+   struct MouseInfo 
+   {
+      bool firstMouse = true;
+      float yaw = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
+      float pitch = 0.0f;
+      float lastX = 800.0f / 2.0;
+      float lastY = 600.0 / 2.0;
+      float fov = 45.0f;
+   } m_mouse;
+
+   // timing
+   float m_deltaTime = 0.0f;	// time between current frame and last frame
+   float m_lastFrame = 0.0f;
+
+   // camera
+   glm::vec3 m_cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+   glm::vec3 m_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+   glm::vec3 m_cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
    std::vector<ogl::ShapePtr> m_shapes;
    ogl::Camera m_camera;

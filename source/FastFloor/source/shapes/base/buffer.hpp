@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL2/SDL_opengl>
+//#include <SDL2/SDL_opengl>
 
 class BufferObject
 {
