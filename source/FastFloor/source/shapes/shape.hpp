@@ -1,16 +1,8 @@
 #pragma once
 
-#include <memory>
-#include <vector>
-#include <sstream>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 //#include "base/buffer.hpp"
-#include "base/geometry.hpp"
+#include "base/common.hpp"
 #include "base/shader.hpp"
 #include "base/texture.hpp"
 #include "base/transform.hpp"
@@ -27,11 +19,12 @@ namespace ogl
    };
 
 
-  class Shape : public Ident, public Shader 
-     , public Geometry//, public Transform // Animation
+  class Shape : public Ident, public Shader
+     //, public Transform // Animation
+     //, public Texture
   {
     public:
-      virtual ~Shape() = default;
+      //virtual ~Shape() = default;
       
       Shape() = default;
       explicit Shape(

@@ -8,20 +8,13 @@ namespace ogl {
   class Area : public Rectangle, public Texture
   {
     public:
-      Area(float au, float av, const Texture *tex);
-      Area(float au, float av, const Texture &tex);
       Area(
          float au, float av,
-        unsigned int tu = 10, unsigned int tv = 10,
-        float cr = 1, float cg = 1,
-        float cb = 1, float ca = 1
+         unsigned int tu = 10, 
+         unsigned int tv = 10,
+         Color color = {}
       );
-      virtual ~Area();
-      Area(const Area& area);
-      Area& operator=(const Area& area);
-
-      void setTexture(const Texture *tex);
-      void setTexture(const Texture &tex);
+      ~Area() override = default;
 
       void draw(
         int x, 
@@ -33,12 +26,7 @@ namespace ogl {
         float ca = 0
       );
 
-      void fill(
-        float cr = 1, 
-        float cg = 1, 
-        float cb = 1, 
-        float ra = 1
-      );
+      void fill(Color color);
 
       void render() const override;
       bool strike(glm::vec3 p1, glm::vec3 p2, Texture *tex);

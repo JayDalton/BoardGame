@@ -63,27 +63,27 @@ const GLuint ogl::Cuboid::INDICES[] = {
 ogl::Cuboid::Cuboid(GLfloat u, GLfloat v, GLfloat w, GLfloat r, GLfloat g, GLfloat b)
   : Shape(), cuboid_u(u), cuboid_v(v), cuboid_w(w)
 {
-  buffer_len = 24 * struct_len;
-  buffer = new GLfloat[buffer_len];
-  for (unsigned int i = 0; i < 24; i++) {
-    buffer[struct_len * i +  0] = VERTICES[i][ 0] * cuboid_u;
-    buffer[struct_len * i +  1] = VERTICES[i][ 1] * cuboid_v;
-    buffer[struct_len * i +  2] = VERTICES[i][ 2] * cuboid_w;
-    buffer[struct_len * i +  3] = VERTICES[i][ 3];
-    buffer[struct_len * i +  4] = VERTICES[i][ 4];
-    buffer[struct_len * i +  5] = VERTICES[i][ 5];
-    buffer[struct_len * i +  6] = r;
-    buffer[struct_len * i +  7] = g;
-    buffer[struct_len * i +  8] = b;
-    buffer[struct_len * i +  9] = VERTICES[i][ 9];
-    buffer[struct_len * i + 10] = VERTICES[i][10];
-  }
+  //buffer_len = 24 * struct_len;
+  //buffer = new GLfloat[buffer_len];
+  //for (unsigned int i = 0; i < 24; i++) {
+  //  buffer[struct_len * i +  0] = VERTICES[i][ 0] * cuboid_u;
+  //  buffer[struct_len * i +  1] = VERTICES[i][ 1] * cuboid_v;
+  //  buffer[struct_len * i +  2] = VERTICES[i][ 2] * cuboid_w;
+  //  buffer[struct_len * i +  3] = VERTICES[i][ 3];
+  //  buffer[struct_len * i +  4] = VERTICES[i][ 4];
+  //  buffer[struct_len * i +  5] = VERTICES[i][ 5];
+  //  buffer[struct_len * i +  6] = r;
+  //  buffer[struct_len * i +  7] = g;
+  //  buffer[struct_len * i +  8] = b;
+  //  buffer[struct_len * i +  9] = VERTICES[i][ 9];
+  //  buffer[struct_len * i + 10] = VERTICES[i][10];
+  //}
 
-  indice_len = 36;
-  indices = new GLuint[indice_len];
-  for (unsigned int i = 0; i < indice_len; i++) {
-    indices[i] = INDICES[i];
-  }
+  //indice_len = 36;
+  //indices = new GLuint[indice_len];
+  //for (unsigned int i = 0; i < indice_len; i++) {
+  //  indices[i] = INDICES[i];
+  //}
 
 }
 
@@ -129,15 +129,15 @@ ogl::Cuboid& ogl::Cuboid::operator=(const Cuboid& original)
 std::vector<glm::vec3> ogl::Cuboid::vertices() const
 {
   std::vector<glm::vec3> result;
-  unsigned int p = struct_len;
-  result.push_back(glm::vec3(buffer[ 0 * p + 0], buffer[ 0 * p + 1], buffer[ 0 * p + 2]));
-  result.push_back(glm::vec3(buffer[ 1 * p + 0], buffer[ 1 * p + 1], buffer[ 1 * p + 2]));
-  result.push_back(glm::vec3(buffer[ 2 * p + 0], buffer[ 2 * p + 1], buffer[ 2 * p + 2]));
-  result.push_back(glm::vec3(buffer[ 3 * p + 0], buffer[ 3 * p + 1], buffer[ 3 * p + 2]));
-  result.push_back(glm::vec3(buffer[ 6 * p + 0], buffer[ 6 * p + 1], buffer[ 6 * p + 2]));
-  result.push_back(glm::vec3(buffer[ 7 * p + 0], buffer[ 7 * p + 1], buffer[ 7 * p + 2]));
-  result.push_back(glm::vec3(buffer[13 * p + 0], buffer[13 * p + 1], buffer[13 * p + 2]));
-  result.push_back(glm::vec3(buffer[14 * p + 0], buffer[14 * p + 1], buffer[14 * p + 2]));
+  //unsigned int p = struct_len;
+  //result.push_back(glm::vec3(buffer[ 0 * p + 0], buffer[ 0 * p + 1], buffer[ 0 * p + 2]));
+  //result.push_back(glm::vec3(buffer[ 1 * p + 0], buffer[ 1 * p + 1], buffer[ 1 * p + 2]));
+  //result.push_back(glm::vec3(buffer[ 2 * p + 0], buffer[ 2 * p + 1], buffer[ 2 * p + 2]));
+  //result.push_back(glm::vec3(buffer[ 3 * p + 0], buffer[ 3 * p + 1], buffer[ 3 * p + 2]));
+  //result.push_back(glm::vec3(buffer[ 6 * p + 0], buffer[ 6 * p + 1], buffer[ 6 * p + 2]));
+  //result.push_back(glm::vec3(buffer[ 7 * p + 0], buffer[ 7 * p + 1], buffer[ 7 * p + 2]));
+  //result.push_back(glm::vec3(buffer[13 * p + 0], buffer[13 * p + 1], buffer[13 * p + 2]));
+  //result.push_back(glm::vec3(buffer[14 * p + 0], buffer[14 * p + 1], buffer[14 * p + 2]));
   return result;
 }
 
@@ -148,25 +148,25 @@ std::vector<glm::vec3> ogl::Cuboid::vertices() const
 std::vector< std::vector<glm::vec3> > ogl::Cuboid::triangles() const
 {
   std::vector< std::vector<glm::vec3> > result;
-  for (unsigned int i = 0; i < indice_len; i += 3) {
-    std::vector<glm::vec3> temp;
-    temp.push_back(glm::vec3(
-      buffer[indices[i + 0] * struct_len + 0],
-      buffer[indices[i + 0] * struct_len + 1],
-      buffer[indices[i + 0] * struct_len + 2]
-    ));
-    temp.push_back(glm::vec3(
-      buffer[indices[i + 1] * struct_len + 0],
-      buffer[indices[i + 1] * struct_len + 1],
-      buffer[indices[i + 1] * struct_len + 2]
-    ));
-    temp.push_back(glm::vec3(
-      buffer[indices[i + 2] * struct_len + 0],
-      buffer[indices[i + 2] * struct_len + 1],
-      buffer[indices[i + 2] * struct_len + 2]
-    ));
-    result.push_back(temp);
-  }
+  //for (unsigned int i = 0; i < indice_len; i += 3) {
+  //  std::vector<glm::vec3> temp;
+  //  temp.push_back(glm::vec3(
+  //    buffer[indices[i + 0] * struct_len + 0],
+  //    buffer[indices[i + 0] * struct_len + 1],
+  //    buffer[indices[i + 0] * struct_len + 2]
+  //  ));
+  //  temp.push_back(glm::vec3(
+  //    buffer[indices[i + 1] * struct_len + 0],
+  //    buffer[indices[i + 1] * struct_len + 1],
+  //    buffer[indices[i + 1] * struct_len + 2]
+  //  ));
+  //  temp.push_back(glm::vec3(
+  //    buffer[indices[i + 2] * struct_len + 0],
+  //    buffer[indices[i + 2] * struct_len + 1],
+  //    buffer[indices[i + 2] * struct_len + 2]
+  //  ));
+  //  result.push_back(temp);
+  //}
   return result;
 }
 
@@ -177,30 +177,30 @@ std::vector< std::vector<glm::vec3> > ogl::Cuboid::triangles() const
 std::vector< std::vector<glm::vec3> > ogl::Cuboid::rectangles() const
 {
   std::vector< std::vector<glm::vec3> > result;
-  for (unsigned int i = 0; i < buffer_len; i += 4 * struct_len) {
-    std::vector<glm::vec3> temp;
-    temp.push_back(glm::vec3(
-      buffer[i + (0 * struct_len) + 0],
-      buffer[i + (0 * struct_len) + 1],
-      buffer[i + (0 * struct_len) + 2]
-    ));
-    temp.push_back(glm::vec3(
-      buffer[i + (1 * struct_len) + 0],
-      buffer[i + (1 * struct_len) + 1],
-      buffer[i + (1 * struct_len) + 2]
-    ));
-    temp.push_back(glm::vec3(
-      buffer[i + (2 * struct_len) + 0],
-      buffer[i + (2 * struct_len) + 1],
-      buffer[i + (2 * struct_len) + 2]
-    ));
-    temp.push_back(glm::vec3(
-      buffer[i + (3 * struct_len) + 0],
-      buffer[i + (3 * struct_len) + 1],
-      buffer[i + (3 * struct_len) + 2]
-    ));
-    result.push_back(temp);
-  }
+  //for (unsigned int i = 0; i < buffer_len; i += 4 * struct_len) {
+  //  std::vector<glm::vec3> temp;
+  //  temp.push_back(glm::vec3(
+  //    buffer[i + (0 * struct_len) + 0],
+  //    buffer[i + (0 * struct_len) + 1],
+  //    buffer[i + (0 * struct_len) + 2]
+  //  ));
+  //  temp.push_back(glm::vec3(
+  //    buffer[i + (1 * struct_len) + 0],
+  //    buffer[i + (1 * struct_len) + 1],
+  //    buffer[i + (1 * struct_len) + 2]
+  //  ));
+  //  temp.push_back(glm::vec3(
+  //    buffer[i + (2 * struct_len) + 0],
+  //    buffer[i + (2 * struct_len) + 1],
+  //    buffer[i + (2 * struct_len) + 2]
+  //  ));
+  //  temp.push_back(glm::vec3(
+  //    buffer[i + (3 * struct_len) + 0],
+  //    buffer[i + (3 * struct_len) + 1],
+  //    buffer[i + (3 * struct_len) + 2]
+  //  ));
+  //  result.push_back(temp);
+  //}
   return result;
 }
 
@@ -211,12 +211,12 @@ std::vector< std::vector<glm::vec3> > ogl::Cuboid::rectangles() const
 std::vector< std::vector<GLfloat> > ogl::Cuboid::planeUVs() const
 {
   std::vector< std::vector<GLfloat> > result;
-  for (unsigned int i = 0; i < buffer_len; i += 4 * struct_len) {
-    std::vector<GLfloat> temp;
-    temp.push_back(buffer[i +  9]);
-    temp.push_back(buffer[i + 10]);
-    result.push_back(temp);
-  }
+  //for (unsigned int i = 0; i < buffer_len; i += 4 * struct_len) {
+  //  std::vector<GLfloat> temp;
+  //  temp.push_back(buffer[i +  9]);
+  //  temp.push_back(buffer[i + 10]);
+  //  result.push_back(temp);
+  //}
   return result;
 }
 
@@ -226,11 +226,12 @@ std::vector< std::vector<GLfloat> > ogl::Cuboid::planeUVs() const
 //############################################################################  
 glm::vec3 ogl::Cuboid::center() const
 {
-  unsigned int p = struct_len;
-  glm::vec3 p1 (buffer[ 1 * p + 0], buffer[ 1 * p + 1], buffer[ 1 * p + 2]);
-  glm::vec3 p2 (buffer[20 * p + 0], buffer[20 * p + 1], buffer[20 * p + 2]);
-  glm::vec3 v1 (p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
-  return p1 + v1 * 0.5f;
+  //unsigned int p = struct_len;
+  //glm::vec3 p1 (buffer[ 1 * p + 0], buffer[ 1 * p + 1], buffer[ 1 * p + 2]);
+  //glm::vec3 p2 (buffer[20 * p + 0], buffer[20 * p + 1], buffer[20 * p + 2]);
+  //glm::vec3 v1 (p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+  //return p1 + v1 * 0.5f;
+   return {};
 }
 
 ////############################################################################
@@ -377,17 +378,17 @@ bool ogl::Cuboid::intersect(glm::vec3 P1, glm::vec3 P2, glm::vec3 &PI, GLuint &p
 //############################################################################  
 void ogl::Cuboid::render() const
 {
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_NORMAL_ARRAY);
-  glEnableClientState(GL_COLOR_ARRAY);
+  //glEnableClientState(GL_VERTEX_ARRAY);
+  //glEnableClientState(GL_NORMAL_ARRAY);
+  //glEnableClientState(GL_COLOR_ARRAY);
 
-  glVertexPointer(3, GL_FLOAT, StructSize(), getBuffer());
-  glNormalPointer(GL_FLOAT, StructSize(), getBuffer(3));
-  glColorPointer(3, GL_FLOAT, StructSize(), getBuffer(6));
-  glTexCoordPointer(2, GL_FLOAT, StructSize(), getBuffer(9));
-  glDrawElements(GL_TRIANGLES, IndiceLength(), GL_UNSIGNED_INT, getIndice());
+  //glVertexPointer(3, GL_FLOAT, StructSize(), getBuffer());
+  //glNormalPointer(GL_FLOAT, StructSize(), getBuffer(3));
+  //glColorPointer(3, GL_FLOAT, StructSize(), getBuffer(6));
+  //glTexCoordPointer(2, GL_FLOAT, StructSize(), getBuffer(9));
+  //glDrawElements(GL_TRIANGLES, IndiceLength(), GL_UNSIGNED_INT, getIndice());
 
-  glDisableClientState(GL_COLOR_ARRAY);
-  glDisableClientState(GL_NORMAL_ARRAY);
-  glDisableClientState(GL_VERTEX_ARRAY);
+  //glDisableClientState(GL_COLOR_ARRAY);
+  //glDisableClientState(GL_NORMAL_ARRAY);
+  //glDisableClientState(GL_VERTEX_ARRAY);
 }

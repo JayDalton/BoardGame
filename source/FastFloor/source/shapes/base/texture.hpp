@@ -1,88 +1,42 @@
 #pragma once
 
-//#include <SDL2/SDL_opengl.h>
-
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <sstream>
-#include <fstream>
+#include "common.hpp"
 
 namespace ogl 
 {
+   // texture or colors
+
    class Texture
    {
    public:
-  	   unsigned id;
-
-   private:
-      unsigned compo;
-  	   unsigned width;
-  	   unsigned height;
-  	   unsigned type;
-  	   unsigned char* buffer;
-      unsigned image_len;
+      unsigned int m_id{ 0 };
 
    public:
-      Texture(
-         unsigned w, 
-         unsigned h, 
-         float cr = 1, 
-         float cg = 1, 
-         float cb = 1, 
-         float ca = 1
-      );
+      ~Texture();
 
-      Texture(
-         unsigned w, 
-         unsigned h, 
-         unsigned type, 
-         unsigned char* b
-      );
+      explicit Texture(std::filesystem::path path);
+      explicit Texture(Size size, Color color);
 
-      virtual ~Texture();
+      friend std::ostream& operator<<(std::ostream& os, const Texture& tex);
 
-      void init();
-      void bind();
-      void free();
-
-      void draw(
-        signed x, 
-        signed y, 
-        const Texture* tex, 
-        float cr = 0, 
-        float cg = 0, 
-        float cb = 0, 
-        float ca = 0
-      );
-
-      void fill(
-        float cr = 1, 
-        float cg = 1, 
-        float cb = 1, 
-        float ra = 1
-      );
-
-      unsigned char* getBuffer() const;
-      unsigned getBufferSize() const;
-      unsigned getBufferLength() const;
-      unsigned getSize() const;
-      unsigned getWidth() const;
-      unsigned getHeight() const;
-
-      float getAlphaInfo() const;
-
-  	   unsigned getType() const;
-  	   unsigned getCompos() const;
   	   std::string getTypeName() const;
-      std::string printDetail() const;
 
-      Texture(const Texture& tex);
-      Texture& operator=(const Texture& tex);
-
-    private:
-       unsigned char cv(float c) const;
-
+   private:
+      int m_compo{ 0 }; // 3/4
+  	   int m_width{ 0 };
+  	   int m_height{ 0 };
+  	   unsigned m_type{ 0 }; // rgb(a)
   };
 
+   //std::ostream& operator<<(std::ostream& os, const Texture& tex)
+   //{
+   //   // write obj to stream
+   //   os << "ID: " << tex.m_id;
+   //   os << " W: " << tex.m_width;
+   //   os << " H: " << tex.m_height;
+
+   //   return os;
+   //}
 }
+
+
