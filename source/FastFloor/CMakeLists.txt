@@ -11,7 +11,7 @@ find_package(spdlog CONFIG REQUIRED)
 find_package(GLEW CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
 
-add_executable(${PROJECT_NAME}) # WIN32
+add_executable(${PROJECT_NAME} WIN32) # WIN32
 
 target_link_libraries(${PROJECT_NAME} 
    fmt::fmt SDL2::SDL2 SDL2::SDL2main GLEW::GLEW 
@@ -60,6 +60,7 @@ target_sources(${PROJECT_NAME} PRIVATE
    "source/shapes/rectangle.cpp"
    "source/shapes/rectangle.hpp"
    "source/shapes/shape.hpp"
+   "source/shapes/shape.cpp"
 
    "source/engine.cpp" 
    "source/engine.h"

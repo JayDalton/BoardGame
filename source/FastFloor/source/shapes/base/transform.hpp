@@ -4,13 +4,7 @@
 #include <vector>
 #include <iostream>
 
-#include <SDL2/SDL_opengl.h>
-
 #include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/quaternion.hpp>
 
 namespace ogl 
 {
@@ -25,13 +19,13 @@ namespace ogl
       Transform(const Transform& trans);
       Transform& operator=(const Transform& trans);
 
-      void setRotX(GLfloat angle = 360.0f);
-      void setRotY(GLfloat angle = 360.0f);
-      void setRotZ(GLfloat angle = 360.0f);
+      void setRotX(float angle = 360.0f);
+      void setRotY(float angle = 360.0f);
+      void setRotZ(float angle = 360.0f);
 
-      void movePath(std::vector<glm::vec3> vertices, GLfloat time);
+      void movePath(std::vector<glm::vec3> vertices, float time);
       void setPath(std::vector<glm::vec3> vertices);
-      void setTime(GLfloat time);
+      void setTime(float time);
 
       void update(Duration delta);
 
@@ -66,26 +60,24 @@ namespace ogl
       bool animate;
       bool looping;
 
-      GLfloat duration;
-      GLfloat timestamp;
-      GLfloat animspeed;
+      float duration;
+      float timestamp;
+      float animspeed;
 
       unsigned int lstIdx1;
       unsigned int lstIdx2;
 
       std::vector<glm::vec3> movepath;
-      GLfloat rot_X_duration;
-      GLfloat rot_Y_duration;
-      GLfloat rot_Z_duration;
-      GLfloat rot_X_scale;
-      GLfloat rot_Y_scale;
-      GLfloat rot_Z_scale;
+      float rot_X_duration;
+      float rot_Y_duration;
+      float rot_Z_duration;
+      float rot_X_scale;
+      float rot_Y_scale;
+      float rot_Z_scale;
 
    private:
-      glm::mat4 rotateX(GLfloat scale);
-      glm::mat4 rotateY(GLfloat scale);
-      glm::mat4 rotateZ(GLfloat scale);
-
+      glm::mat4 rotateX(float scale);
+      glm::mat4 rotateY(float scale);
+      glm::mat4 rotateZ(float scale);
    };
-
 }

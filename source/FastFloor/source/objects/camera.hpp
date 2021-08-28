@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL2/SDL_opengl.h>
+//#include <SDL2/SDL_opengl.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
@@ -24,9 +24,9 @@ namespace ogl {
       Camera(const Camera& cam);
       Camera& operator=(const Camera& cam);
 
-      void modDistance(GLfloat scale);
-      void rotateAxisX(GLfloat scale);
-      void rotateAxisY(GLfloat scale);
+      void modDistance(float scale);
+      void rotateAxisX(float scale);
+      void rotateAxisY(float scale);
 
       glm::mat4 mtx() const;
 

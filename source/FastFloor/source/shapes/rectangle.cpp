@@ -1,8 +1,10 @@
 #include "rectangle.hpp"
 
-const GLuint ogl::Rectangle::INDICES[] = {0, 1, 3, 1, 2, 3};
+#include <GL/glew.h>
 
-const GLfloat ogl::Rectangle::VERTICES[][11] = {
+const GLuint Rectangle::INDICES[] = {0, 1, 3, 1, 2, 3};
+
+const float Rectangle::VERTICES[][11] = {
   0,0,0,  0,0,1,  1,1,1,  0,0,
   1,0,0,  0,0,1,  1,1,1,  1,0,
   1,1,0,  0,0,1,  1,1,1,  1,1,
@@ -15,11 +17,11 @@ const GLfloat ogl::Rectangle::VERTICES[][11] = {
 ((vx,vy,vz, nx,ny,nz, cr,cg,cb, tx,ty), (...), ...)
 */
 //############################################################################  
-ogl::Rectangle::Rectangle(GLfloat u, GLfloat v, GLfloat r, GLfloat g, GLfloat b)
-  : Shape()
+Rectangle::Rectangle(float u, float v, float r, float g, float b)
+   : ogl::Shape()
 {
   Geometry::buffer_len = 4 * struct_len;
-  Geometry::buffer = new GLfloat[buffer_len];
+  Geometry::buffer = new float[buffer_len];
   for (unsigned int i = 0; i < 4; ++i) {
     buffer[struct_len * i +  0] = VERTICES[i][ 0] * u;
     buffer[struct_len * i +  1] = VERTICES[i][ 1] * v;
@@ -41,30 +43,13 @@ ogl::Rectangle::Rectangle(GLfloat u, GLfloat v, GLfloat r, GLfloat g, GLfloat b)
   }
 }
 
-ogl::Rectangle::~Rectangle()
-{
-}
-
-ogl::Rectangle::Rectangle(const Rectangle& original)
-  : Shape(original)
-{
-}
-
-ogl::Rectangle& ogl::Rectangle::operator=(const Rectangle& original)
-{
-  if(this != &original) {
-    Shape::operator=(original);
-  }
-  return *this;
-}
-
 //############################################################################
 /** 
 ((V, N, C, T), (V, N, C, T), ...)
 ((vx,vy,vz, nx,ny,nz, cr,cg,cb, tx,ty), (...), ...)
 */
 //############################################################################  
-std::vector<glm::vec3> ogl::Rectangle::vertices() const
+std::vector<glm::vec3> Rectangle::vertices() const
 {
   std::vector<glm::vec3> result;
   result.push_back(glm::vec3(buffer[ 0], buffer[ 1], buffer[ 2]));
@@ -74,12 +59,12 @@ std::vector<glm::vec3> ogl::Rectangle::vertices() const
   return result;
 }
 
-glm::vec3 ogl::Rectangle::getBase() const
+glm::vec3 Rectangle::getBase() const
 {
   return glm::vec3(glm::vec3(buffer[ 0], buffer[ 1], buffer[ 2]));
 }
 
-GLuint ogl::Rectangle::getWidth() const
+GLuint Rectangle::getWidth() const
 {
   glm::vec3 E1 (glm::vec3(buffer[ 0], buffer[ 1], buffer[ 2]));
   glm::vec3 E2 (glm::vec3(buffer[11], buffer[12], buffer[13]));
@@ -87,7 +72,7 @@ GLuint ogl::Rectangle::getWidth() const
   return glm::distance(E1, E2);
 }
 
-GLuint ogl::Rectangle::getHeight() const
+GLuint Rectangle::getHeight() const
 {
   glm::vec3 E1 (glm::vec3(buffer[ 0], buffer[ 1], buffer[ 2]));
   glm::vec3 E3 (glm::vec3(buffer[33], buffer[34], buffer[35]));
@@ -95,7 +80,7 @@ GLuint ogl::Rectangle::getHeight() const
   return glm::distance(E1, E3);
 }
 
-bool ogl::Rectangle::intersect(glm::vec3 P1, glm::vec3 P2, glm::vec3 &PI) const
+bool Rectangle::intersect(glm::vec3 P1, glm::vec3 P2, glm::vec3 &PI) const
 {
   bool result = false;
 
@@ -134,7 +119,7 @@ bool ogl::Rectangle::intersect(glm::vec3 P1, glm::vec3 P2, glm::vec3 &PI) const
   return result;
 }
 
-void ogl::Rectangle::render() const
+void Rectangle::render() const
 {
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
@@ -149,4 +134,35 @@ void ogl::Rectangle::render() const
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_NORMAL_ARRAY);
   glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+Square::Square(std::string_view vertex, std::string_view fragment, std::string_view texture) 
+   : ogl::Shape(vertex, fragment, texture)
+{
+   glGenVertexArrays(1, &m_VAO);
+   glGenBuffers(1, &m_VBO);
+   glGenBuffers(1, &m_EBO);
+
+   glBindVertexArray(m_VAO);
+
+   glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertices), m_vertices.data(), GL_STATIC_DRAW);
+
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices), m_indices.data(), GL_STATIC_DRAW);
+
+   // position attribute
+   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+   glEnableVertexAttribArray(0);
+   // color attribute
+   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+   glEnableVertexAttribArray(1);
+   // texture coord attribute
+   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+   glEnableVertexAttribArray(2);
+}
+
+void Square::render() const
+{
+
 }

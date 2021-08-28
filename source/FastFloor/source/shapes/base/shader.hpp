@@ -1,19 +1,10 @@
 #pragma once
 
-//#include <glad/glad.h> // include glad to get all the required OpenGL headers
-  
-
 #include <format>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-  
-#include <glm/glm.hpp>
-
-#include <GL/glew.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
 
 struct Shader
 {
@@ -21,8 +12,11 @@ public:
     // the program ID
     unsigned int ID{ 0 };
   
-    // constructor reads and builds the shader
-    Shader(const char* vertexPath, const char* fragmentPath);
+    Shader() = default;
+
+    explicit Shader(
+       std::string_view vertex, 
+       std::string_view fragment);
 
     // use/activate the shader
     void use();

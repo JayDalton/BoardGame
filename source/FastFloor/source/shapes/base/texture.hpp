@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL2/SDL_opengl.h>
+//#include <SDL2/SDL_opengl.h>
 
 #include <cstdio>
 #include <cstring>
@@ -8,36 +8,36 @@
 #include <sstream>
 #include <fstream>
 
-namespace ogl {
+namespace ogl 
+{
+   class Texture
+   {
+   public:
+  	   unsigned id;
 
-  class Texture
-  {
-    public:
-  	  GLuint id;
+   private:
+      unsigned compo;
+  	   unsigned width;
+  	   unsigned height;
+  	   unsigned type;
+  	   unsigned char* buffer;
+      unsigned image_len;
 
-    private:
-      GLuint compo;
-  	  GLuint width;
-  	  GLuint height;
-  	  GLuint type;
-  	  GLubyte* buffer;
-      GLuint image_len;
-
-    public:
+   public:
       Texture(
-        GLuint w, 
-        GLuint h, 
-        GLfloat cr = 1, 
-        GLfloat cg = 1, 
-        GLfloat cb = 1, 
-        GLfloat ca = 1
+         unsigned w, 
+         unsigned h, 
+         float cr = 1, 
+         float cg = 1, 
+         float cb = 1, 
+         float ca = 1
       );
 
       Texture(
-        GLuint w, 
-        GLuint h, 
-        GLuint type, 
-        GLubyte* b
+         unsigned w, 
+         unsigned h, 
+         unsigned type, 
+         unsigned char* b
       );
 
       virtual ~Texture();
@@ -47,41 +47,41 @@ namespace ogl {
       void free();
 
       void draw(
-        GLint x, 
-        GLint y, 
+        signed x, 
+        signed y, 
         const Texture* tex, 
-        GLfloat cr = 0, 
-        GLfloat cg = 0, 
-        GLfloat cb = 0, 
-        GLfloat ca = 0
+        float cr = 0, 
+        float cg = 0, 
+        float cb = 0, 
+        float ca = 0
       );
 
       void fill(
-        GLfloat cr = 1, 
-        GLfloat cg = 1, 
-        GLfloat cb = 1, 
-        GLfloat ra = 1
+        float cr = 1, 
+        float cg = 1, 
+        float cb = 1, 
+        float ra = 1
       );
 
-  	  GLubyte* getBuffer() const;
-      GLuint getBufferSize() const;
-      GLuint getBufferLength() const;
-  	  GLuint getSize() const;
-  	  GLuint getWidth() const;
-  	  GLuint getHeight() const;
+      unsigned char* getBuffer() const;
+      unsigned getBufferSize() const;
+      unsigned getBufferLength() const;
+      unsigned getSize() const;
+      unsigned getWidth() const;
+      unsigned getHeight() const;
 
-      GLfloat getAlphaInfo() const;
+      float getAlphaInfo() const;
 
-  	  GLuint getType() const;
-  	  GLuint getCompos() const;
-  	  std::string getTypeName() const;
+  	   unsigned getType() const;
+  	   unsigned getCompos() const;
+  	   std::string getTypeName() const;
       std::string printDetail() const;
 
       Texture(const Texture& tex);
       Texture& operator=(const Texture& tex);
 
     private:
-      GLubyte cv(GLfloat c) const;
+       unsigned char cv(float c) const;
 
   };
 

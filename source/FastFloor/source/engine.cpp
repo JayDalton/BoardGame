@@ -4,30 +4,14 @@
 #include "shapes/cuboid.hpp"
 #include "shapes/rectangle.hpp"
 
+//#include <GL/glew.h>
+
 #define STB_IMAGE_IMPLEMENTATION
-//#include "image.h"
 #include <stb_image.h>
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-
-//// camera
-//glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-//glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-//glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-//bool firstMouse = true;
-//float yaw = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
-//float pitch = 0.0f;
-//float lastX = 800.0f / 2.0;
-//float lastY = 600.0 / 2.0;
-//float fov = 45.0f;
-
-//// timing
-//float deltaTime = 0.0f;	// time between current frame and last frame
-//float lastFrame = 0.0f;
-
 
 GameEngine::GameEngine(std::string_view title)
    : m_title(title), m_system(sdl2::make_sdlsystem(SDL_INIT_VIDEO | SDL_INIT_TIMER))
@@ -103,7 +87,7 @@ bool GameEngine::construct(int width, int height)
 
    initCamera();
    //initLights();
-   //initGeometry();
+   initGeometry();
 
    return true;
 }
@@ -124,6 +108,7 @@ void GameEngine::start()
    const auto start = StopClock::now();
 
    error = glGetError();
+
 
     Shader ourShader("shader/texture.vs", "shader/texture.fs");
 
@@ -398,10 +383,10 @@ void GameEngine::OnReceiveServer()
 
 void GameEngine::OnUpdateWorld(Duration duration)
 {
-   for (auto& shape : m_shapes)
-   {
-      shape->update(duration);
-   }
+   //for (auto& shape : m_shapes)
+   //{
+   //   shape->update(duration);
+   //}
 }
 
 void GameEngine::OnRenderWorld()
@@ -436,14 +421,9 @@ void GameEngine::initWindow()
 
 bool GameEngine::initOpenGL()
 {
-   using std::cout;
-   using std::endl;
+   //glEnable(GL_DEPTH_TEST);
 
-   glEnable(GL_DEPTH_TEST);
-
-   bool success = true;
-
-   return success;
+   return true;
 }
 
 void GameEngine::initCamera()
@@ -465,272 +445,76 @@ void GameEngine::initCamera()
 
 void GameEngine::initLights()
 {
-   auto error = glGetError();
+   //auto error = glGetError();
 
-   GLfloat mat_ambient[] = { 0.4f, 0.4f, 0.4f, 1.0f };
-   GLfloat mat_diffuse[] = { 0.4f, 0.8f, 0.4f, 1.0f };
-   GLfloat mat_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-   GLfloat mat_shininess[] = { 50.0f };
+   //GLfloat mat_ambient[] = { 0.4f, 0.4f, 0.4f, 1.0f };
+   //GLfloat mat_diffuse[] = { 0.4f, 0.8f, 0.4f, 1.0f };
+   //GLfloat mat_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+   //GLfloat mat_shininess[] = { 50.0f };
 
-   glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-   error = glGetError();
-   glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-   error = glGetError();
-   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-   error = glGetError();
-   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-   error = glGetError();
+   //glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+   //error = glGetError();
+   //glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+   //error = glGetError();
+   //glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+   //error = glGetError();
+   //glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+   //error = glGetError();
 
-   GLfloat light_ambient[] = { 0.5f, 0.5f, 0.5f, 1.0 };
-   GLfloat light_diffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
-   GLfloat light_specular[] = { 0.5f, 0.5f, 0.5f, 1.0f };
-   GLfloat light_position[] = { 0.0f, 0.0f, 10.0f, 1.0f };
+   //GLfloat light_ambient[] = { 0.5f, 0.5f, 0.5f, 1.0 };
+   //GLfloat light_diffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+   //GLfloat light_specular[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+   //GLfloat light_position[] = { 0.0f, 0.0f, 10.0f, 1.0f };
 
-   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-   error = glGetError();
-   glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-   error = glGetError();
-   glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-   error = glGetError();
-   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-   error = glGetError();
+   //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+   //error = glGetError();
+   //glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+   //error = glGetError();
+   //glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+   //error = glGetError();
+   //glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+   //error = glGetError();
 
-   error = glGetError();
+   //error = glGetError();
 
-   glEnable(GL_COLOR_MATERIAL);
-   error = glGetError();
-   glEnable(GL_LIGHTING);
-   error = glGetError();
-   glEnable(GL_LIGHT0);
-   error = glGetError();
-}
-
-//In C++17, we could take a `std::filesystem::path` instead of a std::string
-//for the filename.
-GLuint CreateShaderObject(GLenum stage, const std::string& filename)
-{
-   auto error = glGetError();
-
-   std::ifstream input(filename.c_str(), std::ios::in | std::ios::binary | std::ios::ate);
-
-   //Figure out how big the file is.
-   auto fileSize = input.tellg();
-   input.seekg(0, std::ios::beg);
-
-   //Read the whole file.
-   std::string fileData(fileSize, 0);
-   input.read(&fileData[0], fileSize);
-   input.close();
-
-   //Create a shader name
-   auto shader = glCreateShader(stage);
-   error = glGetError();
-
-   //Send the shader source code to GL
-   auto fileCstr = (const GLchar*)fileData.c_str();
-   glShaderSource(shader, 1, &fileCstr, nullptr);
-   error = glGetError();
-
-   //Compile the shader
-   glCompileShader(shader);
-   error = glGetError();
-
-   GLint isCompiled = 0;
-   glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
-   error = glGetError();
-   if (isCompiled == GL_FALSE)
-   {
-      GLint maxLength = 0;
-      glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
-
-      //C++11 does not permit you to overwrite the NUL terminator,
-      //even if you are overwriting it with the NUL terminator.
-      //C++17 does, so you could subtract 1 from the length and skip the `pop_back`.
-      std::basic_string<GLchar> infoLog(maxLength, 0);
-      glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
-      infoLog.pop_back();
-
-      //We don't need the shader anymore.
-      glDeleteShader(shader);
-
-      //Use the infoLog as you see fit.
-
-      //Exit with failure.
-      return 0;
-   }
-
-   return shader;
-}
-
-GLuint LinkProgramObject(std::vector<GLuint> shaders)
-{
-   auto error = glGetError();
-
-   //Get a program object.
-   auto program = glCreateProgram();
-
-   //Attach our shaders to our program
-   for (auto shader : shaders)
-   {
-      glAttachShader(program, shader);
-      error = glGetError();
-   }
-
-   //Link our program
-   glLinkProgram(program);
-   error = glGetError();
-
-   //Note the different functions here: glGetProgram* instead of glGetShader*.
-   GLint isLinked = 0;
-   glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
-   error = glGetError();
-   if (isLinked == GL_FALSE)
-   {
-      GLint maxLength = 0;
-      glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
-
-      //C++11 does not permit you to overwrite the NUL terminator,
-      //even if you are overwriting it with the NUL terminator.
-      //C++17 does, so you could subtract 1 from the length and skip the `pop_back`.
-      std::basic_string<GLchar> infoLog(maxLength, 0);
-      glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
-      infoLog.pop_back();
-
-      //We don't need the program anymore.
-      glDeleteProgram(program);
-
-      //Use the infoLog as you see fit.
-
-      //Exit with failure
-      return 0;
-   }
-
-   //Always detach shaders after a successful link.
-   for (auto shader : shaders)
-   {
-      glDetachShader(program, shader);
-      error = glGetError();
-   }
-
-   return program;
-}
-
-unsigned GameEngine::loadShader(std::string_view vertex, std::string_view fragment)
-{
-   auto error = glGetError();
-
-   // Create the shaders
-   GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-   GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-   error = glGetError();
-
-   // Read the Vertex Shader code from the file
-   std::string VertexShaderCode;
-   std::ifstream VertexShaderStream(vertex.data(), std::ios::in);
-   if (VertexShaderStream.is_open()) {
-      std::stringstream sstr;
-      sstr << VertexShaderStream.rdbuf();
-      VertexShaderCode = sstr.str();
-      VertexShaderStream.close();
-   }
-   else {
-      std::cout << std::format("Impossible to open {}. Are you in the right directory ? Don't forget to read the FAQ !\n", vertex);
-      getchar();
-      return 0;
-   }
-
-   // Read the Fragment Shader code from the file
-   std::string FragmentShaderCode;
-   std::ifstream FragmentShaderStream(fragment.data(), std::ios::in);
-   if (FragmentShaderStream.is_open()) {
-      std::stringstream sstr;
-      sstr << FragmentShaderStream.rdbuf();
-      FragmentShaderCode = sstr.str();
-      FragmentShaderStream.close();
-   }
-
-   error = glGetError();
-
-   GLint Result = GL_FALSE;
-   int InfoLogLength;
-
-   // Compile Vertex Shader
-   std::cout << std::format("Compiling shader : {}\n", vertex);
-   char const* VertexSourcePointer = VertexShaderCode.c_str();
-   glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
-   glCompileShader(VertexShaderID);
-   error = glGetError();
-
-   // Check Vertex Shader
-   glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-   glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-   if (InfoLogLength > 0) {
-      std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
-      glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-      std::cout << std::format("%s\n", &VertexShaderErrorMessage[0]);
-   }
-   error = glGetError();
-
-   // Compile Fragment Shader
-   std::cout << std::format("Compiling shader : {}\n", fragment);
-   char const* FragmentSourcePointer = FragmentShaderCode.c_str();
-   glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
-   glCompileShader(FragmentShaderID);
-   error = glGetError();
-
-   // Check Fragment Shader
-   glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-   glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-   if (InfoLogLength > 0) {
-      std::vector<char> FragmentShaderErrorMessage(InfoLogLength + 1);
-      glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-      std::cout << std::format("%s\n", &FragmentShaderErrorMessage[0]);
-   }
-   error = glGetError();
-
-   // Link the program
-   std::cout << std::format("Linking program\n");
-   GLuint ProgramID = glCreateProgram();
-   glAttachShader(ProgramID, VertexShaderID);
-   glAttachShader(ProgramID, FragmentShaderID);
-   glLinkProgram(ProgramID);
-   error = glGetError();
-
-   // Check the program
-   glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
-   glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-   if (InfoLogLength > 0) {
-      std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
-      glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-      std::cout << std::format("%s\n", &ProgramErrorMessage[0]);
-   }
-   error = glGetError();
-
-   glDetachShader(ProgramID, VertexShaderID);
-   glDetachShader(ProgramID, FragmentShaderID);
-   error = glGetError();
-
-   glDeleteShader(VertexShaderID);
-   glDeleteShader(FragmentShaderID);
-   error = glGetError();
-
-   return ProgramID;
+   //glEnable(GL_COLOR_MATERIAL);
+   //error = glGetError();
+   //glEnable(GL_LIGHTING);
+   //error = glGetError();
+   //glEnable(GL_LIGHT0);
+   //error = glGetError();
 }
 
 void GameEngine::initGeometry()
 {
+   //m_shapes.push_back(
+   //   std::make_unique<ogl::Line>(
+   //      glm::vec3(0.0f, 0.0f, 0.0f),
+   //      glm::vec3(0.0f, 0.0f, -50.0f),
+   //      1.0f, 0.0f, 0.0f
+   //   )
+   //);
+
+   //m_shapes.push_back(
+   //   std::make_unique<ogl::Rectangle>(
+   //      220.0f, 55.0f, 1.0f, 0.0f, 0.0f
+   //   )
+   //);
+
    m_shapes.push_back(
-      std::make_unique<ogl::Line>(
-         glm::vec3(0.0f, 0.0f, 0.0f),
-         glm::vec3(0.0f, 0.0f, -50.0f),
-         1.0f, 0.0f, 0.0f
-      )
+      std::make_unique<Square>(
+         "shader/texture.vs",
+         "shader/texture.fs",
+         "images/container.jpg"
+         )
    );
 
    m_shapes.push_back(
-      std::make_unique<ogl::Rectangle>(
-         220.0f, 55.0f, 1.0f, 0.0f, 0.0f
-      )
+      std::make_unique<Square>(
+         "shader/texture.vs",
+         "shader/texture.fs",
+         "images/awesomeface.png"
+         )
    );
 
 }

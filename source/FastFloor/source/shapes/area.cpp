@@ -1,5 +1,7 @@
 #include "area.hpp"
 
+#include <GL/glew.h>
+
 ogl::Area::Area(GLfloat au, GLfloat av, GLuint tu, GLuint tv, GLfloat cr, GLfloat cg, GLfloat cb, GLfloat ca)
   : Rectangle(au, av), Texture(tu, tv, cr, cg, cb, ca)
 {

@@ -1,5 +1,7 @@
 #include "texture.hpp"
 
+#include <SDL2/SDL_opengl.h>
+
 ogl::Texture::Texture(GLuint w, GLuint h, GLfloat cr, GLfloat cg, GLfloat cb, GLfloat ca)
   : id(0), compo(4), width(w), height(h), type(GL_RGBA), buffer(0)
 {

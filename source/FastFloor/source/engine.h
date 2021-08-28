@@ -5,33 +5,22 @@
 #include <memory>
 #include <filesystem>
 #include <format>
-#include <iostream>
 #include <string>
 #include <chrono>
 #include <string_view>
 
+#include <GL/glew.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <GL/glew.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_opengl.h>
 
 #include "sdl2.h"
 
 #include "objects/camera.hpp"
 #include "shapes/shape.hpp"
-
-namespace ogl 
-{
-   //auto getDuration = [](const StopClock::time_point& start) {
-   //   return std::chrono::duration_cast<Duration>(StopClock::now() - start);
-   //};
-};
 
 class GameEngine
 {
@@ -48,7 +37,6 @@ public:
    virtual bool updateUser() = 0;
 
 protected:
-   //using Duration = std::chrono::microseconds;
    using Duration = std::chrono::milliseconds;
    using StopClock = std::chrono::steady_clock;
 
@@ -66,7 +54,6 @@ private:
    void initCamera();
    void initLights();
 
-   unsigned loadShader(std::string_view vertex, std::string_view fragment);
    void initTextures();
    void initGeometry();
 
@@ -98,7 +85,7 @@ private:
    glm::vec3 m_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
    glm::vec3 m_cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-   std::vector<ogl::ShapePtr> m_shapes;
+   std::vector<ShapePtr> m_shapes;
    ogl::Camera m_camera;
    ogl::Camera m_screen;
 

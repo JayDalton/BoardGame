@@ -1,5 +1,7 @@
 #include "camera.hpp"
 
+#include <SDL2/SDL_opengl.h>
+
 ogl::Camera::Camera(glm::mat4 mtx, glm::vec3 src, glm::vec3 trg, glm::vec3 vec)
   : matrix(mtx), lookat(glm::lookAt(src, trg, vec))
 {

@@ -2,8 +2,6 @@
 
 #include "shape.hpp"
 
-//#include <SDL2/SDL_opengl.h>
-
 namespace ogl 
 {
   class PolyLine : public Shape
@@ -11,7 +9,7 @@ namespace ogl
     public:
       PolyLine(
         std::vector<glm::vec3> list,
-        GLfloat r = 1.0f, GLfloat g = 1.0f, GLfloat b = 1.0f
+        float r = 1.0f, float g = 1.0f, float b = 1.0f
         );
       virtual ~PolyLine();
 
@@ -24,7 +22,7 @@ namespace ogl
       void set(unsigned int idx, glm::vec3);
       unsigned int size() const;
 
-      void setColor(GLfloat r = 1.0f, GLfloat g = 1.0f, GLfloat b = 1.0f);
+      void setColor(float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
       void render() const override;
 

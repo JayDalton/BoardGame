@@ -1,5 +1,12 @@
-
 #include "transform.hpp"
+
+
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+#include <SDL2/SDL_opengl.h>
 
 ogl::Transform::Transform()
   : matrix(1.0f), animate(false), looping(false), duration(1.0f), timestamp(0),

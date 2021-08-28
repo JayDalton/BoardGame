@@ -2,8 +2,6 @@
 
 #include "shape.hpp"
 
-//#include <SDL2/SDL_opengl.h>
-
 namespace ogl 
 {
   class Line : public Shape
@@ -11,7 +9,7 @@ namespace ogl
     public:
       Line(
         glm::vec3 p1, glm::vec3 p2, 
-        GLfloat r = 1.0f, GLfloat g = 1.0f, GLfloat b = 1.0f
+        float r = 1.0f, float g = 1.0f, float b = 1.0f
       );
       virtual ~Line();
 

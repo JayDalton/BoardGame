@@ -1,5 +1,7 @@
 #include "polyline.hpp"
 
+#include <GL/glew.h>
+
 /*#######################################################################
 ((V, N, C, T), (V, N, C, T), ...)
 ((vx,vy,vz, nx,ny,nz, cr,cg,cb, tx,ty), (...), ...)

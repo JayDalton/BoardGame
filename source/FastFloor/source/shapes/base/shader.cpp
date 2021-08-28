@@ -1,13 +1,17 @@
 #include "shader.hpp"
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath)
+#include <GL/glew.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
+
+Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath)
 {
-   std::ifstream vertexFile{ vertexPath };
+   std::ifstream vertexFile{ vertexPath.data() };
    std::string vertexCode{
       std::istreambuf_iterator<char>(vertexFile)
       , std::istreambuf_iterator<char>() };
       
-   std::ifstream fragmentFile{ fragmentPath };
+   std::ifstream fragmentFile{ fragmentPath.data() };
    std::string fragmentCode{
       std::istreambuf_iterator<char>(fragmentFile)
       , std::istreambuf_iterator<char>() };
@@ -39,8 +43,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
    glDeleteShader(fragment);
 }
 
-// activate the shader
-// ------------------------------------------------------------------------
 void Shader::use()
 {
    glUseProgram(ID);
@@ -63,8 +65,9 @@ void Shader::setFloat(const std::string& name, float value) const
 
 void Shader::checkCompileErrors(unsigned int shader, Type type)
 {
-   int success;
+   int success{ false };
    char infoLog[1024];
+
    switch (type)
    {
    case Shader::Type::Vertex:
