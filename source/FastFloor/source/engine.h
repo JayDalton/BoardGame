@@ -9,14 +9,6 @@
 #include <chrono>
 #include <string_view>
 
-#include <GL/glew.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-
 #include "sdl2.h"
 
 #include "objects/camera.hpp"
