@@ -1,10 +1,10 @@
 #include "shader.hpp"
 
 #include <GL/glew.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
+//#include <SDL2/SDL.h>
+//#include <SDL2/SDL_opengl.h>
 
-Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath)
+ogl::Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath)
 {
    std::ifstream vertexFile{ vertexPath.data() };
    std::string vertexCode{
@@ -32,38 +32,38 @@ Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath)
    checkCompileErrors(fragment, Type::Fragment);
    
    // shader Program
-   ID = glCreateProgram();
-   glAttachShader(ID, vertex);
-   glAttachShader(ID, fragment);
-   glLinkProgram(ID);
-   checkCompileErrors(ID, Type::Program);
+   m_id = glCreateProgram();
+   glAttachShader(m_id, vertex);
+   glAttachShader(m_id, fragment);
+   glLinkProgram(m_id);
+   checkCompileErrors(m_id, Type::Program);
    
    // delete the shaders as they're linked into our program now and no longer necessary
    glDeleteShader(vertex);
    glDeleteShader(fragment);
 }
 
-void Shader::use() // render
+void ogl::Shader::useShader() const // render
 {
-   glUseProgram(ID);
+   glUseProgram(m_id);
 }
 
-void Shader::setBool(const std::string& name, bool value) const
+void ogl::Shader::setBool(const std::string& name, bool value) const
 {
-   glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
+   glUniform1i(glGetUniformLocation(m_id, name.c_str()), (int)value);
 }
 
-void Shader::setInt(const std::string& name, int value) const
+void ogl::Shader::setInt(const std::string& name, int value) const
 {
-   glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+   glUniform1i(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
-void Shader::setFloat(const std::string& name, float value) const
+void ogl::Shader::setFloat(const std::string& name, float value) const
 {
-   glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+   glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
-void Shader::checkCompileErrors(unsigned int shader, Type type)
+void ogl::Shader::checkCompileErrors(unsigned int shader, Type type)
 {
    int success{ false };
    char infoLog[1024];

@@ -12,6 +12,7 @@ namespace ogl
       unsigned int m_id{ 0 };
 
    public:
+      Texture() = default;
       ~Texture();
 
       explicit Texture(std::filesystem::path path);

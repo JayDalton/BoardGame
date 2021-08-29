@@ -2,14 +2,14 @@
 
 #include <GL/glew.h>
 
-const GLuint Rectangle::INDICES[] = {0, 1, 3, 1, 2, 3};
-
-const float Rectangle::VERTICES[][11] = {
-  0,0,0,  0,0,1,  1,1,1,  0,0,
-  1,0,0,  0,0,1,  1,1,1,  1,0,
-  1,1,0,  0,0,1,  1,1,1,  1,1,
-  0,1,0,  0,0,1,  1,1,1,  0,1
-};
+//const GLuint Rectangle::INDICES[] = {0, 1, 3, 1, 2, 3};
+//
+//const float Rectangle::VERTICES[][11] = {
+//  0,0,0,  0,0,1,  1,1,1,  0,0,
+//  1,0,0,  0,0,1,  1,1,1,  1,0,
+//  1,1,0,  0,0,1,  1,1,1,  1,1,
+//  0,1,0,  0,0,1,  1,1,1,  0,1
+//};
 
 //############################################################################
 /** 
@@ -17,8 +17,8 @@ const float Rectangle::VERTICES[][11] = {
 ((vx,vy,vz, nx,ny,nz, cr,cg,cb, tx,ty), (...), ...)
 */
 //############################################################################  
-Rectangle::Rectangle(float u, float v, float r, float g, float b)
-   : ogl::Shape()
+Rectangle::Rectangle(ogl::Size size, ogl::Color color)
+   : ogl::Shape("", "", color)
 {
   //Geometry::buffer_len = 4 * struct_len;
   //Geometry::buffer = new float[buffer_len];
@@ -166,5 +166,15 @@ Square::Square(std::string_view vertex, std::string_view fragment, std::string_v
 
 void Square::render() const
 {
+   // bind textures on corresponding texture units
+   glActiveTexture(GL_TEXTURE0);
+   glBindTexture(GL_TEXTURE_2D, Texture::m_id);
+   //glActiveTexture(GL_TEXTURE1);
+   //glBindTexture(GL_TEXTURE_2D, Texture::m_id2);
+
+   // render container
+   Shader::useShader();
+   glBindVertexArray(m_VAO);
+   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 }

@@ -49,7 +49,7 @@ private:
    void initTextures();
    void initGeometry();
 
-   std::pair<int, int> getWindowSize();
+   ogl::Size getWindowSize();
 
 private:
    std::string m_title;

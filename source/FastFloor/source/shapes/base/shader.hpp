@@ -6,29 +6,36 @@
 #include <sstream>
 #include <iostream>
 
-struct Shader
+namespace ogl
 {
-public:
-    // the program ID
-    unsigned int ID{ 0 };
-  
-    Shader() = default;
+   struct Shader
+   {
+   public:
+      // the program ID
+      unsigned int m_id{ 0 };
 
-    explicit Shader(
-       std::string_view vertex, 
-       std::string_view fragment);
+      Shader() = default;
+      virtual ~Shader() = default;
 
-    // use/activate the shader
-    void use();
+      explicit Shader(
+         std::string_view vertex,
+         std::string_view fragment);
 
-    // utility uniform functions
-    void setBool(const std::string &name, bool value) const;  
-    void setInt(const std::string &name, int value) const;   
-    void setFloat(const std::string &name, float value) const;
+      //virtual void render() const = 0;
 
-private:
-   enum class Type { Vertex, Fragment, Program };
+      // use/activate the shader
+      void useShader() const;
 
-   void checkCompileErrors(unsigned int shader, Type type);
-    
-};
+      // utility uniform functions
+      void setBool(const std::string& name, bool value) const;
+      void setInt(const std::string& name, int value) const;
+      void setFloat(const std::string& name, float value) const;
+
+   private:
+      enum class Type { Vertex, Fragment, Program };
+
+      void checkCompileErrors(unsigned int shader, Type type);
+
+   };
+
+}

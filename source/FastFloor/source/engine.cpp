@@ -9,10 +9,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-// settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-
 GameEngine::GameEngine(std::string_view title)
    : m_title(title), m_system(sdl2::make_sdlsystem(SDL_INIT_VIDEO | SDL_INIT_TIMER))
 {
@@ -110,7 +106,7 @@ void GameEngine::start()
    error = glGetError();
 
 
-    Shader ourShader("shader/texture.vs", "shader/texture.fs");
+    ogl::Shader ourShader("shader/texture.vs", "shader/texture.fs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -205,9 +201,9 @@ void GameEngine::start()
 
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
-    ourShader.use(); // don't forget to activate/use the shader before setting uniforms!
+    ourShader.useShader(); // don't forget to activate/use the shader before setting uniforms!
     // either set it manually like so:
-    glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0);
+    glUniform1i(glGetUniformLocation(ourShader.m_id, "texture1"), 0);
     // or set it via the texture class
     ourShader.setInt("texture2", 1);
 
@@ -222,22 +218,19 @@ void GameEngine::start()
 
       //updateUser();
       OnUpdateWorld(getDuration(m_timer));
-      //OnRender();
 
       glm::mat4 trans = glm::mat4(1.0f);
       trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
       trans = glm::rotate(trans, (float)SDL_GetTicks(), glm::vec3(0.0f, 0.0f, 1.0f));
 
-      unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
+      unsigned int transformLoc = glGetUniformLocation(ourShader.m_id, "transform");
       glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
       // Renderziel
-      auto [width, height] = getWindowSize();
-      glViewport(0, 0, width, height);
+      //auto size = getWindowSize();
+      //glViewport(0, 0, size.x, size.y);
 
-      // Hintergrund
-      glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-      glClear(GL_COLOR_BUFFER_BIT);
+      OnRenderWorld();
 
 
       // bind textures on corresponding texture units
@@ -247,7 +240,7 @@ void GameEngine::start()
       glBindTexture(GL_TEXTURE_2D, texture2);
 
       // render container
-      ourShader.use();
+      ourShader.useShader();
       glBindVertexArray(VAO);
       glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -391,11 +384,15 @@ void GameEngine::OnUpdateWorld(Duration duration)
 
 void GameEngine::OnRenderWorld()
 {
-   //auto [width, height] = getWindowSize();
-   ////glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
    //// MainWindow
-   //glViewport(0, 0, width, height);
+   auto size = getWindowSize();
+   glViewport(0, 0, size.x, size.y);
+
+   // Hintergrund
+   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+   glClear(GL_COLOR_BUFFER_BIT);
+   //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
    //for (auto& shape : m_shapes) 
    //{
    //   //auto matrix{ m_camera.mtx() * shape->getMatrix() };
@@ -409,9 +406,6 @@ void GameEngine::OnRenderWorld()
    //   glLoadMatrixf(glm::value_ptr(screen.mtx() * (*it)->getMatrix()));
    //   (*it)->render();
    //}
-
-   //window->display();
-
 }
 
 void GameEngine::initWindow()
@@ -509,17 +503,17 @@ void GameEngine::initGeometry()
          )
    );
 
-   m_shapes.push_back(
-      std::make_unique<Square>(
-         "shader/texture.vs",
-         "shader/texture.fs",
-         "images/awesomeface.png"
-         )
-   );
+   //m_shapes.push_back(
+   //   std::make_unique<Square>(
+   //      "shader/texture.vs",
+   //      "shader/texture.fs",
+   //      "images/awesomeface.png"
+   //      )
+   //);
 
 }
 
-std::pair<int, int> GameEngine::getWindowSize()
+ogl::Size GameEngine::getWindowSize()
 {
    int width{ 0 };
    int height{ 0 };
