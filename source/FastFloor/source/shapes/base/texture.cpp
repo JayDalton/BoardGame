@@ -2,8 +2,8 @@
 
 #include <GL/glew.h>
 
-//#define STB_IMAGE_IMPLEMENTATION
-//#include <stb_image.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 ogl::Texture::Texture(Size size, Color color)
    : m_width(size.x), m_height(size.y)
@@ -40,21 +40,22 @@ ogl::Texture::Texture(std::filesystem::path path)
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+   std::string file{ path.string() };
    // load image, create texture and generate mipmaps
-   //if (auto* data = stbi_load((const char*)path.c_str(), &m_width, &m_height, &m_compo, 0))
-   //{
-   //   m_type = (m_compo == 4) ? GL_RGBA : (m_compo == 3) ? GL_RGB : GL_NONE;
+   if (auto* data = stbi_load(file.c_str(), &m_width, &m_height, &m_compo, 0))
+   {
+      m_type = (m_compo == 4) ? GL_RGBA : (m_compo == 3) ? GL_RGB : GL_NONE;
 
-   //   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-   //   glGenerateMipmap(GL_TEXTURE_2D);
-   //   stbi_image_free(data);
-   //}
-   //else
-   //{
-   //   // generate full color
-   //   std::cout << "Failed to load texture" << std::endl;
-   //   //glTexImage2D(GL_TEXTURE_2D, 0, m_compo, m_width, m_height, 0, m_type, GL_UNSIGNED_BYTE, m_buffer);
-   //}
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+      glGenerateMipmap(GL_TEXTURE_2D);
+      stbi_image_free(data);
+   }
+   else
+   {
+      // generate full color
+      std::cout << "Failed to load texture" << std::endl;
+      //glTexImage2D(GL_TEXTURE_2D, 0, m_compo, m_width, m_height, 0, m_type, GL_UNSIGNED_BYTE, m_buffer);
+   }
 }
 
 ogl::Texture::~Texture()

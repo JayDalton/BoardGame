@@ -5,11 +5,13 @@
 class Square : public ogl::Shape
 {
 public:
+   ~Square() override;
    explicit Square(
       std::string_view vertex,
       std::string_view fragment,
       std::string_view texture);
 
+   void bind() const override;
    void render() const override;
 
 private:
@@ -25,12 +27,21 @@ private:
       0u, 1u, 3u,  // first triangle
       1u, 2u, 3u,  // second triangle
    };
+
+   mutable unsigned int m_VBO{ 0 };
+   mutable unsigned int m_VAO{ 0 };
+   mutable unsigned int m_EBO{ 0 };
 };
 
 class Rectangle : public ogl::Shape
 {
 public:
-   explicit Rectangle(ogl::Size size, ogl::Color color);
+   explicit Rectangle(
+      ogl::Size size, 
+      ogl::Color color,
+      std::string_view vertex,
+      std::string_view fragment
+   );
 
    explicit Rectangle(
       ogl::Size size, 
@@ -38,12 +49,7 @@ public:
       std::string_view fragment,
       std::string_view texture);
 
-   unsigned int getWidth() const;
-   unsigned int getHeight() const;
-   glm::vec3 getBase() const;
-
-   std::vector<glm::vec3> vertices() const;
-   bool intersect(glm::vec3 p1, glm::vec3 p2, glm::vec3 &pI) const;
+   ogl::Size getSize() const;
     
    void render() const override;
 

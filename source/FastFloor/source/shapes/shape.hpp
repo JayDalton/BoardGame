@@ -11,31 +11,28 @@ namespace ogl
 {
    struct Ident
    {
-      unsigned int m_id{ 0 };
-      unsigned int m_VBO{ 0 };
-      unsigned int m_VAO{ 0 };
-      unsigned int m_EBO{ 0 };
+      //unsigned int m_id{ 0 };
+      //unsigned int m_VBO{ 0 };
+      //unsigned int m_VAO{ 0 };
+      //unsigned int m_EBO{ 0 };
 
-      //virtual void render() const = 0;
-
-      Ident() //: m_id(counter++) 
-      {
-         static unsigned int counter{ 0 };
-         m_id = counter++;
-      }
-
-   private:
+      //Ident() //: m_id(counter++) 
+      //{
+      //   static unsigned int counter{ 0 };
+      //   m_id = counter++;
+      //}
    };
 
-
-  class Shape : public Ident, public Shader
+  class Shape : 
+     public Ident
+     , public Shader
      //, public Transform // Animation
      , public Texture
   {
     public:
-      virtual ~Shape() = default;
+      virtual ~Shape();
       //Shape() = default;
-      //
+
       explicit Shape(
          std::string_view vertex,
          std::string_view fragment,
@@ -50,19 +47,23 @@ namespace ogl
          : Shader(vertex, fragment)
          , Texture({ 1, 1 }, color) {}
 
-      //virtual void init() const = 0;
+      virtual void bind() const = 0;
       virtual void render() const = 0;
       //virtual void update() const = 0;
       //virtual void stop() const = 0;
 
-   private:
+   protected:
+      void bindBuffer();
+
+   protected:
+      unsigned int m_id{ 0 };
       //unsigned int m_VBO{ 0 };
       //unsigned int m_VAO{ 0 };
       //unsigned int m_EBO{ 0 };
 
-      unsigned int m_texture{ 0 };
+      //std::vector<float> m_vertices;
+      //std::vector<std::uint32_t> m_indices;
   };
-
 }
 using ShapePtr = std::unique_ptr<ogl::Shape>;
 
