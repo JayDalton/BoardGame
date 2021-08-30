@@ -492,21 +492,19 @@ void GameEngine::initGeometry()
    //   )
    //);
 
-   m_shapes.push_back(
-      std::make_unique<Square>(
-         "shader/texture.vs",
-         "shader/texture.fs",
-         "images/container.jpg"
-         )
-   );
-
    //m_shapes.push_back(
    //   std::make_unique<Square>(
    //      "shader/texture.vs",
    //      "shader/texture.fs",
-   //      "images/awesomeface.png"
+   //      "images/container.jpg"
    //      )
    //);
+
+   m_shapes.push_back(
+      std::make_unique<Square>(
+         "shader/Simple.vs",
+         "shader/Simple.fs")
+   );
 
 }
 

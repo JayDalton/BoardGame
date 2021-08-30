@@ -10,6 +10,9 @@ public:
       std::string_view vertex,
       std::string_view fragment,
       std::string_view texture);
+   explicit Square(
+      std::string_view vertex,
+      std::string_view fragment);
 
    void bind() const override;
    void render() const override;
@@ -32,6 +35,36 @@ private:
    mutable unsigned int m_VAO{ 0 };
    mutable unsigned int m_EBO{ 0 };
 };
+
+//class Hexagon : public ogl::Shape
+//{
+//public:
+//   explicit Hexagon(
+//      std::string_view vertex,
+//      std::string_view fragment
+//   );
+//
+//   void bind() const override;
+//   void render() const override;
+//
+//private:
+//   static constexpr std::array m_vertices{
+//      // positions          // colors           // texture coords
+//       0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 1.0f,   // top right
+//       0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+//      -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+//      -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+//   };
+//
+//   static constexpr std::array m_indices{
+//      0u, 1u, 3u,  // first triangle
+//      1u, 2u, 3u,  // second triangle
+//   };
+//
+//   mutable unsigned int m_VBO{ 0 };
+//   mutable unsigned int m_VAO{ 0 };
+//   mutable unsigned int m_EBO{ 0 };
+//};
 
 class Rectangle : public ogl::Shape
 {

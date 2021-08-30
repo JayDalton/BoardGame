@@ -2,19 +2,25 @@
 
 #include <GL/glew.h>
 
-Square::~Square()
-{
-   glDeleteVertexArrays(1, &m_VAO);
-   glDeleteBuffers(1, &m_VBO);
-   glDeleteBuffers(1, &m_EBO);
-}
-
 Square::Square(std::string_view vertex, 
    std::string_view fragment, std::string_view texture) 
    : ogl::Shape(vertex, fragment, texture)
 {
    //Shape::bindBuffer();
    bind();
+}
+
+Square::Square(std::string_view vertex, std::string_view fragment)
+   : ogl::Shape(vertex, fragment)
+{
+   bind();
+}
+
+Square::~Square()
+{
+   glDeleteVertexArrays(1, &m_VAO);
+   glDeleteBuffers(1, &m_VBO);
+   glDeleteBuffers(1, &m_EBO);
 }
 
 void Square::bind() const
