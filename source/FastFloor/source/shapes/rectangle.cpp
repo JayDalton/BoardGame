@@ -2,15 +2,6 @@
 
 #include <GL/glew.h>
 
-//const GLuint Rectangle::INDICES[] = {0, 1, 3, 1, 2, 3};
-//
-//const float Rectangle::VERTICES[][11] = {
-//  0,0,0,  0,0,1,  1,1,1,  0,0,
-//  1,0,0,  0,0,1,  1,1,1,  1,0,
-//  1,1,0,  0,0,1,  1,1,1,  1,1,
-//  0,1,0,  0,0,1,  1,1,1,  0,1
-//};
-
 //############################################################################
 /** 
 ((V, N, C, T), (V, N, C, T), ...)
@@ -18,7 +9,7 @@
 */
 //############################################################################  
 Rectangle::Rectangle(ogl::Size size, ogl::Color color)
-   : ogl::Shape("", "", color)
+   : ogl::Shape("", "", color), m_size(size)
 {
   //Geometry::buffer_len = 4 * struct_len;
   //Geometry::buffer = new float[buffer_len];

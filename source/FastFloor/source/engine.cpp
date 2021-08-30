@@ -227,9 +227,6 @@ void GameEngine::start()
       glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
       // Renderziel
-      //auto size = getWindowSize();
-      //glViewport(0, 0, size.x, size.y);
-
       OnRenderWorld();
 
 
