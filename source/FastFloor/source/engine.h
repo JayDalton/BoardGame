@@ -81,7 +81,7 @@ private:
    ogl::Camera m_camera;
    ogl::Camera m_screen;
 
-   std::chrono::time_point<StopClock> m_timer;
+   std::chrono::time_point<StopClock> m_lastTime;
    std::chrono::time_point<StopClock> m_tp1;
 
    void* m_context{ nullptr };

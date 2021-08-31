@@ -219,16 +219,25 @@ void GameEngine::start()
    auto p5 = ogl::Shape::circlePoint({ 0.f, 0.f }, 120.f, 5.f);
    auto p6 = ogl::Shape::circlePoint({ 0.f, 0.f }, 150.f, 5.f);
 
-   m_timer = StopClock::now();
+   m_lastTime = StopClock::now();
 
    // annimation loop
    while (m_running)
    {
+      m_frames++;
+      using namespace std::literals;
+      if (1s < (StopClock::now() - m_lastTime))
+      {
+         setWindowTitle(std::format(" FPS {:5}", 1000ms / m_frames));
+         m_lastTime += 1s;
+         m_frames = 0;
+      }
+
       OnReceiveLocal();
       OnReceiveServer();
 
       //updateUser();
-      OnUpdateWorld(getDuration(m_timer));
+      OnUpdateWorld(getDuration(m_lastTime));
 
       //glm::mat4 trans = glm::mat4(1.0f);
       //trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
@@ -254,16 +263,6 @@ void GameEngine::start()
 
 
       SDL_GL_SwapWindow(m_window.get());
-
-      using namespace std::literals;
-
-      m_frames++;
-      if (1s < getDuration(m_timer))
-      {
-         m_timer = StopClock::now();
-         setWindowTitle(std::format(" FPS {:5}", m_frames));
-         m_frames = 0;
-      }
 
       // calculates to 60 fps
       SDL_Delay(1000 / 60);
@@ -398,7 +397,7 @@ void GameEngine::OnRenderWorld()
 
    // Hintergrund
    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-   glClear(GL_COLOR_BUFFER_BIT);
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
    for (const auto& shape : m_shapes) 
@@ -517,7 +516,7 @@ void GameEngine::initGeometry()
    //item->;
    m_shapes.push_back(
       std::make_unique<Square>(
-         "shader/Simple.vs",
+         "shader/Coords.vs",
          "shader/Simple.fs")
    );
 
