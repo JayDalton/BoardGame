@@ -16,6 +16,10 @@ namespace ogl
       explicit Shader(
          std::string_view vertex,
          std::string_view fragment);
+      explicit Shader(
+         std::string_view vertex,
+         std::string_view fragment,
+         std::string_view geometry);
 
       //virtual void render() const = 0;
 
@@ -38,7 +42,7 @@ namespace ogl
       void setMat4(const std::string& name, const glm::mat4& mat) const;
 
    private:
-      enum class Type { Vertex, Fragment, Program };
+      enum class Type { Vertex, Fragment, Geometry, Program };
 
       void checkCompileErrors(unsigned int shader, Type type);
 

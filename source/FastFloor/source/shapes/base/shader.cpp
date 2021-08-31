@@ -4,8 +4,11 @@
 //#include <SDL2/SDL.h>
 //#include <SDL2/SDL_opengl.h>
 
-ogl::Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath)
+ogl::Shader::Shader(std::string_view vertexPath
+   , std::string_view fragmentPath)
 {
+   auto flags{ std::ifstream::failbit | std::ifstream::badbit };
+
    std::ifstream vertexFile{ vertexPath.data() };
    std::string vertexCode{
       std::istreambuf_iterator<char>(vertexFile)
@@ -18,6 +21,57 @@ ogl::Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath)
 
    const char* vShaderCode = vertexCode.c_str();
    const char* fShaderCode = fragmentCode.c_str();
+
+   // vertex shader
+   unsigned vertex = glCreateShader(GL_VERTEX_SHADER);
+   glShaderSource(vertex, 1, &vShaderCode, NULL);
+   glCompileShader(vertex);
+   checkCompileErrors(vertex, Type::Vertex);
+
+   // fragment Shader
+   unsigned fragment = glCreateShader(GL_FRAGMENT_SHADER);
+   glShaderSource(fragment, 1, &fShaderCode, NULL);
+   glCompileShader(fragment);
+   checkCompileErrors(fragment, Type::Fragment);
+
+   // shader Program
+   m_id = glCreateProgram();
+   glAttachShader(m_id, vertex);
+   glAttachShader(m_id, fragment);
+
+   glLinkProgram(m_id);
+   checkCompileErrors(m_id, Type::Program);
+
+   // delete the shaders as they're linked into our program now and no longer necessary
+   glDeleteShader(vertex);
+   glDeleteShader(fragment);
+}
+
+ogl::Shader::Shader(
+   std::string_view vertexPath, 
+   std::string_view fragmentPath, 
+   std::string_view geometryPath)
+{
+   auto flags{ std::ifstream::failbit | std::ifstream::badbit };
+
+   std::ifstream vertexFile{ vertexPath.data() };
+   std::string vertexCode{
+      std::istreambuf_iterator<char>(vertexFile)
+      , std::istreambuf_iterator<char>() };
+      
+   std::ifstream fragmentFile{ fragmentPath.data() };
+   std::string fragmentCode{
+      std::istreambuf_iterator<char>(fragmentFile)
+      , std::istreambuf_iterator<char>() };
+
+   std::ifstream geomFile{ geometryPath.data() };
+   std::string geometryCode{
+      std::istreambuf_iterator<char>(geomFile)
+      , std::istreambuf_iterator<char>() };
+
+   const char* vShaderCode = vertexCode.c_str();
+   const char* fShaderCode = fragmentCode.c_str();
+   const char* gShaderCode = geometryCode.c_str();
    
    // vertex shader
    unsigned vertex = glCreateShader(GL_VERTEX_SHADER);
@@ -30,16 +84,25 @@ ogl::Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath)
    glShaderSource(fragment, 1, &fShaderCode, NULL);
    glCompileShader(fragment);
    checkCompileErrors(fragment, Type::Fragment);
-   
+
    // shader Program
    m_id = glCreateProgram();
    glAttachShader(m_id, vertex);
    glAttachShader(m_id, fragment);
+
+   // fragment Shader
+   unsigned geometry = glCreateShader(GL_GEOMETRY_SHADER);
+   glShaderSource(geometry, 1, &gShaderCode, NULL);
+   glCompileShader(geometry);
+   checkCompileErrors(geometry, Type::Geometry);
+   glAttachShader(m_id, geometry);
+
    glLinkProgram(m_id);
    checkCompileErrors(m_id, Type::Program);
    
    // delete the shaders as they're linked into our program now and no longer necessary
    glDeleteShader(vertex);
+   glDeleteShader(fragment);
    glDeleteShader(fragment);
 }
 
@@ -116,7 +179,8 @@ void ogl::Shader::checkCompileErrors(unsigned int shader, Type type)
    switch (type)
    {
    case Shader::Type::Vertex:
-   case Shader::Type::Fragment: {
+   case Shader::Type::Fragment: 
+   case Shader::Type::Geometry: {
          glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
          if (!success)
          {
