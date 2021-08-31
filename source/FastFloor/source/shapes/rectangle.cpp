@@ -58,6 +58,9 @@ void Square::render() const
 
    // render container
    Shader::useShader();
+   // setMat4("projection", projection);
+   // setMat4("view", view);
+
    glBindVertexArray(m_VAO);
    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }

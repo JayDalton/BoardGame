@@ -209,6 +209,8 @@ void GameEngine::start()
 
    auto angle1 = ogl::Shape::degreesToRadians(45.0);
    auto angle2 = ogl::Shape::degreesToRadians(58.0);
+   auto angle3 = glm::radians(45.0);
+   auto angle4 = glm::radians(58.0);
 
    auto p1 = ogl::Shape::circlePoint({ 0.f, 0.f }, 000.f, 5.f);
    auto p2 = ogl::Shape::circlePoint({ 0.f, 0.f }, 030.f, 5.f);
@@ -509,6 +511,10 @@ void GameEngine::initGeometry()
    //      )
    //);
 
+   //auto& item = m_shapes.emplace_back(
+   //   "shader/Simple.vs",
+   //   "shader/Simple.fs");
+   //item->;
    m_shapes.push_back(
       std::make_unique<Square>(
          "shader/Simple.vs",
