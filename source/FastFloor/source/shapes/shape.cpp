@@ -33,3 +33,20 @@ void ogl::Shape::bindBuffer()
    //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
    //glEnableVertexAttribArray(2);
 }
+
+glm::vec2 ogl::Shape::circlePoint(glm::vec2 center, float angle, float radius)
+{
+   auto x = radius * std::cos(angle) + center.x;
+   auto y = radius * std::sin(angle) + center.y;
+   return { x, y };
+}
+
+double ogl::Shape::degreesToRadians(double degrees)
+{
+   return (degrees * (std::numbers::pi / 180));
+}
+
+double ogl::Shape::radiansToDegrees(double radians)
+{
+   return radians / 180;
+}

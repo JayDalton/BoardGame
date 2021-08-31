@@ -52,6 +52,10 @@ namespace ogl
       //virtual void update() const = 0;
       //virtual void stop() const = 0;
 
+      static glm::vec2 circlePoint(glm::vec2 center, float angle, float radius);
+      static double degreesToRadians(double degrees);
+      static double radiansToDegrees(double radians);
+
    protected:
       void bindBuffer();
 

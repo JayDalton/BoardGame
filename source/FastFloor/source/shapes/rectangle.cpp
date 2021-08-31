@@ -66,6 +66,9 @@ Rectangle::Rectangle(ogl::Size size, ogl::Color color,
    std::string_view vertex, std::string_view fragment)
    : ogl::Shape(vertex, fragment, color), m_size(size)
 {
+   // create vertices...
+
+
    bindBuffer();
 }
 

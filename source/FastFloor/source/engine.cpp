@@ -207,6 +207,15 @@ void GameEngine::start()
     //// or set it via the texture class
     //ourShader.setInt("texture2", 1);
 
+   auto angle1 = ogl::Shape::degreesToRadians(45.0);
+   auto angle2 = ogl::Shape::degreesToRadians(58.0);
+
+   auto p1 = ogl::Shape::circlePoint({ 0.f, 0.f }, 000.f, 5.f);
+   auto p2 = ogl::Shape::circlePoint({ 0.f, 0.f }, 030.f, 5.f);
+   auto p3 = ogl::Shape::circlePoint({ 0.f, 0.f }, 060.f, 5.f);
+   auto p4 = ogl::Shape::circlePoint({ 0.f, 0.f }, 090.f, 5.f);
+   auto p5 = ogl::Shape::circlePoint({ 0.f, 0.f }, 120.f, 5.f);
+   auto p6 = ogl::Shape::circlePoint({ 0.f, 0.f }, 150.f, 5.f);
 
    m_timer = StopClock::now();
 
