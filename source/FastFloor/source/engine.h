@@ -30,9 +30,9 @@ public:
 
 protected:
    using Duration = std::chrono::milliseconds;
-   using StopClock = std::chrono::steady_clock;
+   using SteadyClock = std::chrono::steady_clock;
 
-   Duration getDuration(const StopClock::time_point& start);
+   Duration getDuration(const SteadyClock::time_point& start);
 
 private:
    void OnReceiveLocal();
@@ -81,8 +81,7 @@ private:
    ogl::Camera m_camera;
    ogl::Camera m_screen;
 
-   std::chrono::time_point<StopClock> m_lastTime;
-   std::chrono::time_point<StopClock> m_tp1;
+   std::chrono::time_point<SteadyClock> m_lastTime;
 
    void* m_context{ nullptr };
    sdl2::sdlsystem_ptr_t m_system{ nullptr, nullptr };
