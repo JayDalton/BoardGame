@@ -11,11 +11,13 @@ find_package(spdlog CONFIG REQUIRED)
 find_package(GLEW CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
 
-add_executable(${PROJECT_NAME} WIN32) # WIN32
+add_executable(${PROJECT_NAME}) # WIN32
 
 target_link_libraries(${PROJECT_NAME} 
-   fmt::fmt SDL2::SDL2 SDL2::SDL2main GLEW::GLEW 
+   fmt::fmt SDL2::SDL2 SDL2::SDL2main glm::glm GLEW::GLEW 
 )
+
+#configure_file("shader/Camera.fs" "shader/Camera.fs" COPYONLY)
 
 target_sources(${PROJECT_NAME} PRIVATE
    "images/awesomeface.png"
@@ -35,7 +37,8 @@ target_sources(${PROJECT_NAME} PRIVATE
    "shader/Simple.vs"
    "shader/Texture.fs"
    "shader/Texture.vs"
-   "shader/Transform.vs"   
+   "shader/Transform.fs"
+   "shader/Transform.vs"
 
    "source/objects/camera.cpp"
    "source/objects/camera.hpp"
