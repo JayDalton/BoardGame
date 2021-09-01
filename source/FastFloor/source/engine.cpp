@@ -516,7 +516,7 @@ void GameEngine::initGeometry()
    //item->;
    m_shapes.push_back(
       std::make_unique<Square>(
-         "shader/Coords.vs",
+         "shader/Transform.vs",
          "shader/Simple.fs")
    );
 
