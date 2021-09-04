@@ -40,6 +40,7 @@ private:
    
    void OnUpdateWorld(Duration duration);
    void OnRenderWorld();
+   void OnRemoveWorld();
 
    void initWindow();
    bool initOpenGL();

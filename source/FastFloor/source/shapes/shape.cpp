@@ -36,17 +36,8 @@ void ogl::Shape::bindBuffer()
 
 glm::vec2 ogl::Shape::circlePoint(glm::vec2 center, float angle, float radius)
 {
-   auto x = radius * std::cos(angle) + center.x;
-   auto y = radius * std::sin(angle) + center.y;
+   auto x = center.x + radius * std::cos(angle);
+   auto y = center.y + radius * std::sin(angle);
    return { x, y };
 }
 
-double ogl::Shape::degreesToRadians(double degrees)
-{
-   return (degrees * (std::numbers::pi / 180));
-}
-
-double ogl::Shape::radiansToDegrees(double radians)
-{
-   return radians / 180;
-}

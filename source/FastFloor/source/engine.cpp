@@ -1,7 +1,7 @@
 #include "engine.h"
 
-#include "shapes/line.hpp"
-#include "shapes/cuboid.hpp"
+//#include "shapes/line.hpp"
+//#include "shapes/cuboid.hpp"
 #include "shapes/rectangle.hpp"
 
 GameEngine::GameEngine(std::string_view title)
@@ -91,18 +91,6 @@ void GameEngine::setWindowTitle(std::string label)
 
 void GameEngine::start()
 {
-   auto angle1 = ogl::Shape::degreesToRadians(45.0);
-   auto angle2 = ogl::Shape::degreesToRadians(58.0);
-   auto angle3 = glm::radians(45.0);
-   auto angle4 = glm::radians(58.0);
-
-   auto p1 = ogl::Shape::circlePoint({ 0.f, 0.f }, 000.f, 5.f);
-   auto p2 = ogl::Shape::circlePoint({ 0.f, 0.f }, 030.f, 5.f);
-   auto p3 = ogl::Shape::circlePoint({ 0.f, 0.f }, 060.f, 5.f);
-   auto p4 = ogl::Shape::circlePoint({ 0.f, 0.f }, 090.f, 5.f);
-   auto p5 = ogl::Shape::circlePoint({ 0.f, 0.f }, 120.f, 5.f);
-   auto p6 = ogl::Shape::circlePoint({ 0.f, 0.f }, 150.f, 5.f);
-
    m_lastTime = SteadyClock::now();
 
    // annimation loop
@@ -278,6 +266,11 @@ void GameEngine::OnRenderWorld()
    //}
 }
 
+void GameEngine::OnRemoveWorld()
+{
+   m_shapes.clear();
+}
+
 void GameEngine::initWindow()
 {
 
@@ -373,16 +366,15 @@ void GameEngine::initGeometry()
    //      )
    //);
 
-   //auto& item = m_shapes.emplace_back(
-   //   "shader/Simple.vs",
-   //   "shader/Simple.fs");
-   //item->;
    m_shapes.push_back(
       std::make_unique<Square>(
-         "shader/Transform.vs",
-         "shader/Simple.fs")
-   );
+         "shader/Simple.vs",
+         "shader/Simple.fs"));
 
+   m_shapes.push_back(
+      std::make_unique<Hexagon>(
+         "shader/Simple.vs",
+         "shader/Simple.fs"));
 }
 
 ogl::Size GameEngine::getWindowSize()
