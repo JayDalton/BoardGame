@@ -22,6 +22,7 @@
 namespace ogl
 {
    using Size = glm::u32vec2;
+   using SizeF = glm::vec2;
    using Color = glm::vec4;
    using Vertex = glm::vec3;
 

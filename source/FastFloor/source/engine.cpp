@@ -344,37 +344,26 @@ void GameEngine::initLights()
 
 void GameEngine::initGeometry()
 {
-   //m_shapes.push_back(
-   //   std::make_unique<ogl::Line>(
-   //      glm::vec3(0.0f, 0.0f, 0.0f),
-   //      glm::vec3(0.0f, 0.0f, -50.0f),
-   //      1.0f, 0.0f, 0.0f
-   //   )
-   //);
-
-   //m_shapes.push_back(
-   //   std::make_unique<ogl::Rectangle>(
-   //      220.0f, 55.0f, 1.0f, 0.0f, 0.0f
-   //   )
-   //);
-
-   //m_shapes.push_back(
-   //   std::make_unique<Square>(
-   //      "shader/texture.vs",
-   //      "shader/texture.fs",
-   //      "images/container.jpg"
-   //      )
-   //);
-
    m_shapes.push_back(
       std::make_unique<Square>(
          "shader/Simple.vs",
-         "shader/Simple.fs"));
+         "shader/Simple.fs",
+         ogl::Colors::Blue));
+   //      "images/container.jpg"
 
    m_shapes.push_back(
       std::make_unique<Hexagon>(
          "shader/Simple.vs",
-         "shader/Simple.fs"));
+         "shader/Simple.fs",
+         ogl::Colors::Green));
+
+   m_shapes.push_back(
+      std::make_unique<Rectangle>(
+         ogl::Size{200, 400},
+         "shader/Simple.vs",
+         "shader/Simple.fs",
+         ogl::Colors::Red
+         ));
 }
 
 ogl::Size GameEngine::getWindowSize()

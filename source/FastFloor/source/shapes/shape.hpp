@@ -55,6 +55,8 @@ namespace ogl
       static glm::vec2 circlePoint(glm::vec2 center, float angle, float radius);
 
    protected:
+      using Element = std::array<float, 8>;
+
       void bindBuffer();
 
    protected:
