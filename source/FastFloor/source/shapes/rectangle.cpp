@@ -162,11 +162,11 @@ Hexagon::Hexagon(std::string_view vertex
       return glm::vec3(x, y, 0);
    };
 
-   append(create(ogl::Vertex{ 0.f }, { 0.0f, 0.0f }));
-   append(create(circlePoint(000.f, 1.f), { 0.0f, 0.0f }));
+   append(create(ogl::Vertex{ 0.f }, { 0.5f, 0.5f }));
+   append(create(circlePoint(000.f, 1.f), { 1.0f, 0.5f }));
    append(create(circlePoint(060.f, 1.f), { 1.0f, 1.0f }));
    append(create(circlePoint(120.f, 1.f), { 0.0f, 1.0f }));
-   append(create(circlePoint(180.f, 1.f), { 0.0f, 0.0f }));
+   append(create(circlePoint(180.f, 1.f), { 0.0f, 0.5f }));
    append(create(circlePoint(240.f, 1.f), { 0.0f, 0.0f }));
    append(create(circlePoint(300.f, 1.f), { 1.0f, 0.0f }));
 

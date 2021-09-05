@@ -1,7 +1,5 @@
 #pragma once
 
-
-//#include "base/buffer.hpp"
 #include "base/common.hpp"
 #include "base/shader.hpp"
 #include "base/texture.hpp"
@@ -10,9 +8,6 @@
 namespace ogl 
 {
    using Element = std::array<float, 8>;
-
-   template <std::size_t SIZE>
-   using ObjectList = std::array<Element, SIZE>;
 
    struct Ident
    {
@@ -39,11 +34,6 @@ namespace ogl
       std::int32_t getIndicesSize() const
       {
          return sizeof(unsigned) * m_indices.size();
-      }
-
-      void defaultColor(Color color)
-      {
-         m_color = color;
       }
 
       void append(Element element)
@@ -79,22 +69,10 @@ namespace ogl
   {
     public:
       virtual ~Shape();
-      //Shape() = default;
-
-      //explicit Shape(
-      //   std::string_view vertex,
-      //   std::string_view fragment)
-      //   : Shader(vertex, fragment) {}
-
-      //explicit Shape(
-      //   std::string_view vertex,
-      //   std::string_view fragment,
-      //   std::string_view texture)
-      //   : Shader(vertex, fragment)
-      //   , Texture(texture) {}
 
       virtual void render() const = 0;
       //virtual void update() const = 0;
+      //virtual void start() const = 0;
       //virtual void stop() const = 0;
 
    protected:
