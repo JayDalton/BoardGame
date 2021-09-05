@@ -125,14 +125,7 @@ void ogl::Rectangle::render() const
 ogl::Hexagon::Hexagon(std::string_view vertex
    , std::string_view fragment, ogl::Color color)
 {
-   auto circlePoint = [](float angle, float radius) -> glm::vec3
-   {
-      auto x = radius * std::cos(glm::radians(angle));
-      auto y = radius * std::sin(glm::radians(angle));
-      return glm::vec3(x, y, 0);
-   };
-
-   ogl::Vertex center{ 0.f };
+   Vertex center{ 0.f };
    append(create(center, color));
    for (auto angle : { 0.f, 60.f, 120.f, 180.f, 240.f, 300.f })
    {
@@ -155,14 +148,7 @@ ogl::Hexagon::Hexagon(std::string_view vertex
    , std::string_view fragment
    , std::string_view texture)
 {
-   auto circlePoint = [](float angle, float radius) -> glm::vec3
-   {
-      auto x = radius * std::cos(glm::radians(angle));
-      auto y = radius * std::sin(glm::radians(angle));
-      return glm::vec3(x, y, 0);
-   };
-
-   append(create(ogl::Vertex{ 0.f }, { 0.5f, 0.5f }));
+   append(create(Vertex{ 0.f }, { 0.5f, 0.5f }));
    append(create(circlePoint(000.f, 1.f), { 1.0f, 0.5f }));
    append(create(circlePoint(060.f, 1.f), { 1.0f, 1.0f }));
    append(create(circlePoint(120.f, 1.f), { 0.0f, 1.0f }));

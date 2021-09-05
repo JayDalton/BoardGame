@@ -20,6 +20,16 @@ namespace ogl
       //}
    };
 
+   struct Geometry
+   {
+      static Vertex circlePoint(float angle, float radius)
+      {
+         auto x = radius * std::cos(glm::radians(angle));
+         auto y = radius * std::sin(glm::radians(angle));
+         return glm::vec3(x, y, 0);
+      };
+   };
+
    struct Buffer
    {
       std::vector<float> m_vertices;
@@ -64,6 +74,7 @@ namespace ogl
      public Ident
      , public Buffer
      , public Shader
+     , public Geometry
      //, public Transform // Animation
      , public Texture
   {

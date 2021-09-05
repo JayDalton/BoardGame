@@ -16,7 +16,6 @@
 
 namespace ogl
 {
-
 class GameEngine
 {
 public:
