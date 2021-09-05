@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-Square::Square(std::string_view vertex, 
+ogl::Square::Square(std::string_view vertex, 
    std::string_view fragment, std::string_view texture) 
 {
    append(create({ +1.0f, +1.0f, 0.f }, { 1.0f, 1.0f }));
@@ -15,7 +15,7 @@ Square::Square(std::string_view vertex,
    createTexture(texture);
 }
 
-Square::Square(std::string_view vertex
+ogl::Square::Square(std::string_view vertex
    , std::string_view fragment, ogl::Color color)
 {
    append(create({ +1.0f, +1.0f, 0.f }, color));
@@ -27,7 +27,7 @@ Square::Square(std::string_view vertex
    createShaders(vertex, fragment);
 }
 
-void Square::render() const
+void ogl::Square::render() const
 {
    // bind textures on corresponding texture units
    glActiveTexture(GL_TEXTURE0);
@@ -58,7 +58,7 @@ void Square::render() const
 
 // #########################################################
 
-Rectangle::Rectangle(ogl::SizeF size
+ogl::Rectangle::Rectangle(ogl::SizeF size
    , std::string_view vertex
    , std::string_view fragment
    , ogl::Color color)
@@ -74,7 +74,7 @@ Rectangle::Rectangle(ogl::SizeF size
    createShaders(vertex, fragment);
 }
 
-Rectangle::Rectangle(ogl::SizeF size
+ogl::Rectangle::Rectangle(ogl::SizeF size
    , std::string_view vertex
    , std::string_view fragment
    , std::string_view texture)
@@ -91,7 +91,7 @@ Rectangle::Rectangle(ogl::SizeF size
    createTexture(texture);
 }
 
-void Rectangle::render() const
+void ogl::Rectangle::render() const
 {
    // bind textures on corresponding texture units
    glActiveTexture(GL_TEXTURE0);
@@ -122,7 +122,7 @@ void Rectangle::render() const
 
 // #########################################################
 
-Hexagon::Hexagon(std::string_view vertex
+ogl::Hexagon::Hexagon(std::string_view vertex
    , std::string_view fragment, ogl::Color color)
 {
    auto circlePoint = [](float angle, float radius) -> glm::vec3
@@ -151,7 +151,7 @@ Hexagon::Hexagon(std::string_view vertex
    createShaders(vertex, fragment);
 }
 
-Hexagon::Hexagon(std::string_view vertex
+ogl::Hexagon::Hexagon(std::string_view vertex
    , std::string_view fragment
    , std::string_view texture)
 {
@@ -182,7 +182,7 @@ Hexagon::Hexagon(std::string_view vertex
    createTexture(texture);
 }
 
-void Hexagon::render() const
+void ogl::Hexagon::render() const
 {
    // bind textures on corresponding texture units
    glActiveTexture(GL_TEXTURE0);

@@ -14,6 +14,9 @@
 #include "objects/camera.hpp"
 #include "shapes/shape.hpp"
 
+namespace ogl
+{
+
 class GameEngine
 {
 public:
@@ -31,6 +34,9 @@ public:
 protected:
    using Duration = std::chrono::milliseconds;
    using SteadyClock = std::chrono::steady_clock;
+   using TimePoint = std::chrono::time_point<SteadyClock>;
+   using TimeUnit = std::chrono::nanoseconds;
+   using Duration2 = std::chrono::duration<double>;
 
    Duration getDuration(const SteadyClock::time_point& start);
 
@@ -52,12 +58,7 @@ private:
 
    ogl::Size getWindowSize();
 
-private:
-   std::string m_title;
-   bool m_running{ true };
-   unsigned m_frames{ 0 };
-
-   bool m_rendering{ true };
+protected:
 
    struct MouseInfo 
    {
@@ -69,10 +70,6 @@ private:
       float fov = 45.0f;
    } m_mouse;
 
-   // timing
-   float m_deltaTime = 0.0f;	// time between current frame and last frame
-   float m_lastFrame = 0.0f;
-
    // camera
    glm::vec3 m_cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
    glm::vec3 m_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -82,10 +79,22 @@ private:
    ogl::Camera m_camera;
    ogl::Camera m_screen;
 
-   std::chrono::time_point<SteadyClock> m_lastTime;
+private:
+   std::string m_title;
+   bool m_running{ true };
+   unsigned m_frames{ 0 };
+
+   bool m_rendering{ true };
+
+   // timing
+   TimePoint m_lastTime{};
+   TimePoint m_lastFrame{};
+   TimeUnit m_deltaTime{};	// time between current frame and last frame
 
    void* m_context{ nullptr };
    sdl2::sdlsystem_ptr_t m_system{ nullptr, nullptr };
    sdl2::window_ptr_t m_window{ nullptr, nullptr };
    sdl2::renderer_ptr_t m_render{ nullptr, nullptr };
 };
+
+}

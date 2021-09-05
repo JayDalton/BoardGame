@@ -2,7 +2,10 @@
 
 #include "shape.hpp"
 
-class Square : public ogl::Shape
+namespace ogl
+{
+
+class Square : public Shape
 {
 public:
    explicit Square(
@@ -61,3 +64,4 @@ public:
 private:
 };
 
+}

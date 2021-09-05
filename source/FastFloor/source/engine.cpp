@@ -4,13 +4,13 @@
 //#include "shapes/cuboid.hpp"
 #include "shapes/rectangle.hpp"
 
-GameEngine::GameEngine(std::string_view title)
+ogl::GameEngine::GameEngine(std::string_view title)
    : m_title(title), m_system(sdl2::make_sdlsystem(SDL_INIT_VIDEO | SDL_INIT_TIMER))
 {
 
 }
 
-bool GameEngine::construct(int width, int height)
+bool ogl::GameEngine::construct(int width, int height)
 {
    using std::cout;
    using std::endl;
@@ -80,22 +80,30 @@ bool GameEngine::construct(int width, int height)
    //initLights();
    initGeometry();
 
+   createUser();
+
    return true;
 }
 
-void GameEngine::setWindowTitle(std::string label)
+void ogl::GameEngine::setWindowTitle(std::string label)
 {
    SDL_SetWindowTitle(m_window.get(), 
       std::format("{} {}", m_title, label).c_str());
 }
 
-void GameEngine::start()
+void ogl::GameEngine::start()
 {
    m_lastTime = SteadyClock::now();
 
    // annimation loop
    while (m_running)
    {
+      // per-frame time logic
+      // --------------------
+      auto currentFrame = SteadyClock::now();
+      m_deltaTime = currentFrame - m_lastFrame;
+      m_lastFrame = currentFrame;
+
       m_frames++;
       using namespace std::literals;
       if (1s < (SteadyClock::now() - m_lastTime))
@@ -127,14 +135,16 @@ void GameEngine::start()
    SDL_Quit();
 }
 
-GameEngine::Duration GameEngine::getDuration(const SteadyClock::time_point& start)
+ogl::GameEngine::Duration ogl::GameEngine::getDuration(const SteadyClock::time_point& start)
 {
    return std::chrono::duration_cast<Duration>(SteadyClock::now() - start);
 }
 
-void GameEngine::OnReceiveLocal()
+void ogl::GameEngine::OnReceiveLocal()
 {
-   float cameraSpeed = m_deltaTime * 2.5;
+   float cameraSpeed = 0.0;// m_deltaTime * 2.5;
+
+   std::cout << std::format("DeltaTime: {}", m_deltaTime) << std::endl;
 
    SDL_Event event;
    while (SDL_PollEvent(&event))
@@ -228,11 +238,11 @@ void GameEngine::OnReceiveLocal()
    }
 }
 
-void GameEngine::OnReceiveServer()
+void ogl::GameEngine::OnReceiveServer()
 {
 }
 
-void GameEngine::OnUpdateWorld(Duration duration)
+void ogl::GameEngine::OnUpdateWorld(Duration duration)
 {
    //for (auto& shape : m_shapes)
    //{
@@ -240,7 +250,7 @@ void GameEngine::OnUpdateWorld(Duration duration)
    //}
 }
 
-void GameEngine::OnRenderWorld()
+void ogl::GameEngine::OnRenderWorld()
 {
    //// MainWindow
    auto size = getWindowSize();
@@ -266,24 +276,24 @@ void GameEngine::OnRenderWorld()
    //}
 }
 
-void GameEngine::OnRemoveWorld()
+void ogl::GameEngine::OnRemoveWorld()
 {
    m_shapes.clear();
 }
 
-void GameEngine::initWindow()
+void ogl::GameEngine::initWindow()
 {
 
 }
 
-bool GameEngine::initOpenGL()
+bool ogl::GameEngine::initOpenGL()
 {
    //glEnable(GL_DEPTH_TEST);
 
    return true;
 }
 
-void GameEngine::initCamera()
+void ogl::GameEngine::initCamera()
 {
    m_camera = ogl::Camera(
       glm::perspective(60.0f, 4.0f / 3.0f, 0.1f, 1000.0f),
@@ -300,7 +310,7 @@ void GameEngine::initCamera()
    );
 }
 
-void GameEngine::initLights()
+void ogl::GameEngine::initLights()
 {
    //auto error = glGetError();
 
@@ -342,7 +352,7 @@ void GameEngine::initLights()
    //error = glGetError();
 }
 
-void GameEngine::initGeometry()
+void ogl::GameEngine::initGeometry()
 {
    //m_shapes.push_back(
    //   std::make_unique<Square>(
@@ -360,11 +370,11 @@ void GameEngine::initGeometry()
    //      "shader/Simple.vs",
    //      "shader/Simple.fs",
    //      ogl::Colors::Green));
-   m_shapes.push_back(
-      std::make_unique<Hexagon>(
-         "shader/Texture.vs",
-         "shader/Texture.fs",
-         "images/container.jpg"));
+   //m_shapes.push_back(
+   //   std::make_unique<Hexagon>(
+   //      "shader/Texture.vs",
+   //      "shader/Texture.fs",
+   //      "images/container.jpg"));
 
    //m_shapes.push_back(
    //   std::make_unique<Rectangle>(
@@ -380,7 +390,7 @@ void GameEngine::initGeometry()
    //      "images/container.jpg"));
 }
 
-ogl::Size GameEngine::getWindowSize()
+ogl::Size ogl::GameEngine::getWindowSize()
 {
    int width{ 0 };
    int height{ 0 };
