@@ -5,18 +5,12 @@
 Square::Square(std::string_view vertex, 
    std::string_view fragment, std::string_view texture) 
 {
-   ogl::Vertex vertex1{ +1.0f, +1.0f, 0.f };
-   ogl::Vertex vertex2{ +1.0f, -1.0f, 0.f };
-   ogl::Vertex vertex3{ -1.0f, -1.0f, 0.f };
-   ogl::Vertex vertex4{ -1.0f, +1.0f, 0.f };
-
-   appendElement(makeElement(vertex1));
-   appendElement(makeElement(vertex2));
-   appendElement(makeElement(vertex3));
-   appendElement(makeElement(vertex4));
+   append(create({ +1.0f, +1.0f, 0.f }, { 1.0f, 1.0f }));
+   append(create({ +1.0f, -1.0f, 0.f }, { 1.0f, 0.0f }));
+   append(create({ -1.0f, -1.0f, 0.f }, { 0.0f, 0.0f }));
+   append(create({ -1.0f, +1.0f, 0.f }, { 0.0f, 1.0f }));
 
    bindBuffer({ 0u, 1u, 3u, 1u, 2u, 3u });
-
    createShaders(vertex, fragment);
    createTexture(texture);
 }
@@ -24,19 +18,12 @@ Square::Square(std::string_view vertex,
 Square::Square(std::string_view vertex
    , std::string_view fragment, ogl::Color color)
 {
-   ogl::Vertex vertex1{ +1.0f, +1.0f, 0.f };
-   ogl::Vertex vertex2{ +1.0f, -1.0f, 0.f };
-   ogl::Vertex vertex3{ -1.0f, -1.0f, 0.f };
-   ogl::Vertex vertex4{ -1.0f, +1.0f, 0.f };
-
-   defaultColor(color);
-   appendElement(makeElement(vertex1));
-   appendElement(makeElement(vertex2));
-   appendElement(makeElement(vertex3));
-   appendElement(makeElement(vertex4));
+   append(create({ +1.0f, +1.0f, 0.f }, color));
+   append(create({ +1.0f, -1.0f, 0.f }, color));
+   append(create({ -1.0f, -1.0f, 0.f }, color));
+   append(create({ -1.0f, +1.0f, 0.f }, color));
 
    bindBuffer({ 0u, 1u, 3u, 1u, 2u, 3u });
-
    createShaders(vertex, fragment);
 }
 
@@ -78,14 +65,12 @@ Rectangle::Rectangle(ogl::SizeF size
 {
    auto normal = glm::normalize(size);
 
-   defaultColor(color);
-   appendElement(makeElement({ +normal.x, +normal.y, 0.f }));
-   appendElement(makeElement({ +normal.x, -normal.y, 0.f }));
-   appendElement(makeElement({ -normal.x, -normal.y, 0.f }));
-   appendElement(makeElement({ -normal.x, +normal.y, 0.f }));
+   append(create({ +normal.x, +normal.y, 0.f }, color));
+   append(create({ +normal.x, -normal.y, 0.f }, color));
+   append(create({ -normal.x, -normal.y, 0.f }, color));
+   append(create({ -normal.x, +normal.y, 0.f }, color));
 
    bindBuffer({ 0u, 1u, 3u, 1u, 2u, 3u });
-
    createShaders(vertex, fragment);
 }
 
@@ -96,13 +81,12 @@ Rectangle::Rectangle(ogl::SizeF size
 {
    auto normal = glm::normalize(size);
 
-   appendElement(makeElement({ +normal.x, +normal.y, 0.f }));
-   appendElement(makeElement({ +normal.x, -normal.y, 0.f }));
-   appendElement(makeElement({ -normal.x, -normal.y, 0.f }));
-   appendElement(makeElement({ -normal.x, +normal.y, 0.f }));
+   append(create({ +normal.x, +normal.y, 0.f }, { 1.0f, 1.0f }));
+   append(create({ +normal.x, -normal.y, 0.f }, { 1.0f, 0.0f }));
+   append(create({ -normal.x, -normal.y, 0.f }, { 0.0f, 0.0f }));
+   append(create({ -normal.x, +normal.y, 0.f }, { 0.0f, 1.0f }));
 
    bindBuffer({ 0u, 1u, 3u, 1u, 2u, 3u });
-
    createShaders(vertex, fragment);
    createTexture(texture);
 }
@@ -148,13 +132,12 @@ Hexagon::Hexagon(std::string_view vertex
       return glm::vec3(x, y, 0);
    };
 
-   defaultColor(color);
    ogl::Vertex center{ 0.f };
-   appendElement(makeElement(center));
+   append(create(center, color));
    for (auto angle : { 0.f, 60.f, 120.f, 180.f, 240.f, 300.f })
    {
       auto point{ circlePoint(angle, 1.f) };
-      appendElement(makeElement(point));
+      append(create(point, color));
    }
 
    bindBuffer({ 
@@ -165,8 +148,38 @@ Hexagon::Hexagon(std::string_view vertex
       0u, 5u, 6u,
       0u, 6u, 1u,
    });
-
    createShaders(vertex, fragment);
+}
+
+Hexagon::Hexagon(std::string_view vertex
+   , std::string_view fragment
+   , std::string_view texture)
+{
+   auto circlePoint = [](float angle, float radius) -> glm::vec3
+   {
+      auto x = radius * std::cos(glm::radians(angle));
+      auto y = radius * std::sin(glm::radians(angle));
+      return glm::vec3(x, y, 0);
+   };
+
+   append(create(ogl::Vertex{ 0.f }, { 0.0f, 0.0f }));
+   append(create(circlePoint(000.f, 1.f), { 0.0f, 0.0f }));
+   append(create(circlePoint(060.f, 1.f), { 1.0f, 1.0f }));
+   append(create(circlePoint(120.f, 1.f), { 0.0f, 1.0f }));
+   append(create(circlePoint(180.f, 1.f), { 0.0f, 0.0f }));
+   append(create(circlePoint(240.f, 1.f), { 0.0f, 0.0f }));
+   append(create(circlePoint(300.f, 1.f), { 1.0f, 0.0f }));
+
+   bindBuffer({
+      0u, 1u, 2u,
+      0u, 2u, 3u,
+      0u, 3u, 4u,
+      0u, 4u, 5u,
+      0u, 5u, 6u,
+      0u, 6u, 1u,
+      });
+   createShaders(vertex, fragment);
+   createTexture(texture);
 }
 
 void Hexagon::render() const

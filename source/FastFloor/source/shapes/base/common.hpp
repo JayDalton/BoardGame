@@ -25,6 +25,7 @@ namespace ogl
    using SizeF = glm::vec2;
    using Color = glm::vec4;
    using Vertex = glm::vec3;
+   using Coords = glm::vec2;
 
    struct Colors {
       static constexpr Color White{ 1.0f, 1.0f, 1.0f, 1.0f };

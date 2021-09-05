@@ -50,6 +50,12 @@ public:
       ogl::Color color
    );
 
+   explicit Hexagon(
+      std::string_view vertex,
+      std::string_view fragment,
+      std::string_view texture
+   );
+
    void render() const override;
 
 private:

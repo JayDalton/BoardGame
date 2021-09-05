@@ -46,17 +46,25 @@ namespace ogl
          m_color = color;
       }
 
-      void appendElement(Element element)
+      void append(Element element)
       {
          std::copy(element.cbegin(), element.cend(),
             std::back_inserter(m_vertices));
       };
 
-      Element makeElement(ogl::Vertex vertex)
+      Element create(Vertex vertex, Coords coords)
       {
          return {
             vertex.x, vertex.y, vertex.z,
             m_color.r, m_color.g, m_color.b,
+            coords.x, coords.y 
+         };
+      };
+      Element create(Vertex vertex, Color color)
+      {
+         return {
+            vertex.x, vertex.y, vertex.z,
+            color.r, color.g, color.b,
             0.0f, 0.0f 
          };
       };

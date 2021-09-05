@@ -344,26 +344,40 @@ void GameEngine::initLights()
 
 void GameEngine::initGeometry()
 {
-   m_shapes.push_back(
-      std::make_unique<Square>(
-         "shader/Simple.vs",
-         "shader/Simple.fs",
-         ogl::Colors::Blue));
-   //      "images/container.jpg"
+   //m_shapes.push_back(
+   //   std::make_unique<Square>(
+   //      "shader/Simple.vs",
+   //      "shader/Simple.fs",
+   //      ogl::Colors::Blue));
+   //m_shapes.push_back(
+   //   std::make_unique<Square>(
+   //      "shader/Texture.vs",
+   //      "shader/Texture.fs",
+   //      "images/container.jpg"));
 
+   //m_shapes.push_back(
+   //   std::make_unique<Hexagon>(
+   //      "shader/Simple.vs",
+   //      "shader/Simple.fs",
+   //      ogl::Colors::Green));
    m_shapes.push_back(
       std::make_unique<Hexagon>(
-         "shader/Simple.vs",
-         "shader/Simple.fs",
-         ogl::Colors::Green));
+         "shader/Texture.vs",
+         "shader/Texture.fs",
+         "images/container.jpg"));
 
-   m_shapes.push_back(
-      std::make_unique<Rectangle>(
-         ogl::Size{200, 400},
-         "shader/Simple.vs",
-         "shader/Simple.fs",
-         ogl::Colors::Red
-         ));
+   //m_shapes.push_back(
+   //   std::make_unique<Rectangle>(
+   //      ogl::Size{200, 400},
+   //      "shader/Simple.vs",
+   //      "shader/Simple.fs",
+   //      ogl::Colors::Red));
+   //m_shapes.push_back(
+   //   std::make_unique<Rectangle>(
+   //      ogl::Size{100, 400},
+   //      "shader/Texture.vs",
+   //      "shader/Texture.fs",
+   //      "images/container.jpg"));
 }
 
 ogl::Size GameEngine::getWindowSize()
