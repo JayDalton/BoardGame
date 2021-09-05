@@ -4,19 +4,18 @@
 
 namespace ogl 
 {
-   // texture or colors
-
-   class Texture
+   struct Texture
    {
-   public:
       unsigned int m_id{ 0 };
 
-   public:
-      Texture() = default;
       ~Texture();
+      //Texture() = default;
 
-      explicit Texture(std::filesystem::path path);
-      explicit Texture(Size size, Color color);
+      //explicit Texture(std::filesystem::path path);
+      //explicit Texture(Size size, Color color);
+
+   protected:
+      bool createTexture(std::string_view path);
 
       friend std::ostream& operator<<(std::ostream& os, const Texture& tex);
 

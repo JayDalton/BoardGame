@@ -6,22 +6,22 @@ namespace ogl
 {
    struct Shader
    {
-   public:
-      // the program ID
       unsigned int m_id{ 0 };
 
-      Shader() = default;
-      virtual ~Shader() = default;
+      //Shader() = default;
+      //virtual ~Shader() = default;
 
-      explicit Shader(
+      //explicit Shader(
+      //   std::string_view vertex,
+      //   std::string_view fragment);
+      //explicit Shader(
+      //   std::string_view vertex,
+      //   std::string_view fragment,
+      //   std::string_view geometry);
+
+      bool createShaders(
          std::string_view vertex,
          std::string_view fragment);
-      explicit Shader(
-         std::string_view vertex,
-         std::string_view fragment,
-         std::string_view geometry);
-
-      //virtual void render() const = 0;
 
       // use/activate the shader
       void useShader() const;

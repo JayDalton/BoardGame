@@ -17,9 +17,6 @@ namespace ogl
    struct Ident
    {
       //unsigned int m_id{ 0 };
-      //unsigned int m_VBO{ 0 };
-      //unsigned int m_VAO{ 0 };
-      //unsigned int m_EBO{ 0 };
 
       //Ident() //: m_id(counter++) 
       //{
@@ -63,16 +60,6 @@ namespace ogl
             0.0f, 0.0f 
          };
       };
-
-      Element makeElement(ogl::Vertex vertex, ogl::Color color)
-      {
-         return {
-            vertex.x, vertex.y, vertex.z,
-            color.r, color.g, color.b,
-            0.0f, 0.0f 
-         };
-      };
-
    };
 
   class Shape : 
@@ -86,21 +73,18 @@ namespace ogl
       virtual ~Shape();
       //Shape() = default;
 
-      explicit Shape(
-         std::string_view vertex,
-         std::string_view fragment,
-         std::string_view texture)
-         : Shader(vertex, fragment)
-         , Texture(texture) {}
+      //explicit Shape(
+      //   std::string_view vertex,
+      //   std::string_view fragment)
+      //   : Shader(vertex, fragment) {}
 
-      explicit Shape(
-         std::string_view vertex,
-         std::string_view fragment,
-         Color color = { 1.f, 1.f, 1.f, 1.f })
-         : Shader(vertex, fragment)
-         , Texture({ 1, 1 }, color) {}
+      //explicit Shape(
+      //   std::string_view vertex,
+      //   std::string_view fragment,
+      //   std::string_view texture)
+      //   : Shader(vertex, fragment)
+      //   , Texture(texture) {}
 
-      //virtual void bind() const = 0;
       virtual void render() const = 0;
       //virtual void update() const = 0;
       //virtual void stop() const = 0;

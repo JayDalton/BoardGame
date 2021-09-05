@@ -4,14 +4,11 @@
 
 Square::Square(std::string_view vertex, 
    std::string_view fragment, std::string_view texture) 
-   : ogl::Shape(vertex, fragment, texture)
 {
    ogl::Vertex vertex1{ +1.0f, +1.0f, 0.f };
    ogl::Vertex vertex2{ +1.0f, -1.0f, 0.f };
    ogl::Vertex vertex3{ -1.0f, -1.0f, 0.f };
    ogl::Vertex vertex4{ -1.0f, +1.0f, 0.f };
-
-   //addTexture(texture);
 
    appendElement(makeElement(vertex1));
    appendElement(makeElement(vertex2));
@@ -19,11 +16,13 @@ Square::Square(std::string_view vertex,
    appendElement(makeElement(vertex4));
 
    bindBuffer({ 0u, 1u, 3u, 1u, 2u, 3u });
+
+   createShaders(vertex, fragment);
+   createTexture(texture);
 }
 
 Square::Square(std::string_view vertex
    , std::string_view fragment, ogl::Color color)
-   : ogl::Shape(vertex, fragment, color)
 {
    ogl::Vertex vertex1{ +1.0f, +1.0f, 0.f };
    ogl::Vertex vertex2{ +1.0f, -1.0f, 0.f };
@@ -37,39 +36,9 @@ Square::Square(std::string_view vertex
    appendElement(makeElement(vertex4));
 
    bindBuffer({ 0u, 1u, 3u, 1u, 2u, 3u });
-}
 
-Square::~Square()
-{
-   //glDeleteVertexArrays(1, &m_VAO);
-   //glDeleteBuffers(1, &m_VBO);
-   //glDeleteBuffers(1, &m_EBO);
+   createShaders(vertex, fragment);
 }
-
-//void Square::bind() const
-//{
-//   //glGenVertexArrays(1, &m_VAO);
-//   //glGenBuffers(1, &m_VBO);
-//   //glGenBuffers(1, &m_EBO);
-//
-//   //glBindVertexArray(m_VAO);
-//
-//   //glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-//   //glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertices), m_vertices.data(), GL_STATIC_DRAW);
-//
-//   //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-//   //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices), m_indices.data(), GL_STATIC_DRAW);
-//
-//   //// position attribute
-//   //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-//   //glEnableVertexAttribArray(0);
-//   //// color attribute
-//   //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-//   //glEnableVertexAttribArray(1);
-//   //// texture coord attribute
-//   //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-//   //glEnableVertexAttribArray(2);
-//}
 
 void Square::render() const
 {
@@ -102,18 +71,10 @@ void Square::render() const
 
 // #########################################################
 
-Rectangle::~Rectangle()
-{
-   //glDeleteVertexArrays(1, &m_VAO);
-   //glDeleteBuffers(1, &m_VBO);
-   //glDeleteBuffers(1, &m_EBO);
-}
-
 Rectangle::Rectangle(ogl::SizeF size
    , std::string_view vertex
    , std::string_view fragment
    , ogl::Color color)
-   : ogl::Shape(vertex, fragment, color), m_size(size)
 {
    auto normal = glm::normalize(size);
 
@@ -124,52 +85,27 @@ Rectangle::Rectangle(ogl::SizeF size
    appendElement(makeElement({ -normal.x, +normal.y, 0.f }));
 
    bindBuffer({ 0u, 1u, 3u, 1u, 2u, 3u });
+
+   createShaders(vertex, fragment);
 }
 
-Rectangle::Rectangle(ogl::SizeF size, std::string_view vertex, 
-   std::string_view fragment, std::string_view texture)
-   : ogl::Shape(vertex, fragment, texture), m_size()
+Rectangle::Rectangle(ogl::SizeF size
+   , std::string_view vertex
+   , std::string_view fragment
+   , std::string_view texture)
 {
    auto normal = glm::normalize(size);
 
-   // textur coords ???
    appendElement(makeElement({ +normal.x, +normal.y, 0.f }));
    appendElement(makeElement({ +normal.x, -normal.y, 0.f }));
    appendElement(makeElement({ -normal.x, -normal.y, 0.f }));
    appendElement(makeElement({ -normal.x, +normal.y, 0.f }));
 
    bindBuffer({ 0u, 1u, 3u, 1u, 2u, 3u });
-}
 
-ogl::Size Rectangle::getSize() const
-{
-   return m_size;
+   createShaders(vertex, fragment);
+   createTexture(texture);
 }
-
-//void Rectangle::bind() const
-//{
-//   glGenVertexArrays(1, &m_VAO);
-//   glGenBuffers(1, &m_VBO);
-//   glGenBuffers(1, &m_EBO);
-//
-//   glBindVertexArray(m_VAO);
-//
-//   glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-//   glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertices), m_vertices.data(), GL_STATIC_DRAW);
-//
-//   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-//   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices), m_indices.data(), GL_STATIC_DRAW);
-//
-//   // position attribute
-//   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-//   glEnableVertexAttribArray(0);
-//   // color attribute
-//   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-//   glEnableVertexAttribArray(1);
-//   // texture coord attribute
-//   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-//   glEnableVertexAttribArray(2);
-//}
 
 void Rectangle::render() const
 {
@@ -202,16 +138,8 @@ void Rectangle::render() const
 
 // #########################################################
 
-Hexagon::~Hexagon()
-{
-   //glDeleteVertexArrays(1, &m_VAO);
-   //glDeleteBuffers(1, &m_VBO);
-   //glDeleteBuffers(1, &m_EBO);
-}
-
 Hexagon::Hexagon(std::string_view vertex
    , std::string_view fragment, ogl::Color color)
-   : ogl::Shape(vertex, fragment, color)
 {
    auto circlePoint = [](float angle, float radius) -> glm::vec3
    {
@@ -220,12 +148,13 @@ Hexagon::Hexagon(std::string_view vertex
       return glm::vec3(x, y, 0);
    };
 
+   defaultColor(color);
    ogl::Vertex center{ 0.f };
-   appendElement(makeElement(center, color));
+   appendElement(makeElement(center));
    for (auto angle : { 0.f, 60.f, 120.f, 180.f, 240.f, 300.f })
    {
       auto point{ circlePoint(angle, 1.f) };
-      appendElement(makeElement(point, color));
+      appendElement(makeElement(point));
    }
 
    bindBuffer({ 
@@ -236,32 +165,9 @@ Hexagon::Hexagon(std::string_view vertex
       0u, 5u, 6u,
       0u, 6u, 1u,
    });
-}
 
-//void Hexagon::bind() const
-//{
-//   glGenVertexArrays(1, &m_VAO);
-//   glGenBuffers(1, &m_VBO);
-//   glGenBuffers(1, &m_EBO);
-//
-//   glBindVertexArray(m_VAO);
-//
-//   glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-//   glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertices), m_vertices.data(), GL_STATIC_DRAW);
-//
-//   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-//   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices), m_indices.data(), GL_STATIC_DRAW);
-//
-//   // position attribute
-//   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-//   glEnableVertexAttribArray(0);
-//   // color attribute
-//   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-//   glEnableVertexAttribArray(1);
-//   // texture coord attribute
-//   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-//   glEnableVertexAttribArray(2);
-//}
+   createShaders(vertex, fragment);
+}
 
 void Hexagon::render() const
 {
