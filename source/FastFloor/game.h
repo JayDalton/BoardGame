@@ -2,7 +2,9 @@
 
 #include "source/engine.h"
 
-class FastFloor : public GameEngine
+#include "model.h"
+
+class FastFloor : public ogl::GameEngine
 {
 public:
    FastFloor(std::string_view title);
@@ -12,4 +14,8 @@ public:
    bool updateUser() override;
 
 private:
+
+   // Grid Spielfeld
+   // 
+   GameModel m_model;
 };
