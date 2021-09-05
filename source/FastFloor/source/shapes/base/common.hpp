@@ -27,6 +27,8 @@ namespace ogl
    using Vertex = glm::vec3;
 
    struct Colors {
+      static constexpr Color White{ 1.0f, 1.0f, 1.0f, 1.0f };
+      static constexpr Color Black{ 0.0f, 0.0f, 0.0f, 1.0f };
       static constexpr Color Red{ 1.0f, 0.0f, 0.0f, 1.0f };
       static constexpr Color Green{ 0.0f, 1.0f, 0.0f, 1.0f };
       static constexpr Color Blue{ 0.0f, 0.0f, 1.0f, 1.0f };
