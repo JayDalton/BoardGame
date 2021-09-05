@@ -61,35 +61,36 @@ void HexagonalPrism::render() const
    //glActiveTexture(GL_TEXTURE1);
    //glBindTexture(GL_TEXTURE_2D, Texture::m_id2);
 
-   // // create transformations
-   //glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-   //glm::mat4 projection = glm::mat4(1.0f);
-   //projection = glm::perspective(glm::radians(45.0f), (float)800 / (float)600, 0.1f, 100.0f);
-   //view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-
-   // create transformations
-   //glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-   //transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
-   //transform = glm::rotate(transform, glm::radians(45.f), glm::vec3(0.0f, 0.0f, 1.0f));
-
    // render container
    Shader::useShader();
 
-   // create transformations
-   glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-   glm::mat4 view = glm::mat4(1.0f);
-   glm::mat4 projection = glm::mat4(1.0f);
-   //model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-   //view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-   //projection = glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 100.0f);
+   glm::vec3 cubePositions[] = {
+      glm::vec3(0.0f,  0.0f, 0.0f),
+      glm::vec3(2.0f,  2.0f, 0.0f),
+      glm::vec3(4.0f,  4.0f, 0.0f),
+   };
 
-   Shader::setMat4("projection", projection);
-   Shader::setMat4("model", model);
-   Shader::setMat4("view", view);
+   for (const auto& pos : cubePositions)
+   {
+      // create transformations
+      glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+      glm::mat4 view = glm::mat4(1.0f);
+      glm::mat4 projection = glm::mat4(1.0f);
+      //model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+      model = glm::translate(model, pos);
+      view = glm::translate(view, glm::vec3(0.0f, 0.0f, -13.0f));
+      projection = glm::perspective(
+         glm::radians(45.0f), 
+         800.f / 600.f,          // wie funktioniert das?
+         0.1f, 100.0f);
 
-   glBindVertexArray(m_VAO);
-   //glDrawElements(GL_LINE_STRIP, m_indices.size(), GL_UNSIGNED_INT, 0);
-   glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+      Shader::setMat4("projection", projection);
+      Shader::setMat4("model", model);
+      Shader::setMat4("view", view);
+
+      glBindVertexArray(m_VAO);
+      glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+   }
 }
 
 
