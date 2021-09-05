@@ -26,7 +26,17 @@ namespace ogl
       {
          auto x = radius * std::cos(glm::radians(angle));
          auto y = radius * std::sin(glm::radians(angle));
-         return glm::vec3(x, y, 0);
+         return Vertex(x, y, 0);
+      };
+      static Vertex circlePoint(Vertex center, float angle, float radius)
+      {
+         auto x = center.x + radius * std::cos(glm::radians(angle));
+         auto y = center.y + radius * std::sin(glm::radians(angle));
+         return Vertex(x, y, center.z);
+      };
+      static Coords texPoint(Vertex vertex, Coords base)
+      {
+         return (ogl::Coords(vertex) + base) * 0.5f;
       };
    };
 
@@ -54,6 +64,16 @@ namespace ogl
 
       Element create(Vertex vertex, Coords coords)
       {
+         return {
+            vertex.x, vertex.y, vertex.z,
+            m_color.r, m_color.g, m_color.b,
+            coords.x, coords.y 
+         };
+      };
+      Element create(Coords uvBase, Vertex vertex)
+      {
+         auto coords{ (ogl::Coords(vertex) - uvBase) * 0.5f };
+
          return {
             vertex.x, vertex.y, vertex.z,
             m_color.r, m_color.g, m_color.b,

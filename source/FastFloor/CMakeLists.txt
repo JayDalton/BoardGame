@@ -49,6 +49,7 @@ target_sources(${PROJECT_NAME} PRIVATE
    "shader/Camera.vs"
    "shader/Complex.fs"
    "shader/Complex.vs"
+   "shader/Colored.fs"
    "shader/Coords.fs"
    "shader/Coords.vs"
    "shader/Simple.fs"

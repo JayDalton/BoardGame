@@ -11,17 +11,22 @@ FastFloor::FastFloor(std::string_view title)
 bool FastFloor::createUser()
 {
    //m_shapes.push_back(
-   //   std::make_unique<ogl::Hexagon>(
-   //      "shader/Simple.vs",
-   //      "shader/Simple.fs",
-   //      ogl::Colors::Green));
+   //   std::make_unique<HexagonalPrism>(
+   //      "shader/Complex.vs",
+   //      "shader/Colored.fs",
+   //      ogl::Colors::Blue));
 
    m_shapes.push_back(
       std::make_unique<HexagonalPrism>(
-         "shader/Simple.vs",
-         "shader/Simple.fs",
-         ogl::Colors::Green));
+         "shader/Complex.vs",
+         "shader/Complex.fs",
+         "images/container.jpg"));
 
+   //m_shapes.push_back(
+   //   std::make_unique<HexagonalPrism>(
+   //      "shader/Complex.vs",
+   //      "shader/Complex.fs",
+   //      "images/awesomeface.png"));
 
    return true;
 }

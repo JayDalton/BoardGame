@@ -144,7 +144,7 @@ void ogl::GameEngine::OnReceiveLocal()
 {
    float cameraSpeed = 0.0;// m_deltaTime * 2.5;
 
-   std::cout << std::format("DeltaTime: {}", m_deltaTime) << std::endl;
+   //std::cout << std::format("DeltaTime: {}", m_deltaTime) << std::endl;
 
    SDL_Event event;
    while (SDL_PollEvent(&event))
