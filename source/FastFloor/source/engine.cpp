@@ -6,12 +6,31 @@
 
 ogl::Size getWindowSize(SDL_Window* window)
 {
+   //struct Size
+   //{
+   //   int x{ 0 }, y{ 0 };
+   //} size, draw;
+
+   std::pair<int, int> size;
+   std::pair<int, int> draw;
+
    int width{ 0 };
    int height{ 0 };
+   int width2{ 0 };
+   int height2{ 0 };
 
-   SDL_GetWindowSize(window, &width, &height);
+   //SDL_GetWindowSize(window, &width, &height);
+   //SDL_GL_GetDrawableSize(window, &width2, &height2);
+   SDL_GetWindowSize(window, &size.first, &size.second);
+   SDL_GL_GetDrawableSize(window, &draw.first, &draw.second);
 
-   return { width, height };
+   if (size != draw)
+   {
+      SDL_Log("XX: %d|%d - %d|%d", size.first, size.second, draw.first, draw.second);
+   }
+
+   return { size.first, size.second };
+   //return { width, height };
 }
 
 void updateViewport(SDL_Window* window)
@@ -180,6 +199,9 @@ void ogl::GameEngine::OnReceiveLocal()
 
       case SDL_WINDOWEVENT:
          switch (event.window.event) {
+         case SDL_WINDOWEVENT_SHOWN:
+            m_windowSize = { event.window.data1, event.window.data2 };
+            break;
          case SDL_WINDOWEVENT_SIZE_CHANGED:
             //::updateViewport(m_window.get());
             m_windowSize = { event.window.data1, event.window.data2 };
