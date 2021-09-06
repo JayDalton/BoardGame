@@ -4,6 +4,27 @@
 //#include "shapes/cuboid.hpp"
 #include "shapes/rectangle.hpp"
 
+ogl::Size getWindowSize(SDL_Window* window)
+{
+   int width{ 0 };
+   int height{ 0 };
+
+   SDL_GetWindowSize(window, &width, &height);
+
+   return { width, height };
+}
+
+void updateViewport(SDL_Window* window)
+{
+   int viewportWidth{ 0 };
+   int viewportHeight{ 0 };
+
+   SDL_GL_GetDrawableSize(window, &viewportWidth, &viewportHeight);
+   SDL_Log("OpenGL WindowRenderSize: %d x %d", viewportWidth, viewportHeight);
+
+   glViewport(0, 0, viewportWidth, viewportHeight);
+}
+
 ogl::GameEngine::GameEngine(std::string_view title)
    : m_title(title), m_system(sdl2::make_sdlsystem(SDL_INIT_VIDEO | SDL_INIT_TIMER))
 {
@@ -54,6 +75,8 @@ bool ogl::GameEngine::construct(int width, int height)
       return false;
    }
 
+   ::updateViewport(m_window.get());
+
    //Use Vsync
    if (SDL_GL_SetSwapInterval(1) < 0)
    {
@@ -74,8 +97,7 @@ bool ogl::GameEngine::construct(int width, int height)
       return false;
    }
 
-   //glEnable(GL_DEPTH_TEST);
-
+   //initOpenGL();
    initCamera();
    //initLights();
    initGeometry();
@@ -114,14 +136,13 @@ void ogl::GameEngine::start()
       }
 
       OnReceiveLocal();
-      OnReceiveServer();
+      OnReceiveRemote();
 
       //updateUser();
       OnUpdateWorld(getDuration(m_lastTime));
 
       // Renderziel
       OnRenderWorld();
-
 
       SDL_GL_SwapWindow(m_window.get());
 
@@ -157,8 +178,24 @@ void ogl::GameEngine::OnReceiveLocal()
          m_running = false;
          break;
 
+      case SDL_WINDOWEVENT:
+         switch (event.window.event) {
+         case SDL_WINDOWEVENT_SIZE_CHANGED:
+            //::updateViewport(m_window.get());
+            m_windowSize = { event.window.data1, event.window.data2 };
+            SDL_Log("Window size changed: %d x %d", m_windowSize.x, m_windowSize.y);
+            break;
+         case SDL_WINDOWEVENT_ENTER:
+            SDL_Log("Mouse entered window %d",
+               event.window.windowID);
+            break;
+         case SDL_WINDOWEVENT_LEAVE:
+            SDL_Log("Mouse left window %d", event.window.windowID);
+            break;
+         }
+         break;
+
       case SDL_KEYDOWN:
-         // keyboard API for key pressed
          switch (event.key.keysym.scancode) {
          case SDL_SCANCODE_ESCAPE:
             m_running = false;
@@ -238,7 +275,7 @@ void ogl::GameEngine::OnReceiveLocal()
    }
 }
 
-void ogl::GameEngine::OnReceiveServer()
+void ogl::GameEngine::OnReceiveRemote()
 {
 }
 
@@ -252,9 +289,14 @@ void ogl::GameEngine::OnUpdateWorld(Duration duration)
 
 void ogl::GameEngine::OnRenderWorld()
 {
-   //// MainWindow
-   auto size = getWindowSize();
-   glViewport(0, 0, size.x, size.y);
+   // MainWindow
+   if (m_windowSize != getWindowSize())
+   {
+      updateViewport(m_window.get());
+   }
+   //auto size = getWindowSize();
+   //glViewport(0, 0, size.x, size.y);
+   //glViewport(0, 0, m_windowSize.x, m_windowSize.y);
 
    // Hintergrund
    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -286,11 +328,12 @@ void ogl::GameEngine::initWindow()
 
 }
 
-bool ogl::GameEngine::initOpenGL()
+void ogl::GameEngine::initOpenGL()
 {
-   //glEnable(GL_DEPTH_TEST);
-
-   return true;
+   glClearDepthf(1.0f);
+   glEnable(GL_DEPTH_TEST);
+   glDepthFunc(GL_LEQUAL);
+   glEnable(GL_CULL_FACE);
 }
 
 void ogl::GameEngine::initCamera()

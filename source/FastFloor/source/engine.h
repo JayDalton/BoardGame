@@ -39,24 +39,6 @@ protected:
 
    Duration getDuration(const SteadyClock::time_point& start);
 
-private:
-   void OnReceiveLocal();
-   void OnReceiveServer();
-   
-   void OnUpdateWorld(Duration duration);
-   void OnRenderWorld();
-   void OnRemoveWorld();
-
-   void initWindow();
-   bool initOpenGL();
-   void initCamera();
-   void initLights();
-
-   void initTextures();
-   void initGeometry();
-
-   ogl::Size getWindowSize();
-
 protected:
 
    struct MouseInfo 
@@ -79,9 +61,30 @@ protected:
    ogl::Camera m_screen;
 
 private:
+   void OnReceiveLocal();
+   void OnReceiveRemote();
+   
+   void OnUpdateWorld(Duration duration);
+   void OnRenderWorld();
+   void OnRemoveWorld();
+
+   void initWindow();
+   void initOpenGL();
+   void initCamera();
+   void initLights();
+
+   void initTextures();
+   void initGeometry();
+
+   ogl::Size getWindowSize();
+
+private:
    std::string m_title;
    bool m_running{ true };
    unsigned m_frames{ 0 };
+
+   ogl::Size m_renderSize{0, 0};
+   ogl::Size m_windowSize{0, 0};
 
    bool m_rendering{ true };
 
