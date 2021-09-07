@@ -2,6 +2,10 @@
 
 auto main(int, char* []) -> int
 {
+   // Pimpl
+   FastGame fast;
+
+
    FastFloor game("FastFloor");
    if (game.construct(800, 600))
    {
