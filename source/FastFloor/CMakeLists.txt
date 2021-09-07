@@ -3,11 +3,10 @@ cmake_minimum_required(VERSION 3.20)
 project(FastFloor CXX)
 message(STATUS ${PROJECT_NAME})
 
-find_package(fmt CONFIG REQUIRED)
+# glm + spdlog + imgui ?
 find_package(glm CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 
-# glm + imgui + spdlog
 find_package(GLEW CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
 
@@ -32,10 +31,8 @@ add_custom_command(
 #      ${CMAKE_CURRENT_BINARY_DIR}/input.txt)
 
 target_link_libraries(${PROJECT_NAME} 
-   fmt::fmt SDL2::SDL2 SDL2::SDL2main glm::glm GLEW::GLEW 
+   SDL2::SDL2 SDL2::SDL2main glm::glm GLEW::GLEW 
 )
-
-#configure_file("shader/Camera.fs" "shader/Camera.fs" COPYONLY)
 
 target_sources(${PROJECT_NAME} PRIVATE
    "images/awesomeface.png"
