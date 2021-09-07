@@ -6,42 +6,29 @@
 
 ogl::Size getWindowSize(SDL_Window* window)
 {
-   //struct Size
-   //{
-   //   int x{ 0 }, y{ 0 };
-   //} size, draw;
+   ogl::Size size, draw;
 
-   std::pair<int, int> size;
-   std::pair<int, int> draw;
-
-   int width{ 0 };
-   int height{ 0 };
-   int width2{ 0 };
-   int height2{ 0 };
-
-   //SDL_GetWindowSize(window, &width, &height);
-   //SDL_GL_GetDrawableSize(window, &width2, &height2);
-   SDL_GetWindowSize(window, &size.first, &size.second);
-   SDL_GL_GetDrawableSize(window, &draw.first, &draw.second);
+   SDL_GetWindowSize(window, &size.x, &size.y);
+   SDL_GL_GetDrawableSize(window, &draw.x, &draw.y);
 
    if (size != draw)
    {
-      SDL_Log("XX: %d|%d - %d|%d", size.first, size.second, draw.first, draw.second);
+      SDL_Log("XX: %d|%d - %d|%d", size.x, size.y, draw.x, draw.y);
    }
 
-   return { size.first, size.second };
-   //return { width, height };
+   return size;
 }
 
-void updateViewport(SDL_Window* window)
+ogl::Size updateViewport(SDL_Window* window)
 {
-   int viewportWidth{ 0 };
-   int viewportHeight{ 0 };
+   //const auto [width, height] = getWindowSize(window);
+   const auto size{ getWindowSize(window) };
 
-   SDL_GL_GetDrawableSize(window, &viewportWidth, &viewportHeight);
-   SDL_Log("OpenGL WindowRenderSize: %d x %d", viewportWidth, viewportHeight);
+   SDL_Log("OpenGL WindowRenderSize: %d x %d", size.x, size.y);
 
-   glViewport(0, 0, viewportWidth, viewportHeight);
+   glViewport(0, 0, size.x, size.y);
+
+   return size;
 }
 
 ogl::GameEngine::GameEngine(std::string_view title)
@@ -68,7 +55,7 @@ bool ogl::GameEngine::construct(int width, int height)
 
    if (auto win = sdl2::make_window(m_title.data(), 
       SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 
-      { SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL }))
+      { SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI /*| SDL_WINDOW_RESIZABLE*/ }))
    {
       m_window = std::move(win); // Context ???
    }
@@ -94,7 +81,8 @@ bool ogl::GameEngine::construct(int width, int height)
       return false;
    }
 
-   ::updateViewport(m_window.get());
+   //initOpenGL();
+   m_windowSize = updateViewport(m_window.get());
 
    //Use Vsync
    if (SDL_GL_SetSwapInterval(1) < 0)
@@ -116,7 +104,6 @@ bool ogl::GameEngine::construct(int width, int height)
       return false;
    }
 
-   //initOpenGL();
    initCamera();
    //initLights();
    initGeometry();
@@ -203,8 +190,8 @@ void ogl::GameEngine::OnReceiveLocal()
             m_windowSize = { event.window.data1, event.window.data2 };
             break;
          case SDL_WINDOWEVENT_SIZE_CHANGED:
-            //::updateViewport(m_window.get());
             m_windowSize = { event.window.data1, event.window.data2 };
+            //m_windowSize = ::updateViewport(m_window.get());
             SDL_Log("Window size changed: %d x %d", m_windowSize.x, m_windowSize.y);
             break;
          case SDL_WINDOWEVENT_ENTER:
@@ -312,10 +299,10 @@ void ogl::GameEngine::OnUpdateWorld(Duration duration)
 void ogl::GameEngine::OnRenderWorld()
 {
    // MainWindow
-   if (m_windowSize != getWindowSize())
-   {
-      updateViewport(m_window.get());
-   }
+   //if (m_windowSize != getWindowSize())
+   //{
+   //   updateViewport(m_window.get());
+   //}
    //auto size = getWindowSize();
    //glViewport(0, 0, size.x, size.y);
    //glViewport(0, 0, m_windowSize.x, m_windowSize.y);
@@ -455,12 +442,12 @@ void ogl::GameEngine::initGeometry()
    //      "images/container.jpg"));
 }
 
-ogl::Size ogl::GameEngine::getWindowSize()
-{
-   int width{ 0 };
-   int height{ 0 };
-
-   SDL_GL_GetDrawableSize(m_window.get(), &width, &height);
-
-   return { width, height };
-}
+//ogl::Size ogl::GameEngine::getWindowSize()
+//{
+//   int width{ 0 };
+//   int height{ 0 };
+//
+//   SDL_GL_GetDrawableSize(m_window.get(), &width, &height);
+//
+//   return { width, height };
+//}

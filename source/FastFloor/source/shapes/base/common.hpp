@@ -21,11 +21,17 @@
 
 namespace ogl
 {
-   using Size = glm::u32vec2;
+   //using Size = glm::u32vec2;
    using SizeF = glm::vec2;
    using Color = glm::vec4;
    using Vertex = glm::vec3;
    using Coords = glm::vec2;
+
+   struct Size
+   {
+      int x{ 0 }, y{ 0 };
+      auto operator<=>(const Size&) const = default;
+   };
 
    struct Colors {
       static constexpr Color White{ 1.0f, 1.0f, 1.0f, 1.0f };

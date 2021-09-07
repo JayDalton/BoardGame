@@ -76,7 +76,7 @@ private:
    void initTextures();
    void initGeometry();
 
-   ogl::Size getWindowSize();
+   //ogl::Size getWindowSize();
 
 private:
    std::string m_title;
