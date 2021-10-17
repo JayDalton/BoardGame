@@ -8,17 +8,6 @@ namespace ogl
    {
       unsigned int m_id{ 0 };
 
-      //Shader() = default;
-      //virtual ~Shader() = default;
-
-      //explicit Shader(
-      //   std::string_view vertex,
-      //   std::string_view fragment);
-      //explicit Shader(
-      //   std::string_view vertex,
-      //   std::string_view fragment,
-      //   std::string_view geometry);
-
       bool createShaders(
          std::string_view vertex,
          std::string_view fragment);
