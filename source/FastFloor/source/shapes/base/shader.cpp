@@ -116,7 +116,7 @@ void ogl::Shader::setMat4(const std::string& name, const glm::mat4& mat) const
 void ogl::Shader::checkCompileErrors(unsigned int shader, Type type)
 {
    int success{ false };
-   GLint messageLength;
+   GLint messageLength{ 1000 };
    std::vector<char> message(messageLength + 1);
 
    switch (type)
@@ -131,7 +131,7 @@ void ogl::Shader::checkCompileErrors(unsigned int shader, Type type)
             message.reserve(messageLength + 1);
             glGetShaderInfoLog(shader, messageLength, nullptr, &message[0]);
             std::cout << std::format(
-               "Shader failed to compile: {} {}\n", static_cast<int>(type), message, 
+               "Shader failed to compile: {} {} {}\n", static_cast<int>(type), message.data(),
                "\n -- --------------------------------------------------- -- ") << std::endl;
          }
       }
@@ -144,12 +144,9 @@ void ogl::Shader::checkCompileErrors(unsigned int shader, Type type)
             message.reserve(messageLength + 1);
             glGetProgramInfoLog(shader, messageLength, nullptr, &message[0]);
             std::cout << std::format(
-               "Program failed to compile: {} {}\n", static_cast<int>(type), message, 
+               "Program failed to compile: {} {}\n", static_cast<int>(type), message.data(), 
                "\n -- --------------------------------------------------- -- ") << std::endl;
          }
-
-
-         throw std::runtime_error("Shader program failed to compile.");
       }
       return;
    default:
