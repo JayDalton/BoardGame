@@ -37,3 +37,4 @@ SET(SDL2PP_WITH_TTF ON) # if you need SDL_ttf support
 add_subdirectory(source/FastFloor)
 #add_subdirectory(source/LudoBoard)
 #add_subdirectory(source/WallPaint)
+add_subdirectory(source/WasmPaint)
