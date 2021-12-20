@@ -35,5 +35,8 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 target_sources(${PROJECT_NAME} PRIVATE
+#   "source/engine.cpp" 
+#   "source/engine.h"
+   "source/sdl2.h"
    "main.cpp"
 )
