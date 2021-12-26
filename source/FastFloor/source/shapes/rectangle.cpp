@@ -177,10 +177,15 @@ void ogl::Hexagon::render() const
    //glBindTexture(GL_TEXTURE_2D, Texture::m_id2);
 
    // // create transformations
-   //glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+   glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
    //glm::mat4 projection = glm::mat4(1.0f);
    //projection = glm::perspective(glm::radians(45.0f), (float)800 / (float)600, 0.1f, 100.0f);
    //view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+   view = glm::lookAt(
+      glm::vec3(0.0f, 0.0f, 3.0f),
+      glm::vec3(0.0f, 0.0f, 0.0f),
+      glm::vec3(0.0f, 1.0f, 0.0f)
+   );
 
    // create transformations
    //glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
@@ -190,7 +195,7 @@ void ogl::Hexagon::render() const
    // render container
    Shader::useShader();
    //Shader::setMat4("transform", transform);
-   //Shader::setMat4("view", view);
+   Shader::setMat4("view", view);
 
    glBindVertexArray(m_VAO);
    //glDrawElements(GL_LINE_STRIP, m_indices.size(), GL_UNSIGNED_INT, 0);

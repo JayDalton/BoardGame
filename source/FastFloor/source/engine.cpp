@@ -226,6 +226,12 @@ void ogl::GameEngine::OnReceiveLocal()
             m_cameraPos += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed;
             break;
          default:
+            std::cout 
+               << "Code: " << event.key.keysym.scancode 
+               << " Sym: " << event.key.keysym.sym 
+               << " Sym: " << SDL_GetScancodeName(event.key.keysym.scancode)
+               << " Sym: " << SDL_GetKeyName(event.key.keysym.sym)
+               << std::endl;
             break;
          }
          break;
