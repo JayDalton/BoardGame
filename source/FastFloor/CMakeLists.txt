@@ -60,6 +60,8 @@ target_sources(${PROJECT_NAME} PRIVATE
    "source/objects/camera.hpp"
 
    "source/shapes/base/common.hpp"
+   "source/shapes/base/mesh.cpp"
+   "source/shapes/base/mesh.hpp"
    "source/shapes/base/shader.cpp"
    "source/shapes/base/shader.hpp"
    "source/shapes/base/texture.cpp"
