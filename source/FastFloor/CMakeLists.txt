@@ -62,6 +62,8 @@ target_sources(${PROJECT_NAME} PRIVATE
    "source/shapes/base/common.hpp"
    "source/shapes/base/mesh.cpp"
    "source/shapes/base/mesh.hpp"
+   "source/shapes/base/model.cpp"
+   "source/shapes/base/model.hpp"
    "source/shapes/base/shader.cpp"
    "source/shapes/base/shader.hpp"
    "source/shapes/base/texture.cpp"
