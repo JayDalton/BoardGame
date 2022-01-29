@@ -10,6 +10,8 @@ find_package(spdlog CONFIG REQUIRED)
 find_package(GLEW CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
 
+find_package(Assimp CONFIG REQUIRED)
+
 add_executable(${PROJECT_NAME}) # WIN32
 
 add_custom_command(
