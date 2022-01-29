@@ -32,7 +32,7 @@ ogl::Size updateViewport(SDL_Window* window)
 }
 
 ogl::GameEngine::GameEngine(std::string_view title)
-   : m_title(title), m_system(sdl2::make_sdlsystem(SDL_INIT_VIDEO | SDL_INIT_TIMER))
+   : m_title(title)
 {
 
 }
@@ -41,8 +41,8 @@ bool ogl::GameEngine::construct(int width, int height)
 {
    using std::cout;
    using std::endl;
-
-   if (m_system == nullptr)
+   
+   if (!(m_system = sdl2::make_sdlsystem(SDL_INIT_VIDEO | SDL_INIT_TIMER)))
    {
       cout << "Error creating SDL2 system: " << SDL_GetError() << endl;
       return false;
@@ -52,26 +52,29 @@ bool ogl::GameEngine::construct(int width, int height)
    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+   const char* glsl_version = "#version 150";
 
-   if (auto win = sdl2::make_window(m_title.data(), 
+   // Create window with graphics context
+   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+   SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+
+   if (!(m_window = sdl2::make_window(m_title.data(), 
       SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 
-      { SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI /*| SDL_WINDOW_RESIZABLE*/ }))
-   {
-      m_window = std::move(win); // Context ???
-   }
-
-   if (!m_window)
+      { SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI /*| SDL_WINDOW_RESIZABLE*/ })))
    {
       cout << "Error creating window: " << SDL_GetError() << endl;
       return false;
    }
 
-   m_context = SDL_GL_CreateContext(m_window.get());
-   if (!m_context)
+   if (!(m_context = SDL_GL_CreateContext(m_window.get())))
    {
       cout << "Error creating context: " << SDL_GetError() << endl;
       return false;
    }
+
+   SDL_GL_MakeCurrent(m_window.get(), m_context);
+   SDL_GL_SetSwapInterval(1); // Enable vsync
 
    /* Loading Extensions */
    glewExperimental = GL_TRUE;
@@ -81,34 +84,13 @@ bool ogl::GameEngine::construct(int width, int height)
       return false;
    }
 
-   //initOpenGL();
-   m_windowSize = updateViewport(m_window.get());
-
-   //Use Vsync
-   if (SDL_GL_SetSwapInterval(1) < 0)
-   {
-      cout << "Warning: Unable to set VSync! SDL Error: " << SDL_GetError() << endl;
-      return false;
-   }
-
    Uint32 renderFlags{ SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC };
 
-   if (auto ren = sdl2::make_renderer(m_window.get(), -1, renderFlags))
-   {
-      m_render = std::move(ren);
-   }
-
-   if (!m_render)
+   if (!(m_render = sdl2::make_renderer(m_window.get(), -1, renderFlags)))
    {
       cout << "Error creating renderer: " << SDL_GetError() << endl;
       return false;
    }
-
-   initCamera();
-   //initLights();
-   initGeometry();
-
-   createUser();
 
    return true;
 }
@@ -121,6 +103,14 @@ void ogl::GameEngine::setWindowTitle(std::string label)
 
 void ogl::GameEngine::start()
 {
+   //m_windowSize = updateViewport(m_window.get());
+
+   //initCamera();
+   //initLights();
+   //initGeometry();
+
+   createUser();
+
    m_lastTime = SteadyClock::now();
 
    // annimation loop
@@ -159,6 +149,7 @@ void ogl::GameEngine::start()
    //OnDestroyWorld();
 
    SDL_GL_DeleteContext(m_context);
+   SDL_DestroyWindow(m_window.get());
    SDL_Quit();
 }
 
@@ -345,10 +336,10 @@ void ogl::GameEngine::initWindow()
 
 void ogl::GameEngine::initOpenGL()
 {
-   glClearDepthf(1.0f);
-   glEnable(GL_DEPTH_TEST);
-   glDepthFunc(GL_LEQUAL);
-   glEnable(GL_CULL_FACE);
+   //glClearDepthf(1.0f);
+   //glEnable(GL_DEPTH_TEST);
+   //glDepthFunc(GL_LEQUAL);
+   //glEnable(GL_CULL_FACE);
 }
 
 void ogl::GameEngine::initCamera()
