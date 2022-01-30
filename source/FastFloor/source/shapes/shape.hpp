@@ -9,15 +9,13 @@ namespace ogl
 {
    using Element = std::array<float, 8>;
 
+   enum class Class { Shape, Object };
+
    struct Ident
    {
-      //unsigned int m_id{ 0 };
-
-      //Ident() //: m_id(counter++) 
-      //{
-      //   static unsigned int counter{ 0 };
-      //   m_id = counter++;
-      //}
+      std::int16_t m_ident{ -1 };
+      auto operator<=>(const Ident&) const = default;
+      explicit operator bool() const { return m_ident != -1; }
    };
 
    struct Geometry
@@ -115,6 +113,14 @@ namespace ogl
       unsigned int m_VAO{ 0 };
       unsigned int m_EBO{ 0 };
   };
+
+  struct Moveable
+  {
+     int m_shapeId{ 0 };
+     Vertex m_position;
+     // matrix
+  };
+
 }
 using ShapePtr = std::unique_ptr<ogl::Shape>;
 

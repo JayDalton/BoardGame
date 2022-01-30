@@ -8,6 +8,7 @@
 #include <string>
 #include <chrono>
 #include <string_view>
+#include <unordered_map>
 
 #include "sdl2.h"
 
@@ -55,6 +56,15 @@ protected:
    glm::vec3 m_cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
    glm::vec3 m_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
    glm::vec3 m_cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+   unsigned append(ShapePtr&& shape) {
+      static unsigned objectCounter{ 100 };
+      //m_shapes.insert_or_assign(objectCounter, std::move(shape));
+      return objectCounter;
+   }
+
+   std::vector<Moveable> m_objects;
+   //std::unordered_map<unsigned, ShapePtr> m_shapes;
 
    std::vector<ShapePtr> m_shapes;
    ogl::Camera m_camera;

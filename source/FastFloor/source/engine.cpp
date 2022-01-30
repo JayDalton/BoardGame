@@ -77,7 +77,7 @@ bool ogl::GameEngine::construct(int width, int height)
    SDL_GL_SetSwapInterval(1); // Enable vsync
 
    /* Loading Extensions */
-   glewExperimental = GL_TRUE;
+   //glewExperimental = GL_TRUE;
    if (auto error = glewInit())
    {
       cout << std::format("GLEW init failed: {}", error) << endl;
@@ -308,6 +308,15 @@ void ogl::GameEngine::OnRenderWorld()
    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+   //for (auto&& object : m_objects)
+   //{
+   //   auto shape = object.m_shapeId;
+   //   if (m_shapes.contains(shape))
+   //   {
+   //      m_shapes.at(shape)->render();
+   //   }
+   //}
 
    for (const auto& shape : m_shapes) 
    {

@@ -23,14 +23,20 @@ public:
 private:
 };
 
+struct GameObject
+{
 
+};
+
+struct GamePlate
+{
+
+};
 
 class GameModel
 {
 public:
 
-private:
-
    // Grid Spielfeld
-   // 
+   std::vector<GamePlate> m_plates;
 };

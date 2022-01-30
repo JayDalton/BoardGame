@@ -10,23 +10,37 @@ FastFloor::FastFloor(std::string_view title)
 
 bool FastFloor::createUser()
 {
-   //m_shapes.push_back(
-   //   std::make_unique<HexagonalPrism>(
+   auto hexBlue = append(std::make_unique<HexagonalPrism>("shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Blue));
+   auto hexIcon = append(std::make_unique<HexagonalPrism>("shader/Complex.vs", "shader/Complex.fs", "images/container.jpg"));
+   auto hexFace = append(std::make_unique<HexagonalPrism>("shader/Complex.vs", "shader/Complex.fs", "images/awesomeface.png"));
+
+   //auto hexBlue = create<HexagonalPrism>(
    //      "shader/Complex.vs",
    //      "shader/Colored.fs",
-   //      ogl::Colors::Blue));
+   //      ogl::Colors::Blue);
 
    m_shapes.push_back(
       std::make_unique<HexagonalPrism>(
          "shader/Complex.vs",
-         "shader/Complex.fs",
-         "images/container.jpg"));
+         "shader/Colored.fs",
+         ogl::Colors::Blue));
+
+   //m_shapes.push_back(
+   //   std::make_unique<HexagonalPrism>(
+   //      "shader/Complex.vs",
+   //      "shader/Complex.fs",
+   //      "images/container.jpg"));
 
    //m_shapes.push_back(
    //   std::make_unique<HexagonalPrism>(
    //      "shader/Complex.vs",
    //      "shader/Complex.fs",
    //      "images/awesomeface.png"));
+
+   //Vertex{}
+   GamePlate;
+
+   //m_model.m_plates.push_back();
 
    return true;
 }
@@ -36,6 +50,9 @@ bool FastFloor::updateUser()
    static int counter{ 0 };
 
    //setWindowTitle(std::format("{:5}", counter++));
+
+
+
 
    return true;
 }
