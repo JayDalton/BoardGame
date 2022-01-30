@@ -319,13 +319,6 @@ void ogl::GameEngine::OnRenderWorld()
       }
    }
 
-   //for (const auto& shape : m_shapes) 
-   //{
-   //   //auto matrix{ m_camera.mtx() * shape->getMatrix() };
-   //   //glLoadMatrixf(glm::value_ptr(matrix));
-   //   shape->render();
-   //}
-
    //// ViewPort buttom-left
    //glViewport(0, 0, windowSize.x / 4, windowSize.y / 4);
    //for (std::vector<ogl::Shape*>::iterator it = objs2d->begin(); it != objs2d->end(); ++it) {

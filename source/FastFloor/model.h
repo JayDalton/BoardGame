@@ -1,6 +1,7 @@
 #pragma once
 
 #include <bitset>
+#include <numbers>
 
 #include "source/engine.h"
 #include "source/shapes/shape.hpp"
@@ -27,7 +28,21 @@ private:
 
 struct GamePlate : public ogl::Moveable
 {
-   std::bitset<6> n_neighbors{ 0 };
+   //std::bitset<6> n_neighbors{ 0 };
+
+   enum class Neighbor : short { 
+      Right = 0, TopRight = 60, TopLeft = 120, 
+      Left = 180, BottomLeft = 240, BottomRight = 300
+   };
+
+   GamePlate create(Neighbor neighbor) const
+   {
+      auto pi = std::numbers::pi_v<float>;
+      auto radius = std::cos( pi / 6) * 2;
+      auto angle = static_cast<float>(neighbor);
+      return GamePlate{m_shapeId, ogl::Geometry::circlePoint(angle, radius)};
+   }
+
 
    //ogl::Matrix getPosition() const 
    //{

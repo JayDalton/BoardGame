@@ -114,9 +114,9 @@ namespace ogl
       unsigned int m_EBO{ 0 };
   };
 
-  struct Moveable
+  struct Moveable /*: public Geometry*/
   {
-      unsigned m_shapeId{ 0 };
+     unsigned m_shapeId{ 0 };
       Vertex m_position{ 0 };
       Vertex m_camera{ 0.0f, 0.0f, -13.0f };
       Matrix m_model{ 1.0f };

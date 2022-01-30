@@ -19,15 +19,24 @@ bool FastFloor::createUser()
    const float pi = std::acos(-1);
    auto radius = std::cos(pi / 6) * 2;
 
-   GamePlate p1{hexBlue, {0.0f,  0.0f, 0.0f}};
+   GamePlate center{ hexFace, {0.0f,  0.0f, 0.0f}};
 
-   m_objects.push_back(GamePlate{ hexBlue, {0.0f,  0.0f, 0.0f}});
-   m_objects.push_back(GamePlate{ hexIcon, Geometry::circlePoint(000.0f, radius) });
-   m_objects.push_back(GamePlate{ hexFace, Geometry::circlePoint(060.0f, radius) });
-   m_objects.push_back(GamePlate{ hexFace, Geometry::circlePoint(120.0f, radius) });
-   m_objects.push_back(GamePlate{ hexFace, Geometry::circlePoint(180.0f, radius) });
-   m_objects.push_back(GamePlate{ hexFace, Geometry::circlePoint(240.0f, radius) });
-   m_objects.push_back(GamePlate{ hexFace, Geometry::circlePoint(300.0f, radius) });
+   m_objects.push_back(center);
+   m_objects.push_back(center.create(GamePlate::Neighbor::Right));
+   m_objects.push_back(center.create(GamePlate::Neighbor::TopRight));
+   m_objects.push_back(center.create(GamePlate::Neighbor::TopLeft));
+   m_objects.push_back(center.create(GamePlate::Neighbor::Left));
+   m_objects.push_back(center.create(GamePlate::Neighbor::BottomLeft));
+   m_objects.push_back(center.create(GamePlate::Neighbor::BottomRight));
+
+
+   //m_objects.push_back(GamePlate{ hexBlue, {0.0f,  0.0f, 0.0f}});
+   //m_objects.push_back(GamePlate{ hexIcon, Geometry::circlePoint(000.0f, radius) });
+   //m_objects.push_back(GamePlate{ hexFace, Geometry::circlePoint(060.0f, radius) });
+   //m_objects.push_back(GamePlate{ hexFace, Geometry::circlePoint(120.0f, radius) });
+   //m_objects.push_back(GamePlate{ hexFace, Geometry::circlePoint(180.0f, radius) });
+   //m_objects.push_back(GamePlate{ hexFace, Geometry::circlePoint(240.0f, radius) });
+   //m_objects.push_back(GamePlate{ hexFace, Geometry::circlePoint(300.0f, radius) });
 
    return true;
 }
