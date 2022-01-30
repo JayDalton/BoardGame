@@ -18,7 +18,7 @@ public:
       std::string_view fragment,
       ogl::Color color);
 
-   void render() const override;
+   void render(Matrix pos) const override;
 
 private:
 };
@@ -39,7 +39,7 @@ public:
       std::string_view fragment,
       std::string_view texture);
 
-   void render() const override;
+   void render(Matrix pos) const override;
 
 private:
 };
@@ -59,7 +59,7 @@ public:
       std::string_view texture
    );
 
-   void render() const override;
+   void render(Matrix pos) const override;
 
 private:
 };

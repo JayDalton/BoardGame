@@ -27,7 +27,7 @@ ogl::Square::Square(std::string_view vertex
    createShaders(vertex, fragment);
 }
 
-void ogl::Square::render() const
+void ogl::Square::render(Matrix pos) const
 {
    // bind textures on corresponding texture units
    glActiveTexture(GL_TEXTURE0);
@@ -91,7 +91,7 @@ ogl::Rectangle::Rectangle(ogl::SizeF size
    createTexture(texture);
 }
 
-void ogl::Rectangle::render() const
+void ogl::Rectangle::render(Matrix pos) const
 {
    // bind textures on corresponding texture units
    glActiveTexture(GL_TEXTURE0);
@@ -168,7 +168,7 @@ ogl::Hexagon::Hexagon(std::string_view vertex
    createTexture(texture);
 }
 
-void ogl::Hexagon::render() const
+void ogl::Hexagon::render(Matrix pos) const
 {
    // bind textures on corresponding texture units
    glActiveTexture(GL_TEXTURE0);

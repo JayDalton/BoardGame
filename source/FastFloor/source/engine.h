@@ -59,14 +59,14 @@ protected:
 
    unsigned append(ShapePtr&& shape) {
       static unsigned objectCounter{ 100 };
-      //m_shapes.insert_or_assign(objectCounter, std::move(shape));
-      return objectCounter;
+      m_shapes.insert_or_assign(objectCounter, std::move(shape));
+      return objectCounter++;
    }
 
    std::vector<Moveable> m_objects;
-   //std::unordered_map<unsigned, ShapePtr> m_shapes;
+   std::unordered_map<unsigned, ShapePtr> m_shapes;
 
-   std::vector<ShapePtr> m_shapes;
+   //std::vector<ShapePtr> m_shapes;
    ogl::Camera m_camera;
    ogl::Camera m_screen;
 

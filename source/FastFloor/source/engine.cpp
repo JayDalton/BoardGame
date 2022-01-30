@@ -309,21 +309,22 @@ void ogl::GameEngine::OnRenderWorld()
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-   //for (auto&& object : m_objects)
-   //{
-   //   auto shape = object.m_shapeId;
-   //   if (m_shapes.contains(shape))
-   //   {
-   //      m_shapes.at(shape)->render();
-   //   }
-   //}
-
-   for (const auto& shape : m_shapes) 
+   for (auto&& object : m_objects)
    {
-      //auto matrix{ m_camera.mtx() * shape->getMatrix() };
-      //glLoadMatrixf(glm::value_ptr(matrix));
-      shape->render();
+      auto shape = object.m_shapeId;
+      if (m_shapes.contains(shape))
+      {
+         auto posi = object.getPosition();
+         m_shapes.at(shape)->render(posi);
+      }
    }
+
+   //for (const auto& shape : m_shapes) 
+   //{
+   //   //auto matrix{ m_camera.mtx() * shape->getMatrix() };
+   //   //glLoadMatrixf(glm::value_ptr(matrix));
+   //   shape->render();
+   //}
 
    //// ViewPort buttom-left
    //glViewport(0, 0, windowSize.x / 4, windowSize.y / 4);

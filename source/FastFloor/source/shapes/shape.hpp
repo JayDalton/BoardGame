@@ -99,7 +99,7 @@ namespace ogl
     public:
       virtual ~Shape();
 
-      virtual void render() const = 0;
+      virtual void render(Matrix pos) const = 0;
       //virtual void update() const = 0;
       //virtual void start() const = 0;
       //virtual void stop() const = 0;
@@ -116,9 +116,24 @@ namespace ogl
 
   struct Moveable
   {
-     int m_shapeId{ 0 };
-     Vertex m_position;
-     // matrix
+      unsigned m_shapeId{ 0 };
+      Vertex m_position{ 0 };
+      Vertex m_camera{ 0.0f, 0.0f, -13.0f };
+      Matrix m_model{ 1.0f };
+      Matrix m_view{ 1.0f };
+      Matrix m_projection{ 1.0f };
+
+      Matrix getPosition() const
+      {
+         auto model = glm::translate(m_model, m_position);
+         auto view = glm::translate(m_view, m_camera);
+         auto projection = glm::perspective(
+            glm::radians(45.0f),
+            800.f / 600.f,          // wie funktioniert das?
+            0.1f, 100.0f);
+
+         return projection * view * model;
+      }
   };
 
 }

@@ -26,6 +26,7 @@ namespace ogl
    using Color = glm::vec4;
    using Vertex = glm::vec3;
    using Coords = glm::vec2;
+   using Matrix = glm::mat4;
 
    struct Size
    {
