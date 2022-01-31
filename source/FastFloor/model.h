@@ -40,7 +40,8 @@ struct GamePlate : public ogl::Moveable
       auto pi = std::numbers::pi_v<float>;
       auto radius = std::cos( pi / 6) * 2;
       auto angle = static_cast<float>(neighbor);
-      return GamePlate{m_shapeId, ogl::Geometry::circlePoint(angle, radius)};
+      auto position = ogl::Geometry::circlePoint(m_position, angle, radius);
+      return GamePlate{m_shapeId, position};
    }
 
 
