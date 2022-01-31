@@ -36,7 +36,7 @@ protected:
    using SteadyClock = std::chrono::steady_clock;
    using TimePoint = std::chrono::time_point<SteadyClock>;
    using TimeUnit = std::chrono::nanoseconds;
-   using Duration2 = std::chrono::duration<double>;
+   using Duration2 = std::chrono::duration<float>;
 
    Duration getDuration(const SteadyClock::time_point& start);
 
@@ -53,9 +53,9 @@ protected:
    } m_mouse;
 
    // camera
-   glm::vec3 m_cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-   glm::vec3 m_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-   glm::vec3 m_cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+   glm::vec3 m_cameraPosition = glm::vec3(0.0, -15.0, 15.0);
+   glm::vec3 m_cameraTarget = glm::vec3(0.0, 0.0, 0.0);
+   glm::vec3 m_cameraUpside = glm::vec3(0.0, 0.0, 1.0);
 
    unsigned append(ShapePtr&& shape) {
       static unsigned objectCounter{ 100 };
@@ -74,8 +74,8 @@ private:
    void OnReceiveLocal();
    void OnReceiveRemote();
    
-   void OnUpdateWorld(Duration duration);
-   void OnRenderWorld();
+   void OnUpdateWorld(Duration2 duration);
+   void OnRenderWorld(Duration2 duration);
    void OnRemoveWorld();
 
    void initWindow();
@@ -101,7 +101,7 @@ private:
    // timing
    TimePoint m_lastTime{};
    TimePoint m_lastFrame{};
-   TimeUnit m_deltaTime{};	// time between current frame and last frame
+   Duration2 m_deltaTime{};	// time between current frame and last frame
 
    void* m_context{ nullptr };
    sdl2::sdlsystem_ptr_t m_system{ nullptr, nullptr };

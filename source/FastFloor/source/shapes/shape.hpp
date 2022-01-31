@@ -118,7 +118,7 @@ namespace ogl
   {
      unsigned m_shapeId{ 0 };
       Vertex m_position{ 0 };
-      Vertex m_camera{ 0.0f, 0.0f, -13.0f };
+      Vertex m_camera{ 0.0f, 0.0f, -23.0f };
       Matrix m_model{ 1.0f };
       Matrix m_view{ 1.0f };
       Matrix m_projection{ 1.0f };
@@ -126,7 +126,16 @@ namespace ogl
       Matrix getPosition() const
       {
          auto model = glm::translate(m_model, m_position);
-         auto view = glm::translate(m_view, m_camera);
+         //model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+         auto view = m_view;
+         //auto view = glm::translate(m_view, m_camera);
+         //auto view = glm::lookAt(
+         //   glm::vec3(2.0f, 2.0f, 23.0f),  // camera eye
+         //   glm::vec3(2.0f, 2.0f, 0.0f),     // camera center
+         //   glm::vec3(0.0f, 1.0f, 0.0f));    // camera upside
+
+
          auto projection = glm::perspective(
             glm::radians(45.0f),
             800.f / 600.f,          // wie funktioniert das?

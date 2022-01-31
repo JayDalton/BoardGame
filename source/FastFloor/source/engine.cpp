@@ -131,14 +131,15 @@ void ogl::GameEngine::start()
          m_frames = 0;
       }
 
+      std::cout << std::format("{}\n", m_deltaTime);
+
       OnReceiveLocal();
       OnReceiveRemote();
 
-      //updateUser();
       OnUpdateWorld(getDuration(m_lastTime));
 
       // Renderziel
-      OnRenderWorld();
+      OnRenderWorld(getDuration(m_lastTime));
 
       SDL_GL_SwapWindow(m_window.get());
 
@@ -160,7 +161,8 @@ ogl::GameEngine::Duration ogl::GameEngine::getDuration(const SteadyClock::time_p
 
 void ogl::GameEngine::OnReceiveLocal()
 {
-   float cameraSpeed = 0.0;// m_deltaTime * 2.5;
+   //float cameraSpeed = 0.05;// m_deltaTime * 2.5;
+   float cameraSpeed = 1.5 * m_deltaTime.count();
 
    //std::cout << std::format("DeltaTime: {}", m_deltaTime) << std::endl;
 
@@ -200,21 +202,27 @@ void ogl::GameEngine::OnReceiveLocal()
          case SDL_SCANCODE_ESCAPE:
             m_running = false;
             return;
+         case SDL_SCANCODE_R:
+            m_cameraPosition = glm::vec3(0.0, -15.0, 15.0);
+            std::cout << std::format("Reset Camera {}\n", glm::to_string(m_cameraPosition));
+            break;
          case SDL_SCANCODE_W:
          case SDL_SCANCODE_UP:
-            m_cameraPos += cameraSpeed * m_cameraFront;
+            m_cameraPosition += cameraSpeed * (m_cameraTarget - m_cameraPosition);
+            std::cout << std::format("Camera UP {}\n", glm::to_string(m_cameraPosition));
             break;
          case SDL_SCANCODE_A:
          case SDL_SCANCODE_LEFT:
-            m_cameraPos -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed;
+            m_cameraPosition -= glm::normalize(glm::cross((m_cameraTarget - m_cameraPosition), m_cameraUpside)) * cameraSpeed;
             break;
          case SDL_SCANCODE_S:
          case SDL_SCANCODE_DOWN:
-            m_cameraPos -= cameraSpeed * m_cameraFront;
+            m_cameraPosition -= cameraSpeed * (m_cameraTarget - m_cameraPosition);
+            std::cout << std::format("Camera DOWN {}\n", glm::to_string(m_cameraPosition));
             break;
          case SDL_SCANCODE_D:
          case SDL_SCANCODE_RIGHT:
-            m_cameraPos += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed;
+            m_cameraPosition += glm::normalize(glm::cross((m_cameraTarget - m_cameraPosition), m_cameraUpside)) * cameraSpeed;
             break;
          default:
             std::cout 
@@ -228,41 +236,41 @@ void ogl::GameEngine::OnReceiveLocal()
          break;
 
       case SDL_MOUSEMOTION:
-      {
-         auto xpos = event.motion.x;
-         auto ypos = event.motion.y;
+      //{
+      //   auto xpos = event.motion.x;
+      //   auto ypos = event.motion.y;
 
-         if (m_mouse.firstMouse)
-         {
-            m_mouse.lastX = xpos;
-            m_mouse.lastY = ypos;
-            m_mouse.firstMouse = false;
-         }
+      //   if (m_mouse.firstMouse)
+      //   {
+      //      m_mouse.lastX = xpos;
+      //      m_mouse.lastY = ypos;
+      //      m_mouse.firstMouse = false;
+      //   }
 
-         float xoffset = xpos - m_mouse.lastX;
-         float yoffset = m_mouse.lastY - ypos; // reversed since y-coordinates go from bottom to top
-         m_mouse.lastX = xpos;
-         m_mouse.lastY = ypos;
+      //   float xoffset = xpos - m_mouse.lastX;
+      //   float yoffset = m_mouse.lastY - ypos; // reversed since y-coordinates go from bottom to top
+      //   m_mouse.lastX = xpos;
+      //   m_mouse.lastY = ypos;
 
-         float sensitivity = 0.1f; // change this value to your liking
-         xoffset *= sensitivity;
-         yoffset *= sensitivity;
+      //   float sensitivity = 0.1f; // change this value to your liking
+      //   xoffset *= sensitivity;
+      //   yoffset *= sensitivity;
 
-         m_mouse.yaw += xoffset;
-         m_mouse.pitch += yoffset;
+      //   m_mouse.yaw += xoffset;
+      //   m_mouse.pitch += yoffset;
 
-         // make sure that when pitch is out of bounds, screen doesn't get flipped
-         if (m_mouse.pitch > 89.0f)
-            m_mouse.pitch = 89.0f;
-         if (m_mouse.pitch < -89.0f)
-            m_mouse.pitch = -89.0f;
+      //   // make sure that when pitch is out of bounds, screen doesn't get flipped
+      //   if (m_mouse.pitch > 89.0f)
+      //      m_mouse.pitch = 89.0f;
+      //   if (m_mouse.pitch < -89.0f)
+      //      m_mouse.pitch = -89.0f;
 
-         glm::vec3 front;
-         front.x = cos(glm::radians(m_mouse.yaw)) * cos(glm::radians(m_mouse.pitch));
-         front.y = sin(glm::radians(m_mouse.pitch));
-         front.z = sin(glm::radians(m_mouse.yaw)) * cos(glm::radians(m_mouse.pitch));
-         m_cameraFront = glm::normalize(front);
-      }
+      //   glm::vec3 front;
+      //   front.x = cos(glm::radians(m_mouse.yaw)) * cos(glm::radians(m_mouse.pitch));
+      //   front.y = sin(glm::radians(m_mouse.pitch));
+      //   front.z = sin(glm::radians(m_mouse.yaw)) * cos(glm::radians(m_mouse.pitch));
+      //   m_cameraFront = glm::normalize(front);
+      //}
       break;
 
       case SDL_MOUSEWHEEL:
@@ -285,7 +293,7 @@ void ogl::GameEngine::OnReceiveRemote()
 {
 }
 
-void ogl::GameEngine::OnUpdateWorld(Duration duration)
+void ogl::GameEngine::OnUpdateWorld(Duration2 duration)
 {
    //for (auto& shape : m_shapes)
    //{
@@ -293,24 +301,20 @@ void ogl::GameEngine::OnUpdateWorld(Duration duration)
    //}
 }
 
-void ogl::GameEngine::OnRenderWorld()
+void ogl::GameEngine::OnRenderWorld(Duration2 duration)
 {
-   // MainWindow
-   //if (m_windowSize != getWindowSize())
-   //{
-   //   updateViewport(m_window.get());
-   //}
-   //auto size = getWindowSize();
-   //glViewport(0, 0, size.x, size.y);
-   //glViewport(0, 0, m_windowSize.x, m_windowSize.y);
-
    // Hintergrund
    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+   auto view = glm::lookAt(
+      m_cameraPosition, 
+      m_cameraTarget, 
+      m_cameraUpside);
 
    for (auto&& object : m_objects)
    {
+      object.m_view = view;
       auto shape = object.m_shapeId;
       if (m_shapes.contains(shape))
       {

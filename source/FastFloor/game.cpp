@@ -21,28 +21,30 @@ bool FastFloor::createUser()
 
    GamePlate center{ hexFace, {0.0f,  0.0f, 0.0f}};
 
-   //m_objects.push_back(center);
-   //m_objects.push_back(center.create(GamePlate::Neighbor::Right));
-   //m_objects.push_back(center.create(GamePlate::Neighbor::TopRight));
-   //m_objects.push_back(center.create(GamePlate::Neighbor::TopLeft));
-   //m_objects.push_back(center.create(GamePlate::Neighbor::Left));
-   //m_objects.push_back(center.create(GamePlate::Neighbor::BottomLeft));
-   //m_objects.push_back(center.create(GamePlate::Neighbor::BottomRight));
+   m_objects.push_back(center);
+   m_objects.push_back(center.create(GamePlate::Neighbor::Right));
+   m_objects.push_back(center.create(GamePlate::Neighbor::TopRight));
+   m_objects.push_back(center.create(GamePlate::Neighbor::TopLeft));
+   m_objects.push_back(center.create(GamePlate::Neighbor::Left));
+   m_objects.push_back(center.create(GamePlate::Neighbor::BottomLeft));
+   m_objects.push_back(center.create(GamePlate::Neighbor::BottomRight));
 
-   GamePlate plate{ center };
-   for (auto column{ 0 }; column < 10; column++)
-   {
-      std::vector<GamePlate> plates{ plate };
-      for (auto row{ 0 }; row < 10; row++)
-      {
-         plate = plate.create(GamePlate::Neighbor::Right);
-         plates.push_back(plate);
-      }
+   PlateCache cache;
 
-      plate = plates.at(0).create(GamePlate::Neighbor::BottomLeft);
+   //GamePlate plate{ center };
+   //for (auto column{ 0 }; column < 10; column++)
+   //{
+   //   std::vector<GamePlate> plates{ plate };
+   //   for (auto row{ 0 }; row < 10; row++)
+   //   {
+   //      plate = plate.create(GamePlate::Neighbor::Right);
+   //      plates.push_back(plate);
+   //   }
 
-      std::copy(plates.begin(), plates.end(), std::back_inserter(m_objects));
-   }
+   //   plate = plates.at(0).create(GamePlate::Neighbor::BottomLeft);
+
+   //   std::copy(plates.begin(), plates.end(), std::back_inserter(m_objects));
+   //}
 
    //m_objects.push_back(GamePlate{ hexBlue, {0.0f,  0.0f, 0.0f}});
    //m_objects.push_back(GamePlate{ hexIcon, Geometry::circlePoint(000.0f, radius) });
