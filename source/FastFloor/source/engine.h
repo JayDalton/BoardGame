@@ -32,13 +32,13 @@ public:
    virtual bool updateUser() = 0;
 
 protected:
-   using Duration = std::chrono::milliseconds;
+   //using Duration = std::chrono::milliseconds;
+   using Duration = std::chrono::duration<float>;
    using SteadyClock = std::chrono::steady_clock;
    using TimePoint = std::chrono::time_point<SteadyClock>;
    using TimeUnit = std::chrono::nanoseconds;
-   using Duration2 = std::chrono::duration<float>;
 
-   Duration getDuration(const SteadyClock::time_point& start);
+   //Duration getDuration(const SteadyClock::time_point& start);
 
 protected:
 
@@ -74,8 +74,8 @@ private:
    void OnReceiveLocal();
    void OnReceiveRemote();
    
-   void OnUpdateWorld(Duration2 duration);
-   void OnRenderWorld(Duration2 duration);
+   void OnUpdateWorld(Duration duration);
+   void OnRenderWorld(Duration duration);
    void OnRemoveWorld();
 
    void initWindow();
@@ -101,7 +101,7 @@ private:
    // timing
    TimePoint m_lastTime{};
    TimePoint m_lastFrame{};
-   Duration2 m_deltaTime{};	// time between current frame and last frame
+   Duration m_deltaTime{};	// time between current frame and last frame
 
    void* m_context{ nullptr };
    sdl2::sdlsystem_ptr_t m_system{ nullptr, nullptr };

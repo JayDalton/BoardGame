@@ -26,9 +26,16 @@ public:
 private:
 };
 
+enum class Direction
+{
+   Right, Left, 
+   TopRight, TopLeft,
+   BottomLeft, BottomRight
+};
+
 struct GamePlate : public ogl::Moveable
 {
-   //std::bitset<6> n_neighbors{ 0 };
+   unsigned m_ident{ 0 };
    std::array<unsigned, 6> m_friends{ 0 };
 
    enum class Neighbor : short { 
@@ -49,7 +56,35 @@ struct GamePlate : public ogl::Moveable
 
 struct PlateCache
 {
+   GamePlate center() const
+   {
 
+   }
+
+   GamePlate create(GamePlate&& orig, Direction neighbor) const
+   {
+      auto pi = std::numbers::pi_v<float>;
+      auto radius = std::cos(pi / 6) * 2;
+      auto angle = getAngle(neighbor);
+      auto position = ogl::Geometry::circlePoint(orig.m_position, angle, radius);
+      return GamePlate{ orig.m_shapeId, position };
+   }
+
+   float getAngle(Direction direction) const
+   {
+      switch (direction)
+      {
+      case Direction::Right: return 0.f;
+      case Direction::TopRight: return 60.f;
+      case Direction::TopLeft: return 120.f;
+      case Direction::Left: return 180;
+      case Direction::BottomLeft: return 240.f;
+      case Direction::BottomRight: return 300.f;
+      default: return -1;
+      }
+   }
+
+   std::vector<GamePlate> m_member;
 };
 
 class GameModel

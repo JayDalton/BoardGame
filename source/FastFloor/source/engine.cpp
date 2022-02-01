@@ -131,15 +131,13 @@ void ogl::GameEngine::start()
          m_frames = 0;
       }
 
-      std::cout << std::format("{}\n", m_deltaTime);
-
       OnReceiveLocal();
       OnReceiveRemote();
 
-      OnUpdateWorld(getDuration(m_lastTime));
+      OnUpdateWorld(m_deltaTime);
 
       // Renderziel
-      OnRenderWorld(getDuration(m_lastTime));
+      OnRenderWorld(m_deltaTime);
 
       SDL_GL_SwapWindow(m_window.get());
 
@@ -154,10 +152,10 @@ void ogl::GameEngine::start()
    SDL_Quit();
 }
 
-ogl::GameEngine::Duration ogl::GameEngine::getDuration(const SteadyClock::time_point& start)
-{
-   return std::chrono::duration_cast<Duration>(SteadyClock::now() - start);
-}
+//ogl::GameEngine::Duration ogl::GameEngine::getDuration(const SteadyClock::time_point& start)
+//{
+//   return std::chrono::duration_cast<Duration>(SteadyClock::now() - start);
+//}
 
 void ogl::GameEngine::OnReceiveLocal()
 {
@@ -293,7 +291,7 @@ void ogl::GameEngine::OnReceiveRemote()
 {
 }
 
-void ogl::GameEngine::OnUpdateWorld(Duration2 duration)
+void ogl::GameEngine::OnUpdateWorld(Duration duration)
 {
    //for (auto& shape : m_shapes)
    //{
@@ -301,7 +299,7 @@ void ogl::GameEngine::OnUpdateWorld(Duration2 duration)
    //}
 }
 
-void ogl::GameEngine::OnRenderWorld(Duration2 duration)
+void ogl::GameEngine::OnRenderWorld(Duration duration)
 {
    // Hintergrund
    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
