@@ -14,12 +14,10 @@ bool FastFloor::createUser()
    auto hexIcon = append(std::make_unique<HexagonalPrism>("shader/Complex.vs", "shader/Complex.fs", "images/container.jpg"));
    auto hexFace = append(std::make_unique<HexagonalPrism>("shader/Complex.vs", "shader/Complex.fs", "images/awesomeface.png"));
    auto square1 = append(std::make_unique<ogl::Square>("shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Green));
-   auto square2 = append(std::make_unique<ogl::Rectangle>(ogl::SizeF{2.f,3.f}, "shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Red));
+   auto square2 = append(std::make_unique<ogl::Hexagon>("shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Red));
+   auto square3 = append(std::make_unique<ogl::Rectangle>(ogl::SizeF{2.f,3.f}, "shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Red));
 
-   using ogl::Geometry;
 
-   const float pi = std::acos(-1);
-   auto radius = std::cos(pi / 6) * 2;
 
    GamePlate center{ hexIcon, {0.0f,  0.0f, 0.0f}};
 
@@ -48,8 +46,9 @@ bool FastFloor::createUser()
    //   std::copy(plates.begin(), plates.end(), std::back_inserter(m_objects));
    //}
 
-   m_objects.push_back(GamePlate{ square1, {0.0f,  -4.0f, 0.0f}});
-   m_objects.push_back(GamePlate{ square2, {0.0f,  -6.0f, 0.0f}});
+   m_objects.push_back(GamePlate{ square1, {-3.0f,  -4.0f, 0.0f}});
+   m_objects.push_back(GamePlate{ square2, {00.0f,  -4.0f, 0.0f}});
+   m_objects.push_back(GamePlate{ square3, {+3.0f,  -4.0f, 0.0f}});
 
    //m_objects.push_back(GamePlate{ hexBlue, {0.0f,  0.0f, 0.0f}});
    //m_objects.push_back(GamePlate{ hexIcon, Geometry::circlePoint(000.0f, radius) });
@@ -67,8 +66,6 @@ bool FastFloor::updateUser()
    static int counter{ 0 };
 
    //setWindowTitle(std::format("{:5}", counter++));
-
-
 
 
    return true;

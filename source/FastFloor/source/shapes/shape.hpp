@@ -93,7 +93,6 @@ namespace ogl
      , public Buffer
      , public Shader
      , public Geometry
-     //, public Transform // Animation
      , public Texture
   {
     public:
@@ -115,33 +114,14 @@ namespace ogl
   };
 
   struct Moveable /*: public Geometry*/
+     //, public Transform // Animation
   {
-     unsigned m_shapeId{ 0 };
+      unsigned m_shapeId{ 0 };
       Vertex m_position{ 0 };
-      Vertex m_camera{ 0.0f, 0.0f, -23.0f };
-      Matrix m_model{ 1.0f };
-      Matrix m_view{ 1.0f };
-      Matrix m_projection{ 1.0f };
 
       Matrix getPosition() const
       {
-         auto model = glm::translate(m_model, m_position);
-         //model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-         auto view = m_view;
-         //auto view = glm::translate(m_view, m_camera);
-         //auto view = glm::lookAt(
-         //   glm::vec3(2.0f, 2.0f, 23.0f),  // camera eye
-         //   glm::vec3(2.0f, 2.0f, 0.0f),     // camera center
-         //   glm::vec3(0.0f, 1.0f, 0.0f));    // camera upside
-
-
-         auto projection = glm::perspective(
-            glm::radians(45.0f),
-            800.f / 600.f,          // wie funktioniert das?
-            0.1f, 100.0f);
-
-         return projection * view * model;
+         return glm::translate(Matrix{ 1.0f }, m_position);
       }
   };
 

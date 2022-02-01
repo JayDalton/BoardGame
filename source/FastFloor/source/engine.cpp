@@ -152,11 +152,6 @@ void ogl::GameEngine::start()
    SDL_Quit();
 }
 
-//ogl::GameEngine::Duration ogl::GameEngine::getDuration(const SteadyClock::time_point& start)
-//{
-//   return std::chrono::duration_cast<Duration>(SteadyClock::now() - start);
-//}
-
 void ogl::GameEngine::OnReceiveLocal()
 {
    //float cameraSpeed = 0.05;// m_deltaTime * 2.5;
@@ -293,6 +288,7 @@ void ogl::GameEngine::OnReceiveRemote()
 
 void ogl::GameEngine::OnUpdateWorld(Duration duration)
 {
+   //m_objCache.updateAll(duration);
    //for (auto& shape : m_shapes)
    //{
    //   shape->update(duration);
@@ -305,18 +301,25 @@ void ogl::GameEngine::OnRenderWorld(Duration duration)
    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+   auto projection = glm::perspective(
+      glm::radians(45.0f),
+      800.f / 600.f,          // wie funktioniert das?
+      0.1f, 100.0f);
+
    auto view = glm::lookAt(
       m_cameraPosition, 
       m_cameraTarget, 
       m_cameraUpside);
 
+   //m_objCache.renderAll(projection * view);
+
    for (auto&& object : m_objects)
    {
-      object.m_view = view;
       auto shape = object.m_shapeId;
       if (m_shapes.contains(shape))
       {
-         auto posi = object.getPosition();
+         // projection * view * model
+         auto posi = projection * view * object.getPosition();
          m_shapes.at(shape)->render(posi);
       }
    }
