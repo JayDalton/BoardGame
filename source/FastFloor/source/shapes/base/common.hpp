@@ -28,6 +28,12 @@ namespace ogl
    using Coords = glm::vec2;
    using Matrix = glm::mat4;
 
+   //using Duration = std::chrono::milliseconds;
+   using Duration = std::chrono::duration<float>;
+   using SteadyClock = std::chrono::steady_clock;
+   using TimePoint = std::chrono::time_point<SteadyClock>;
+   using TimeUnit = std::chrono::nanoseconds;
+
    struct Size
    {
       int x{ 0 }, y{ 0 };

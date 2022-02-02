@@ -289,10 +289,10 @@ void ogl::GameEngine::OnReceiveRemote()
 void ogl::GameEngine::OnUpdateWorld(Duration duration)
 {
    //m_objCache.updateAll(duration);
-   //for (auto& shape : m_shapes)
-   //{
-   //   shape->update(duration);
-   //}
+   for (auto&& object : m_objects)
+   {
+      object.update(duration);
+   }
 }
 
 void ogl::GameEngine::OnRenderWorld(Duration duration)

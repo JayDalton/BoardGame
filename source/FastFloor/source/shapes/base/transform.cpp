@@ -45,40 +45,40 @@ glm::mat4 ogl::Transform::getMatrix() const
   return matrix;
 }
 
-void ogl::Transform::update(Duration delta)
-{
-  //if (animate && 1 < movepath.size()) 
-  //{
-  //  timestamp += delta * animspeed;
-  //  GLfloat scale = timestamp / duration;
-
-  //  glm::vec3 p1 (movepath[lstIdx1]);
-  //  glm::vec3 p2 (movepath[lstIdx2]);
-  //  glm::vec3 p0 (p1 + (p2 - p1) * scale);
-
-  //  matrix = glm::translate(p0)
-  //    * rotateX(delta)
-  //    * rotateY(delta)
-  //    * rotateZ(delta)
-  //    //      * glm::scale(glm::sin(scale * 3.14f), glm::sin(scale * 3.14f), glm::sin(scale * 3.14f));
-  //    ;
-
-  //  if (duration <= timestamp) {
-  //    timestamp = 0;
-  //    if (looping) {
-  //      lstIdx1 = lstIdx1 < movepath.size() - 1 ? lstIdx1 + 1 : 0;
-  //      lstIdx2 = lstIdx2 < movepath.size() - 1 ? lstIdx2 + 1 : 0;
-  //    } else {
-  //      if (lstIdx1 < movepath.size() - 2) {
-  //        lstIdx1++;
-  //        lstIdx2++;
-  //      } else {
-  //        animate = false;
-  //      }
-  //    }
-  //  }
-  //}
-}
+//void ogl::Transform::update(Duration delta)
+//{
+//  //if (animate && 1 < movepath.size()) 
+//  //{
+//  //  timestamp += delta * animspeed;
+//  //  GLfloat scale = timestamp / duration;
+//
+//  //  glm::vec3 p1 (movepath[lstIdx1]);
+//  //  glm::vec3 p2 (movepath[lstIdx2]);
+//  //  glm::vec3 p0 (p1 + (p2 - p1) * scale);
+//
+//  //  matrix = glm::translate(p0)
+//  //    * rotateX(delta)
+//  //    * rotateY(delta)
+//  //    * rotateZ(delta)
+//  //    //      * glm::scale(glm::sin(scale * 3.14f), glm::sin(scale * 3.14f), glm::sin(scale * 3.14f));
+//  //    ;
+//
+//  //  if (duration <= timestamp) {
+//  //    timestamp = 0;
+//  //    if (looping) {
+//  //      lstIdx1 = lstIdx1 < movepath.size() - 1 ? lstIdx1 + 1 : 0;
+//  //      lstIdx2 = lstIdx2 < movepath.size() - 1 ? lstIdx2 + 1 : 0;
+//  //    } else {
+//  //      if (lstIdx1 < movepath.size() - 2) {
+//  //        lstIdx1++;
+//  //        lstIdx2++;
+//  //      } else {
+//  //        animate = false;
+//  //      }
+//  //    }
+//  //  }
+//  //}
+//}
 
 void ogl::Transform::setRotX(GLfloat duration)
 {

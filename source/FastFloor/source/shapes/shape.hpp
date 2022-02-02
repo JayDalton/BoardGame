@@ -117,7 +117,13 @@ namespace ogl
      //, public Transform // Animation
   {
       unsigned m_shapeId{ 0 };
-      Vertex m_position{ 0 };
+      Vertex m_position{ 0 }; 
+      // calculated matrix
+
+      void update(Duration delta)
+      {
+         // ???
+      }
 
       Matrix getPosition() const
       {

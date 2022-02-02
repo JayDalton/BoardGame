@@ -32,15 +32,6 @@ public:
    virtual bool updateUser() = 0;
 
 protected:
-   //using Duration = std::chrono::milliseconds;
-   using Duration = std::chrono::duration<float>;
-   using SteadyClock = std::chrono::steady_clock;
-   using TimePoint = std::chrono::time_point<SteadyClock>;
-   using TimeUnit = std::chrono::nanoseconds;
-
-   //Duration getDuration(const SteadyClock::time_point& start);
-
-protected:
 
    struct MouseInfo 
    {

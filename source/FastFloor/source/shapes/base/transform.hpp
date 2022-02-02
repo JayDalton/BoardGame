@@ -8,9 +8,9 @@
 
 namespace ogl 
 {
-   using Duration = std::chrono::milliseconds;
-   using StopClock = std::chrono::steady_clock;
-   using TimePoint = StopClock::time_point;
+   //using Duration = std::chrono::milliseconds;
+   //using StopClock = std::chrono::steady_clock;
+   //using TimePoint = StopClock::time_point;
 
    class Transform
    {
@@ -27,7 +27,7 @@ namespace ogl
       void setPath(std::vector<glm::vec3> vertices);
       void setTime(float time);
 
-      void update(Duration delta);
+      //void update(Duration delta);
 
       void setPathAnimation();
       void setRingAnimation();
