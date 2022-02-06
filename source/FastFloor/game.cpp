@@ -17,19 +17,26 @@ bool FastFloor::createUser()
    auto square2 = append(std::make_unique<ogl::Hexagon>("shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Red));
    auto square3 = append(std::make_unique<ogl::Rectangle>(ogl::SizeF{2.f,3.f}, "shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Red));
 
+   m_cache.createHexagons(4);
+   const auto member = m_cache.mapPayground(hexIcon);
+   m_objects.insert(m_objects.end(), member.cbegin(), member.cend());
 
+   //GamePlate center = m_cache.createCenter(hexIcon, {0.0f,  0.0f, 0.0f});
+   //auto list = m_cache.createNeighbor(center);
+   //for (auto index{ 0 }; index < 5; index++)
+   //{
+   //   list = m_cache.createNeighbor(list);
+   //}
 
-   GamePlate center{ hexIcon, {0.0f,  0.0f, 0.0f}};
+   //GamePlate center{ hexIcon, {0.0f,  0.0f, 0.0f}};
 
-   m_objects.push_back(center);
-   m_objects.push_back(center.create(GamePlate::Neighbor::Right));
-   m_objects.push_back(center.create(GamePlate::Neighbor::TopRight));
-   m_objects.push_back(center.create(GamePlate::Neighbor::TopLeft));
-   m_objects.push_back(center.create(GamePlate::Neighbor::Left));
-   m_objects.push_back(center.create(GamePlate::Neighbor::BottomLeft));
-   m_objects.push_back(center.create(GamePlate::Neighbor::BottomRight));
-
-   PlateCache cache;
+   //m_objects.push_back(center);
+   //m_objects.push_back(center.create(GamePlate::Neighbor::Right));
+   //m_objects.push_back(center.create(GamePlate::Neighbor::TopRight));
+   //m_objects.push_back(center.create(GamePlate::Neighbor::TopLeft));
+   //m_objects.push_back(center.create(GamePlate::Neighbor::Left));
+   //m_objects.push_back(center.create(GamePlate::Neighbor::BottomLeft));
+   //m_objects.push_back(center.create(GamePlate::Neighbor::BottomRight));
 
    //GamePlate plate{ center };
    //for (auto column{ 0 }; column < 10; column++)
@@ -46,9 +53,9 @@ bool FastFloor::createUser()
    //   std::copy(plates.begin(), plates.end(), std::back_inserter(m_objects));
    //}
 
-   m_objects.push_back(GamePlate{ square1, {-3.0f,  -4.0f, 0.0f}});
-   m_objects.push_back(GamePlate{ square2, {00.0f,  -4.0f, 0.0f}});
-   m_objects.push_back(GamePlate{ square3, {+3.0f,  -4.0f, 0.0f}});
+   //m_objects.push_back(GamePlate{ square1, {-3.0f,  -4.0f, 0.0f}});
+   //m_objects.push_back(GamePlate{ square2, {00.0f,  -4.0f, 0.0f}});
+   //m_objects.push_back(GamePlate{ square3, {+3.0f,  -4.0f, 0.0f}});
 
    //m_objects.push_back(GamePlate{ hexBlue, {0.0f,  0.0f, 0.0f}});
    //m_objects.push_back(GamePlate{ hexIcon, Geometry::circlePoint(000.0f, radius) });

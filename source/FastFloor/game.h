@@ -18,7 +18,8 @@ public:
 private:
 
    // Grid Spielfeld
-   // 
+   //
+   PlateAccess m_cache;
    GameModel m_model;
 };
 

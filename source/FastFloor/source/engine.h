@@ -8,6 +8,7 @@
 #include <string>
 #include <chrono>
 #include <string_view>
+#include <unordered_set>
 #include <unordered_map>
 
 #include "sdl2.h"
