@@ -50,17 +50,16 @@ protected:
    glm::vec3 m_cameraUpside = glm::vec3(0.0, 0.0, 1.0);
 
    unsigned append(ShapePtr&& shape) {
-      static unsigned objectCounter{ 100 };
-      m_shapes.insert_or_assign(objectCounter, std::move(shape));
-      return objectCounter++;
+      static unsigned shapeCounter{ 100 };
+      m_shapes.insert_or_assign(shapeCounter, std::move(shape));
+      return shapeCounter++;
    }
 
-   std::vector<Moveable> m_objects;
-   std::unordered_map<unsigned, ShapePtr> m_shapes;
-
-   //std::vector<ShapePtr> m_shapes;
    ogl::Camera m_camera;
    ogl::Camera m_screen;
+
+   std::vector<Drawable> m_objects;
+   std::unordered_map<unsigned, ShapePtr> m_shapes;
 
 private:
    void OnReceiveLocal();

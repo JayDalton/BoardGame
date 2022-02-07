@@ -7,10 +7,6 @@
 
 namespace ogl 
 {
-   using Element = std::array<float, 8>;
-
-   enum class Class { Shape, Object };
-
    struct Ident
    {
       std::int16_t m_ident{ -1 };
@@ -40,18 +36,22 @@ namespace ogl
 
    struct Buffer
    {
-      std::vector<float> m_vertices;
-      std::vector<unsigned> m_indices;
+      using VertexType = float;
+      using IndexType = unsigned;
+      using Element = std::array<VertexType, 8>;
+
+      std::vector<VertexType> m_vertices;
+      std::vector<IndexType> m_indices;
       Color m_color{ Colors::White };
 
       std::int32_t getVerticesSize() const 
       {
-         return sizeof(float) * m_vertices.size();
+         return sizeof(VertexType) * m_vertices.size();
       }
 
       std::int32_t getIndicesSize() const
       {
-         return sizeof(unsigned) * m_indices.size();
+         return sizeof(IndexType) * m_indices.size();
       }
 
       void append(Element element)
@@ -68,6 +68,7 @@ namespace ogl
             coords.x, coords.y 
          };
       };
+
       Element create(Coords uvBase, Vertex vertex)
       {
          auto coords{ (ogl::Coords(vertex) - uvBase) * 0.5f };
@@ -78,6 +79,7 @@ namespace ogl
             coords.x, coords.y 
          };
       };
+
       Element create(Vertex vertex, Color color)
       {
          return {
@@ -104,7 +106,7 @@ namespace ogl
       //virtual void stop() const = 0;
 
    protected:
-      void bindBuffer(const std::vector<unsigned>& indices);
+      void bindBuffer(std::vector<unsigned>&& indices);
 
    protected:
       unsigned int m_id{ 0 };
@@ -113,14 +115,14 @@ namespace ogl
       unsigned int m_EBO{ 0 };
   };
 
-  // struct Drawable
-  struct Moveable /*: public Geometry*/
-     //, public Transform // Animation
+  struct Drawable
   {
-      unsigned m_shapeId{ 0 };
-      Vertex m_position{ 0 }; 
+      unsigned m_shapeId{ 0 }; // geometry
+      Vertex m_position{ 0 };  // raus
       // calculated matrix
 
+      // Texture
+      // Shader
       using ShaderType = std::variant<glm::mat4, glm::vec3>;
       std::unordered_map<std::string, ShaderType> m_shader;
 

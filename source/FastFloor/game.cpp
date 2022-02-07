@@ -37,24 +37,3 @@ bool FastFloor::updateUser()
    return true;
 }
 
-
-// Pimpl Idiom
-
-struct FastGame::Impl
-{
-   Impl() 
-   {
-
-   }
-};
-
-FastGame::FastGame()
-   : m(std::make_unique<Impl>())
-{
-
-}
-
-FastGame::~FastGame()
-{
-   // SDL_Quit();
-}

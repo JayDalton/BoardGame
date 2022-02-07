@@ -19,13 +19,3 @@ private:
    PlateAccess m_cache;
 };
 
-
-struct FastGame
-{
-   FastGame();
-   ~FastGame();
-
-private:
-   struct Impl;
-   std::unique_ptr<Impl> m;
-};
