@@ -16,11 +16,7 @@ public:
    bool updateUser() override;
 
 private:
-
-   // Grid Spielfeld
-   //
    PlateAccess m_cache;
-   GameModel m_model;
 };
 
 

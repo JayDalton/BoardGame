@@ -320,7 +320,8 @@ void ogl::GameEngine::OnRenderWorld(Duration duration)
       {
          // projection * view * model
          auto posi = projection * view * object.getPosition();
-         m_shapes.at(shape)->render(posi);
+
+         m_shapes.at(shape)->render(posi); // need renderObj
       }
    }
 

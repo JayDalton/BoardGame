@@ -1,6 +1,6 @@
 #include "model.h"
 
-HexagonalPrism::HexagonalPrism(std::string_view vertex, 
+HexagonalShape::HexagonalShape(std::string_view vertex, 
    std::string_view fragment, ogl::Color color)
 {
    append(create(ogl::Vertex{ 0.f }, color));
@@ -22,7 +22,7 @@ HexagonalPrism::HexagonalPrism(std::string_view vertex,
    createShaders(vertex, fragment);
 }
 
-HexagonalPrism::HexagonalPrism(std::string_view vertex, 
+HexagonalShape::HexagonalShape(std::string_view vertex, 
    std::string_view fragment, std::string_view texture)
 {
    ogl::Coords texBase(-1.0f, -1.0f);
@@ -47,7 +47,7 @@ HexagonalPrism::HexagonalPrism(std::string_view vertex,
    createTexture(texture);
 }
 
-void HexagonalPrism::render(ogl::Matrix model) const
+void HexagonalShape::render(ogl::Matrix model) const
 {
    glActiveTexture(GL_TEXTURE0);
    glBindTexture(GL_TEXTURE_2D, Texture::m_id);

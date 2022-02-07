@@ -6,16 +6,16 @@
 #include "source/engine.h"
 #include "source/shapes/shape.hpp"
 
-class HexagonalPrism : public ogl::Shape
+class HexagonalShape : public ogl::Shape
 {
 public:
-   explicit HexagonalPrism(
+   explicit HexagonalShape(
       std::string_view vertex,
       std::string_view fragment,
       ogl::Color color
    );
 
-   explicit HexagonalPrism(
+   explicit HexagonalShape(
       std::string_view vertex,
       std::string_view fragment,
       std::string_view texture
@@ -38,6 +38,7 @@ struct HexCoord
    const std::int32_t q{ 0 }, r{ 0 }, s{ 0 };
    auto operator<=>(const HexCoord&) const = default;
    explicit operator bool() const { return q + r + s == 0; }
+   // www.redblobgames.com/grids/hexagons/implementation.html
 
    HexCoord add(HexCoord a) const {
       return HexCoord(a.q + q, a.r + r, a.s + s);
@@ -59,7 +60,6 @@ struct HexCoord
       return a.subtract(*this).length();
    }
 
-   // www.redblobgames.com/grids/hexagons/implementation.html
    std::size_t operator()(const HexCoord& k) const
    {
       const auto hq = std::hash<int>()(q);
@@ -68,58 +68,18 @@ struct HexCoord
    }
 };
 
-using HexMap = std::unordered_map<HexCoord, float, HexCoord, HexCoord>;
-using HexSet = std::unordered_set<HexCoord, HexCoord>;
-
-//int hex_length(Hex hex) {
-//   return int((abs(hex.q) + abs(hex.r) + abs(hex.s)) / 2);
-//}
-//
-//int hex_distance(Hex a, Hex b) {
-//   return hex_length(hex_subtract(a, b));
-//}
+struct Layout 
+{
+   const glm::vec2 scale{ 1, 1 };
+   const glm::vec2 origin{ 0, 0 };
+   const glm::mat2x2 orientation{ 
+      std::sqrt(3.0), std::sqrt(3.0) / 2.0, 
+      0.0, 3.0 / 2.0 };
+};
 
 struct GamePlate : public ogl::Moveable
 {
    unsigned m_ident{ 0 };
-   std::array<unsigned, 6> m_friends{ 0 };
-
-   static const inline std::unordered_map<Direction, float> m_sideMap
-   {
-      {Direction::Right, 0.0f}, {Direction::TopRight, 60.0f},
-      {Direction::TopLeft, 120.0f}, {Direction::Left, 180.0f},
-      {Direction::BottomLeft, 240.0f}, {Direction::BottomRight, 300.0f},
-   };
-
-
-   bool hasNeighbor(Direction dir) const
-   {
-      return m_friends.at(static_cast<unsigned>(dir)) != 0;
-   }
-
-   unsigned getNeighbor(Direction dir) const
-   {
-      return m_friends.at(static_cast<unsigned>(dir));
-   }
-
-   void setNeighbor(Direction dir, unsigned ident)
-   {
-      m_friends[static_cast<unsigned>(dir)] = ident;
-   }
-
-   enum class Neighbor : short { 
-      Right = 0, TopRight = 60, TopLeft = 120, 
-      Left = 180, BottomLeft = 240, BottomRight = 300
-   };
-
-   GamePlate create(Neighbor neighbor) const
-   {
-      auto pi = std::numbers::pi_v<float>;
-      auto radius = std::cos( pi / 6) * 2;
-      auto angle = static_cast<float>(neighbor);
-      auto position = ogl::Geometry::circlePoint(m_position, angle, radius);
-      return GamePlate{m_shapeId, position};
-   }
 
 };
 
@@ -138,14 +98,6 @@ struct PlateAccess
    {
       return hex.add(m_hexDirection.at(direction));
    }
-
-   struct Layout {
-      const glm::vec2 scale{ 1, 1 };
-      const glm::vec2 origin{ 0, 0 };
-      const glm::mat2x2 orientation{ 
-         std::sqrt(3.0), std::sqrt(3.0) / 2.0, 
-         0.0, 3.0 / 2.0 };
-   };
 
    ogl::Vertex hex_to_pixel(Layout layout, HexCoord h) 
    {
@@ -167,15 +119,6 @@ struct PlateAccess
    //   double q = M.b0 * pt.x + M.b1 * pt.y;
    //   double r = M.b2 * pt.x + M.b3 * pt.y;
    //   return FractionalHex(q, r, -q - r);
-   //}
-
-   //ogl::Vertex hex_corner_offset(Layout layout, Direction corner) 
-   //{
-   //   auto size = layout.size;
-   //   auto pi = std::numbers::pi_v<float>;
-   //   auto cornerInt = static_cast<int>(corner);
-   //   double angle = 2.0 * pi * (layout.orientation.start_angle + cornerInt) / 6;
-   //   return ogl::Vertex(size.x * std::cos(angle), size.y * std::sin(angle), 0);
    //}
 
    void createParallelograms(int fromX, int toX, int fromY, int toY)
@@ -226,69 +169,14 @@ struct PlateAccess
       return result;
    }
 
-   const std::vector<GamePlate>& getMember() const
-   {
-      return m_member;
-   }
-
    unsigned nextPlateIdent()
    {
       return ++m_plateCounter;
    }
 
-   const GamePlate& append(unsigned shapeId, ogl::Vertex position)
-   {
-      auto ident{ nextPlateIdent() };
-      //m_member.insert_or_assign(ident, GamePlate{ shapeId, position, ident});
-      return m_member.emplace_back(GamePlate{ shapeId, position, ident});
-   }
-
    GamePlate create(unsigned shapeId, ogl::Vertex position)
    {
-      auto ident{ nextPlateIdent() };
-      return GamePlate{ shapeId, position, ident};
-   }
-
-   const GamePlate& append(const GamePlate& plate, Direction direction)
-   {
-      auto position = getNewPosition(plate.m_position, direction);
-      return m_member.emplace_back(GamePlate{ plate.m_shapeId, position, m_plateCounter++ });
-   }
-
-   void createHexagonalArea(unsigned shape, int level)
-   {
-      std::vector<GamePlate> input{ append(shape, {0.0f,  0.0f, 0.0f}) };
-
-      for (auto index{ 0 }; index < level; index++)
-      {
-         input = createNeighbour(input);
-      }
-   }
-
-   std::vector<GamePlate> createNeighbour(std::vector<GamePlate> plates)
-   {
-      std::vector<GamePlate> result;
-      for (auto plate : plates)
-      {
-         for (auto&& [side, angle] : plate.m_sideMap)
-         {
-            if (!plate.hasNeighbor(side))
-            {
-               auto posi = getNewPosition(plate.m_position, side);
-               auto next = create(plate.m_shapeId, posi);
-               //plate.setNeighbor(side, next.m_ident);
-               next.setNeighbor(side, plate.m_ident);
-               result.push_back(next);
-            }
-         }
-         result.push_back(plate);
-      }
-
-      for (const auto& plate : result)
-      {
-      }
-
-      return result;
+      return GamePlate{ shapeId, position};
    }
 
 private:
@@ -314,17 +202,11 @@ private:
    }
 
    unsigned m_plateCounter{ 1001 };
-   std::vector<GamePlate> m_member;
-   //std::unordered_map<unsigned, GamePlate> m_member;
+
+   using HexMap = std::unordered_map<HexCoord, GamePlate, HexCoord, HexCoord>;
+   using HexSet = std::unordered_set<HexCoord, HexCoord>;
 
    HexMap m_hexMap;
    HexSet m_hexSet;
 };
 
-class GameModel
-{
-public:
-
-   // Grid Spielfeld
-   std::vector<GamePlate> m_plates;
-};

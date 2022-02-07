@@ -11,6 +11,9 @@
 #include <fstream>
 #include <format>
 #include <numbers>
+#include <variant>
+#include <unordered_map>
+#include <unordered_set>
 
 #include <filesystem>
 

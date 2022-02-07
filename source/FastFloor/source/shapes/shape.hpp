@@ -113,12 +113,16 @@ namespace ogl
       unsigned int m_EBO{ 0 };
   };
 
+  // struct Drawable
   struct Moveable /*: public Geometry*/
      //, public Transform // Animation
   {
       unsigned m_shapeId{ 0 };
       Vertex m_position{ 0 }; 
       // calculated matrix
+
+      using ShaderType = std::variant<glm::mat4, glm::vec3>;
+      std::unordered_map<std::string, ShaderType> m_shader;
 
       void update(Duration delta)
       {
