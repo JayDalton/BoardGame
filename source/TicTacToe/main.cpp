@@ -1,36 +1,62 @@
 
+#include <algorithm>
 #include <array>
-#include <iostream>
 #include <format>
+#include <iostream>
+#include <numeric>
+#include <ranges>
+#include <unordered_map>
+#include <variant>
 
-enum class State { None, Cross, Circle };
+//enum class State { Empty, Cross, Circle };
 
-struct Plate
+struct State
 {
-   State state{};
+   char ident{ '0' };
+   auto operator<=>(const State&) const = default;
+   explicit operator bool() const { return ident != -1; }
+};
 
+struct Player
+{
+   std::string label;
+   std::string symbol;
+   auto toString() const
+   {
+      return std::format("{} [{}]", label, symbol);
+   }
 };
 
 struct GameBoard
 {
    static constexpr std::uint8_t m_size{ 3 };
-   std::array<Plate, m_size * m_size> m_board;
+   std::array<char, m_size * m_size> m_board;
 
-   const Plate& at(std::uint8_t r, std::uint8_t c) const
+   GameBoard() {
+      std::iota(m_board.begin(), m_board.end(), '1');
+   }
+
+   char at(std::uint8_t r, std::uint8_t c) const
    {
       return m_board.at(r * m_size + c);
    }
 
-   Plate& at(std::uint8_t r, std::uint8_t c)
+   char& at(std::uint8_t r, std::uint8_t c)
    {
       return m_board.at(r * m_size + c);
+   }
+
+   bool contains(char symbol) const
+   {
+      auto pred = [&](char field) { return field == symbol; };
+      return std::any_of(m_board.cbegin(), m_board.cend(), pred);
+   }
+
+   void replace(int oldSymbol, int newSymbol)
+   {
+      std::replace(m_board.begin(), m_board.end(), oldSymbol, newSymbol);
    }
 };
-
-void draw(const Plate& plate)
-{
-
-}
 
 void draw(const GameBoard& board)
 {
@@ -53,7 +79,7 @@ void draw(const GameBoard& board)
       std::cout << std::endl << std::format("{:>15}", ' ');
       for (auto col{ 0 }; col < board.m_size; col++)
       {
-         std::cout << std::format("{: ^5}", row * board.m_size + col + 1);
+         std::cout << std::format("{: ^5}", board.at(row, col));
          if (col + 1 < board.m_size)
          {
             std::cout << "|";
@@ -83,18 +109,21 @@ void draw(const GameBoard& board)
    std::cout << std::endl << std::endl << std::endl;
 }
 
-int readNumberInput()
+int readPlayerInput(const Player& player)
 {
    while (true)
    {
       try
       {
          std::string input;
-         std::cout << std::format("{:10}", "input:");
+         std::cout << std::format("Player {} must select next Field\n", player.toString());
+         std::cout << std::format("Select FiledNumber [Range: 1-9, 0 = exit]: ");
          std::getline(std::cin, input);
-         return std::stoi(input);
+         return std::stoi(input) + '0';
       }
-      catch (...) {}
+      catch (...) {
+         std::cout << " Falsche Eingabe!" << std::endl;
+      }
    }
 }
 
@@ -102,9 +131,44 @@ auto main(int, char* []) -> int
 {
    GameBoard board{};
 
-   draw(board);
+   enum Ident : char
+   {
+      Player1 = 'X',
+      Player2 = 'O',
+   };
 
-   readNumberInput();
+   std::array order{ Ident::Player1, Ident::Player2};
+   auto NextPlayer = [&order]() {
+      std::rotate(order.begin(), order.begin() + 1, order.end());
+   };
+
+   std::unordered_map<Ident, Player> player{
+      { Ident::Player1, {"Spieler 1"}},
+      { Ident::Player2, {"Spieler 2"}},
+   };
+
+   bool running{ true };
+   while (running)
+   {
+      draw(board);
+
+      if (auto in = readPlayerInput(player.at(order.at(0))))
+      {
+         if (board.contains(in))
+         {
+            board.replace(in, order.at(0));
+            NextPlayer();
+         }
+         else
+         {
+            std::cout << "Eingabe unbekannt" << std::endl << std::endl;
+         }
+      }
+      else
+      {
+         running = false;
+      }
+   }
 
    return 0;
 }
