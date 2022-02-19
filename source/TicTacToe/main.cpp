@@ -20,7 +20,7 @@ struct State
 struct Player
 {
    std::string label;
-   std::string symbol;
+   char symbol{ '0' };
    auto toString() const
    {
       return std::format("{} [{}]", label, symbol);
@@ -127,49 +127,50 @@ int readPlayerInput(const Player& player)
    }
 }
 
-auto main(int, char* []) -> int
+struct Game
 {
-   GameBoard board{};
-
-   enum Ident : char
+   int run()
    {
-      Player1 = 'X',
-      Player2 = 'O',
-   };
-
-   std::array order{ Ident::Player1, Ident::Player2};
-   auto NextPlayer = [&order]() {
-      std::rotate(order.begin(), order.begin() + 1, order.end());
-   };
-
-   std::unordered_map<Ident, Player> player{
-      { Ident::Player1, {"Spieler 1"}},
-      { Ident::Player2, {"Spieler 2"}},
-   };
-
-   bool running{ true };
-   while (running)
-   {
-      draw(board);
-
-      if (auto in = readPlayerInput(player.at(order.at(0))))
+      bool running{ true };
+      while (running)
       {
-         if (board.contains(in))
+         draw(m_board);
+
+         if (auto in = readPlayerInput(m_player.at(0)))
          {
-            board.replace(in, order.at(0));
-            NextPlayer();
+            if (m_board.contains(in))
+            {
+               m_board.replace(in, m_player.at(0).symbol);
+               NextPlayer();
+            }
+            else
+            {
+               std::cout << "Eingabe unbekannt" << std::endl << std::endl;
+            }
          }
          else
          {
-            std::cout << "Eingabe unbekannt" << std::endl << std::endl;
+            running = false;
          }
       }
-      else
-      {
-         running = false;
-      }
+      return {};
    }
 
-   return 0;
+private:
+   void NextPlayer() {
+      std::rotate(m_player.begin(), m_player.begin() + 1, m_player.end());
+   }
+
+private:
+   GameBoard m_board{};
+   std::vector<Player> m_player{
+      Player{ "Spieler 1", 'X' },
+      Player{ "Spieler 2", 'O' } };
+};
+
+auto main(int, char* []) -> int
+{
+   Game game{};
+   return game.run();
 }
 
