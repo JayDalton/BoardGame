@@ -43,6 +43,7 @@ namespace ogl
       std::vector<VertexType> m_vertices;
       std::vector<IndexType> m_indices;
       Color m_color{ Colors::White };
+      unsigned m_indexSize{};
 
       std::int32_t getVerticesSize() const 
       {
@@ -59,6 +60,12 @@ namespace ogl
          std::copy(element.cbegin(), element.cend(),
             std::back_inserter(m_vertices));
       };
+
+      //void create(std::vector<Element> geometry)
+      //{
+      //   std::copy(element.cbegin(), element.cend(),
+      //      std::back_inserter(m_vertices));
+      //};
 
       Element create(Vertex vertex, Coords coords)
       {
@@ -90,51 +97,39 @@ namespace ogl
       };
    };
 
+   struct Render
+   {
+
+   };
+
   class Shape : 
      public Ident
      , public Buffer
      , public Shader
-     , public Geometry
      , public Texture
+     , public Geometry
   {
     public:
       virtual ~Shape();
 
       virtual void render(Matrix pos) const = 0;
+      void render2(Matrix pos) const;
+      void render2(Render pos) const;
       //virtual void update() const = 0;
       //virtual void start() const = 0;
       //virtual void stop() const = 0;
 
    protected:
       void bindBuffer(std::vector<unsigned>&& indices);
+      void bindBuffer(
+         const std::vector<Element>& vertices,
+         const std::vector<IndexType>& indices
+      );
 
    protected:
-      unsigned int m_id{ 0 };
       unsigned int m_VBO{ 0 };
       unsigned int m_VAO{ 0 };
       unsigned int m_EBO{ 0 };
-  };
-
-  struct Drawable
-  {
-      unsigned m_shapeId{ 0 }; // geometry
-      Vertex m_position{ 0 };  // raus
-      // calculated matrix
-
-      // Texture
-      // Shader
-      using ShaderType = std::variant<glm::mat4, glm::vec3>;
-      std::unordered_map<std::string, ShaderType> m_shader;
-
-      void update(Duration delta)
-      {
-         // ???
-      }
-
-      Matrix getPosition() const
-      {
-         return glm::translate(Matrix{ 1.0f }, m_position);
-      }
   };
 
 }

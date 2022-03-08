@@ -23,14 +23,15 @@ ogl::Square::Square(std::string_view vertex
    append(create({ -1.0f, -1.0f, 0.f }, color));
    append(create({ -1.0f, +1.0f, 0.f }, color));
 
-   bindBuffer({ 0u, 1u, 3u, 1u, 2u, 3u });
+   bindBuffer({ 0u, 1u, 3u, 1u, 2u, 3u }); // free bugger ?!?
    createShaders(vertex, fragment);
 }
 
 void ogl::Square::render(Matrix model) const
 {
+   //Texture::useTexture(); ???
    glActiveTexture(GL_TEXTURE0);
-   glBindTexture(GL_TEXTURE_2D, Texture::m_id);
+   glBindTexture(GL_TEXTURE_2D, Texture::id());
    //glActiveTexture(GL_TEXTURE1);
    //glBindTexture(GL_TEXTURE_2D, Texture::m_id2);
 
@@ -38,6 +39,7 @@ void ogl::Square::render(Matrix model) const
    Shader::useShader();
    Shader::setMat4("model", model);
 
+   //Shape::useShape(); ???
    glBindVertexArray(m_VAO);
    //glDrawElements(GL_LINE_STRIP, m_indices.size(), GL_UNSIGNED_INT, 0);
    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
@@ -81,7 +83,7 @@ ogl::Rectangle::Rectangle(ogl::SizeF size
 void ogl::Rectangle::render(Matrix model) const
 {
    glActiveTexture(GL_TEXTURE0);
-   glBindTexture(GL_TEXTURE_2D, Texture::m_id);
+   glBindTexture(GL_TEXTURE_2D, Texture::id());
 
    // render container
    Shader::useShader();
@@ -142,7 +144,7 @@ ogl::Hexagon::Hexagon(std::string_view vertex
 void ogl::Hexagon::render(Matrix model) const
 {
    glActiveTexture(GL_TEXTURE0);
-   glBindTexture(GL_TEXTURE_2D, Texture::m_id);
+   glBindTexture(GL_TEXTURE_2D, Texture::id());
    //glActiveTexture(GL_TEXTURE1);
    //glBindTexture(GL_TEXTURE_2D, Texture::m_id2);
 

@@ -77,29 +77,91 @@ struct Layout
       0.0, 3.0 / 2.0 };
 };
 
-struct GamePlate : public ogl::Drawable
+struct GamePlate /*: public ogl::Drawable*/
 {
-   unsigned m_ident{ 0 };
-
+   unsigned m_shapeId{};
+   ogl::Vertex m_position{};
+   ogl::Drawable m_drawable;
 };
 
 struct PlateAccess
 {
-   std::unordered_map<Direction, HexCoord> m_hexDirection{
-      {Direction::Right, HexCoord{1, 0, -1}},
-      {Direction::TopRight, HexCoord{1, -1, 0}},
-      {Direction::TopLeft, HexCoord{0, -1, 1}}, 
-      {Direction::Left, HexCoord{-1, 0, 1}},
-      {Direction::BottomLeft, HexCoord{-1, 1, 0}}, 
-      {Direction::BottomRight, HexCoord{0, 1, -1}},
-   };
+   void createParallelograms(int fromX, int toX, int fromY, int toY)
+   {
+      m_hexSet.clear();
+      for (int q = fromX; q <= toX; q++) {
+         for (int r = fromY; r <= toY; r++) {
+            m_hexSet.insert(HexCoord(q, r, -q - r));
+         }
+      }
+   }
 
-   HexCoord get_neighbor(HexCoord hex, Direction direction) 
+   void createTriangles(int size)
+   {
+      m_hexSet.clear();
+      for (int q = 0; q <= size; q++) {
+         for (int r = 0; r <= size - q; r++) {
+            m_hexSet.insert(HexCoord(q, r, -q - r));
+         }
+      }
+   }
+
+   void createHexagons(int radius, GamePlate plate)
+   {
+      m_hexMap.clear();
+      for (int q = -radius; q <= radius; q++) 
+      {
+         int r1 = std::max(-radius, -q - radius);
+         int r2 = std::min( radius, -q + radius);
+         for (int r = r1; r <= r2; r++) 
+         {
+            HexCoord hex{ q, r, -q - r };
+            auto pos = hex_to_pixel(Layout{}, hex);
+            //m_hexSet.insert(HexCoord(q, r, -q - r));
+            //m_hexMap.emplace(hex, GamePlate{});
+            m_hexMap.emplace(hex, plate);
+         }
+      }
+   }
+
+   auto mapPayground(unsigned shapeId) -> ogl::DrawableList
+   {
+      ogl::DrawableList result;
+      result.reserve(m_hexMap.size());
+
+      for (auto&& [hex, plate] : m_hexMap)
+      {
+         auto position = hex_to_pixel(Layout{}, hex);
+         result.push_back(plate.m_drawable);
+      }
+
+      //for (auto&& hex : m_hexSet)
+      //{
+      //   auto position = hex_to_pixel(Layout{}, hex);
+      //   result.push_back(create(shapeId, position));
+      //   result.push_back(ogl::Drawable(shapeId, position));
+      //}
+
+      return result;
+   }
+
+   //unsigned nextPlateIdent()
+   //{
+   //   return ++m_plateCounter;
+   //}
+
+   //GamePlate create(unsigned shapeId, ogl::Vertex position)
+   //{
+   //   return GamePlate{ shapeId, position};
+   //}
+
+protected:
+   HexCoord get_neighbor(HexCoord hex, Direction direction)
    {
       return hex.add(m_hexDirection.at(direction));
    }
 
-   ogl::Vertex hex_to_pixel(Layout layout, HexCoord h) 
+   ogl::Vertex hex_to_pixel(Layout layout, HexCoord h)
    {
       glm::vec2 v1 = layout.orientation[0];
       glm::vec2 v2 = layout.orientation[1];
@@ -121,89 +183,41 @@ struct PlateAccess
    //   return FractionalHex(q, r, -q - r);
    //}
 
-   void createParallelograms(int fromX, int toX, int fromY, int toY)
-   {
-      m_hexSet.clear();
-      for (int q = fromX; q <= toX; q++) {
-         for (int r = fromY; r <= toY; r++) {
-            m_hexSet.insert(HexCoord(q, r, -q - r));
-         }
-      }
-   }
+   std::unordered_map<Direction, HexCoord> m_hexDirection{
+      {Direction::Right, HexCoord{1, 0, -1}},
+      {Direction::TopRight, HexCoord{1, -1, 0}},
+      {Direction::TopLeft, HexCoord{0, -1, 1}},
+      {Direction::Left, HexCoord{-1, 0, 1}},
+      {Direction::BottomLeft, HexCoord{-1, 1, 0}},
+      {Direction::BottomRight, HexCoord{0, 1, -1}},
+   };
 
-   void createTriangles(int size)
-   {
-      m_hexSet.clear();
-      for (int q = 0; q <= size; q++) {
-         for (int r = 0; r <= size - q; r++) {
-            m_hexSet.insert(HexCoord(q, r, -q - r));
-         }
-      }
-   }
-
-   void createHexagons(int radius)
-   {
-      m_hexSet.clear();
-      for (int q = -radius; q <= radius; q++) 
-      {
-         int r1 = std::max(-radius, -q - radius);
-         int r2 = std::min( radius, -q + radius);
-         for (int r = r1; r <= r2; r++) 
-         {
-            m_hexSet.insert(HexCoord(q, r, -q - r));
-         }
-      }
-   }
-
-   std::vector<GamePlate> mapPayground(unsigned shapeId)
-   {
-      std::vector<GamePlate> result;
-      result.reserve(m_hexSet.size());
-
-      for (auto&& hex : m_hexSet)
-      {
-         auto position = hex_to_pixel(Layout{}, hex);
-         result.push_back(create(shapeId, position));
-      }
-
-      return result;
-   }
-
-   unsigned nextPlateIdent()
-   {
-      return ++m_plateCounter;
-   }
-
-   GamePlate create(unsigned shapeId, ogl::Vertex position)
-   {
-      return GamePlate{ shapeId, position};
-   }
 
 private:
-   ogl::Vertex getNewPosition(const ogl::Vertex& vertex, Direction side)
-   {
-      auto pi = std::numbers::pi_v<float>;
-      auto radius = std::cos(pi / 6) * 2;
-      return ogl::Geometry::circlePoint(vertex, getAngle(side), radius);
-   }
+   //ogl::Vertex getNewPosition(const ogl::Vertex& vertex, Direction side)
+   //{
+   //   auto pi = std::numbers::pi_v<float>;
+   //   auto radius = std::cos(pi / 6) * 2;
+   //   return ogl::Geometry::circlePoint(vertex, getAngle(side), radius);
+   //}
 
-   float getAngle(Direction direction) const
-   {
-      switch (direction)
-      {
-      case Direction::Right: return 0.f;
-      case Direction::TopRight: return 60.f;
-      case Direction::TopLeft: return 120.f;
-      case Direction::Left: return 180;
-      case Direction::BottomLeft: return 240.f;
-      case Direction::BottomRight: return 300.f;
-      default: return -1;
-      }
-   }
+   //float getAngle(Direction direction) const
+   //{
+   //   switch (direction)
+   //   {
+   //   case Direction::Right: return 0.f;
+   //   case Direction::TopRight: return 60.f;
+   //   case Direction::TopLeft: return 120.f;
+   //   case Direction::Left: return 180;
+   //   case Direction::BottomLeft: return 240.f;
+   //   case Direction::BottomRight: return 300.f;
+   //   default: return -1;
+   //   }
+   //}
 
    unsigned m_plateCounter{ 1001 };
 
-   using HexMap = std::unordered_map<HexCoord, GamePlate, HexCoord, HexCoord>;
+   using HexMap = std::unordered_map<HexCoord, GamePlate, HexCoord>;
    using HexSet = std::unordered_set<HexCoord, HexCoord>;
 
    HexMap m_hexMap;

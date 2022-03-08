@@ -6,13 +6,11 @@ namespace ogl
 {
    struct Shader
    {
-      unsigned int m_id{ 0 };
-
       bool createShaders(
          std::string_view vertex,
          std::string_view fragment);
 
-      // use/activate the shader
+      // activate the shader
       void useShader() const;
 
       // utility uniform functions
@@ -31,10 +29,9 @@ namespace ogl
       void setMat4(const std::string& name, const glm::mat4& mat) const;
 
    private:
+      unsigned int m_programId{ 0 };
       enum class Type { Vertex, Fragment, Geometry, Program };
-
       void checkCompileErrors(unsigned int shader, Type type);
-
    };
-
 }
+

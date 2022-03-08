@@ -6,7 +6,9 @@ namespace ogl
 {
    struct Texture
    {
-      unsigned int m_id{ 0 };
+      unsigned id() const {
+         return m_id;
+      }
 
       ~Texture();
 
@@ -16,6 +18,7 @@ namespace ogl
   	   std::string getTypeName() const;
 
    private:
+      unsigned m_id{ 0 };
       int m_compo{ 0 }; // 3/4
   	   int m_width{ 0 };
   	   int m_height{ 0 };

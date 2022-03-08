@@ -448,6 +448,23 @@ void ogl::GameEngine::initGeometry()
    //      "images/container.jpg"));
 }
 
+void ogl::GameEngine::render(const RenderOpt& object)
+{
+   glActiveTexture(GL_TEXTURE0);
+   glBindTexture(GL_TEXTURE_2D, object.textureId1());
+   glActiveTexture(GL_TEXTURE1);
+   glBindTexture(GL_TEXTURE_2D, object.textureId2());
+
+   // render container
+   //object.m_shader.useShader();
+   //object.m_shader.setMat4();
+   //Shader::useShader();
+   //Shader::setMat4("model", model);
+
+   //glBindVertexArray(m_VAO);
+   //glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+}
+
 //ogl::Size ogl::GameEngine::getWindowSize()
 //{
 //   int width{ 0 };

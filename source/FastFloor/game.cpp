@@ -10,16 +10,32 @@ FastFloor::FastFloor(std::string_view title)
 
 bool FastFloor::createUser()
 {
-   auto hexBlue = append(std::make_unique<HexagonalShape>("shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Blue));
-   auto hexIcon = append(std::make_unique<HexagonalShape>("shader/Complex.vs", "shader/Complex.fs", "images/container.jpg"));
-   auto hexFace = append(std::make_unique<HexagonalShape>("shader/Complex.vs", "shader/Complex.fs", "images/awesomeface.png"));
-   auto square1 = append(std::make_unique<ogl::Square>("shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Green));
-   auto square2 = append(std::make_unique<ogl::Hexagon>("shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Red));
-   auto square3 = append(std::make_unique<ogl::Rectangle>(ogl::SizeF{2.f,3.f}, "shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Red));
+   // shader = loadShader("shader/Complex.vs", "shader/Colored.fs")
+   // texture = loadTexture("images/container.jpg")
+   // shape = loadShape(HexagonalShape, shader, texture)
+   // shape = loadShape(HexagonalShape, shader, ogl::Colors::Blue)
+   // matrix param
+   // == drawable ?
+
+   //auto shaderId1 = createShader("shader/Complex.vs", "shader/Colored.fs");
+   //auto textureId1 = createTexture("images/awesomeface.png");
+   //createSquare();
+
+   //createDrawable();
+
+   auto hexBlue = append("", std::make_unique<HexagonalShape>("shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Blue));
+   auto hexIcon = append("", std::make_unique<HexagonalShape>("shader/Complex.vs", "shader/Complex.fs", "images/container.jpg"));
+   auto hexFace = append("", std::make_unique<HexagonalShape>("shader/Complex.vs", "shader/Complex.fs", "images/awesomeface.png"));
+   auto square1 = append("", std::make_unique<ogl::Square>("shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Green));
+   auto square2 = append("", std::make_unique<ogl::Hexagon>("shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Red));
+   auto square3 = append("", std::make_unique<ogl::Rectangle>(ogl::SizeF{2.f,3.f}, "shader/Complex.vs", "shader/Colored.fs", ogl::Colors::Red));
 
    //m_cache.createParallelograms(0, 4, 0, 3);
    //m_cache.createTriangles(4);
-   m_cache.createHexagons(4);
+
+   GamePlate plate{hexFace};
+   m_cache.createHexagons(4, plate);
+   //append(m_cache.mapPayground(hexFace));
    const auto member = m_cache.mapPayground(hexFace);
    m_objects.insert(m_objects.end(), member.cbegin(), member.cend());
 

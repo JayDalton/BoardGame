@@ -119,7 +119,24 @@ int readPlayerInput(const Player& player)
          std::cout << std::format("Player {} must select next Field\n", player.toString());
          std::cout << std::format("Select FiledNumber [Range: 1-9, 0 = exit]: ");
          std::getline(std::cin, input);
-         return std::stoi(input) + '0';
+         return std::stoi(input);
+      }
+      catch (...) {
+         std::cout << " Falsche Eingabe!" << std::endl;
+      }
+   }
+}
+
+bool askPlayerAction()
+{
+   while (true)
+   {
+      try
+      {
+         std::string input;
+         std::cout << std::format("Game ends, new one? [y/n]");
+         std::getline(std::cin, input);
+         return std::stoi(input);
       }
       catch (...) {
          std::cout << " Falsche Eingabe!" << std::endl;
@@ -129,8 +146,10 @@ int readPlayerInput(const Player& player)
 
 struct Game
 {
-   int run()
+   int playGame()
    {
+      draw(m_board);
+
       bool running{ true };
       while (running)
       {
@@ -138,9 +157,10 @@ struct Game
 
          if (auto in = readPlayerInput(m_player.at(0)))
          {
-            if (m_board.contains(in))
+            auto symbol{ in + '0' };
+            if (m_board.contains(symbol))
             {
-               m_board.replace(in, m_player.at(0).symbol);
+               m_board.replace(symbol, m_player.at(0).symbol);
                NextPlayer();
             }
             else
@@ -152,7 +172,34 @@ struct Game
          {
             running = false;
          }
+
+         analyze(board);
       }
+      return {};
+   }
+
+   int run()
+   {
+      bool running{ true };
+      while (running)
+      {
+         if (auto result = playGame())
+         {
+            std::cout << std::format("Player {} wins!") << std::endl;
+         }
+         else
+         {
+            std::cout << std::format("Unentschieden ...!") << std::endl;
+         }
+
+         // Noch ein Spiel?
+         m_board = GameBoard{};
+         if (auto res = readPlayerInput())
+         {
+            running = false;
+         }
+      }
+
       return {};
    }
 
