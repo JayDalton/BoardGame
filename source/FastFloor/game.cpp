@@ -17,6 +17,7 @@ bool FastFloor::createUser()
    std::uniform_real_distribution<> distSize(0.3, 0.7);
    std::uniform_real_distribution<> distColor(0, 255);
 
+   auto bufferId = createHexagon(ogl::Colors::White);
    auto shaderId1 = createShader("shader/Complex.vs", "shader/Complex.fs");
    auto shaderId2 = createShader("shader/Complex.vs", "shader/Colored.fs");
    auto textureId1 = createTexture("images/container.jpg");
@@ -35,10 +36,10 @@ bool FastFloor::createUser()
       plate.m_position.y = distArea(eng);
       //plate.m_buffer = createSquare(size, color);
       //plate.m_buffer = createHexagon(color);
-      plate.m_buffer = createHexagon(ogl::Colors::White);
-      plate.m_texture1 = textureId1;
-      plate.m_texture2 = textureId2;
+      plate.m_texture1 = textureId2;
+      plate.m_texture2 = textureId1;
       plate.m_shader = shaderId1;
+      plate.m_buffer = bufferId;
       m_plates.push_back(plate);
    }
 
@@ -52,8 +53,8 @@ bool FastFloor::createUser()
    ////m_cache.createParallelograms(0, 4, 0, 3);
    ////m_cache.createTriangles(4);
 
-   GamePlate plate{};
-   m_cache.createHexagons(4, plate);
+   //GamePlate plate{};
+   //m_cache.createHexagons(4, plate);
    //const auto member = m_cache.mapPayground(hexFace);
    //m_objects.insert(m_objects.end(), member.cbegin(), member.cend());
 

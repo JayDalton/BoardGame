@@ -40,6 +40,12 @@ bool ogl::Texture::createTexture(std::string_view path)
    return false;
 }
 
+void ogl::Texture::useTexture()
+{
+   glActiveTexture(GL_TEXTURE0);
+   glBindTexture(GL_TEXTURE_2D, m_id);
+}
+
 std::string ogl::Texture::getTypeName() const
 {
   return (m_type == GL_RGBA) 

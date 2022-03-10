@@ -18,6 +18,6 @@ public:
 private:
    PlateAccess m_cache;
 
-   std::vector<ogl::Drawable> m_plates;
+   ogl::DrawableList m_plates;
 };
 

@@ -137,7 +137,7 @@ namespace ogl
       virtual ~Shape();
 
       virtual void render(Matrix pos) const = 0;
-      static void render(Buffer& buffer, Shader& shader);
+      //static void render(Buffer& buffer, Shader& shader);
 
    protected:
       void bindBuffer(std::vector<unsigned>&& indices);

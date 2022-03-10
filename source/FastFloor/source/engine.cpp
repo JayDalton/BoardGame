@@ -472,21 +472,14 @@ void ogl::GameEngine::render(ogl::Drawable drawable)
          m_cameraTarget,
          m_cameraUpside);
 
-      auto posi = drawable.getPosition();
-
       //// projection * view * model
-      auto model = projection * view * posi;
-
+      auto model = projection * view * drawable.getPosition();
       //m_shapes.at(shape)->render(posi); // need renderObj
 
-      glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D, texture.id());
-      //glActiveTexture(GL_TEXTURE1);
-      //glBindTexture(GL_TEXTURE_2D, texture.id());
+      texture.useTexture();
 
-      // render container
       shader.useShader();
-      //shader.setMat4("model", model);
+      shader.setMat4("model", model);
 
       buffer.render();
    }

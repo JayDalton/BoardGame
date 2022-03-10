@@ -14,6 +14,8 @@ namespace ogl
 
       bool createTexture(std::string_view path);
 
+      void useTexture();
+
   	   std::string getTypeName() const;
 
    private:

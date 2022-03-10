@@ -24,56 +24,27 @@ namespace ogl
 
    struct Drawable
    {
-      unsigned m_shapeId{ 0 }; // geometry
+      BufferId m_buffer;
+      ShaderId m_shader;
+      TextureId m_texture1;
+      TextureId m_texture2;
       Vertex m_position{ 0 };  // raus
-      Matrix m_matrix{ 1.0f };
-      // calculated matrix
 
-      ogl::BufferId m_buffer;
-      ogl::ShaderId m_shader;
-      ogl::TextureId m_texture1;
-      ogl::TextureId m_texture2;
+      //Matrix m_matrix{ 1.0f };
       //ogl::Color m_color{ ogl::Colors::White };
-
-      void update(Duration delta)
-      {
-         // ???
-      }
 
       Matrix getPosition() const
       {
          return glm::translate(Matrix{ 1.0f }, m_position);
       }
 
+      void update(Duration delta)
+      {
+         // ???
+      }
    };
 
    using DrawableList = std::vector<ogl::Drawable>;
-
-   //struct RenderOpt
-   //{
-   //   unsigned m_shapeId{ 0 }; // geometry
-   //   Vertex m_position{ 0 };  // raus
-   //   Matrix m_matrix{ 1.0f };
-   //   // calculated matrix
-
-   //   // Texture
-   //   // Shader
-   //   using ShaderType = std::variant<glm::mat4, glm::vec3>;
-   //   std::unordered_map<std::string, ShaderType> m_shaderParam{
-   //      { "model", glm::mat4{}}
-   //   };
-
-   //   const Matrix& matrix() const { return m_matrix; }
-   //   unsigned textureId1() const { return m_texture1; }
-   //   unsigned textureId2() const { return m_texture2; }
-
-   ////private:
-   //   Buffer m_buffer;
-   //   Shader m_shader;
-   //   Texture m_texture;
-   //   unsigned m_texture1{};
-   //   unsigned m_texture2{};
-   //};
 
    class GameEngine
    {

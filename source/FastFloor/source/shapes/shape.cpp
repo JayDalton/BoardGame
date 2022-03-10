@@ -9,25 +9,25 @@ ogl::Shape::~Shape()
    glDeleteBuffers(1, &m_EBO);
 }
 
-void ogl::Shape::render(Buffer& buffer, Shader& shader)
-{
-   //Texture::useTexture(); ???
-   //glActiveTexture(GL_TEXTURE0);
-   //glBindTexture(GL_TEXTURE_2D, Texture::id());
-   //glActiveTexture(GL_TEXTURE1);
-   //glBindTexture(GL_TEXTURE_2D, Texture::m_id2);
-
-   // render container
-   //shader.useShader();
-   //Shader::useShader();
-   //Shader::setMat4("model", pos);
-
-   //Buffer::render(); ???
-   //buffer.render();
-   //glBindVertexArray(m_VAO);
-   ////glDrawElements(GL_LINE_STRIP, m_indices.size(), GL_UNSIGNED_INT, 0);
-   //glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
-}
+//void ogl::Shape::render(Buffer& buffer, Shader& shader)
+//{
+//   //Texture::useTexture(); ???
+//   //glActiveTexture(GL_TEXTURE0);
+//   //glBindTexture(GL_TEXTURE_2D, Texture::id());
+//   //glActiveTexture(GL_TEXTURE1);
+//   //glBindTexture(GL_TEXTURE_2D, Texture::m_id2);
+//
+//   // render container
+//   //shader.useShader();
+//   //Shader::useShader();
+//   //Shader::setMat4("model", pos);
+//
+//   //Buffer::render(); ???
+//   //buffer.render();
+//   //glBindVertexArray(m_VAO);
+//   ////glDrawElements(GL_LINE_STRIP, m_indices.size(), GL_UNSIGNED_INT, 0);
+//   //glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+//}
 
 void ogl::Shape::bindBuffer(std::vector<unsigned>&& indices)
 {
