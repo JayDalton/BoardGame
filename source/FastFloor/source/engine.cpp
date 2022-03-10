@@ -316,12 +316,33 @@ void ogl::GameEngine::OnRenderWorld(Duration duration)
    {
       if (object.m_shapeId)
       {
-         auto posi = projection * view * object.getPosition();
-         m_shapes.at(object.m_shapeId)->render(posi); // need renderObj
+         auto model = projection * view * object.getPosition();
+         auto& shape = m_shapes.at(object.m_shapeId);
+         shape->render(model);
       }
       else
       {
          //render(object);
+         auto bufferId = object.m_buffer;
+         auto shaderId = object.m_shader;
+         auto textureId = object.m_texture1;
+
+         if (m_buffer.contains(bufferId))
+         {
+            auto& buffer = m_buffer.at(bufferId);
+            auto& shader = m_shader.at(shaderId);
+            auto& texture = m_texture.at(textureId);
+
+            //// projection * view * model
+            auto model = projection * view * object.getPosition();
+
+            texture.useTexture();
+
+            shader.useShader();
+            shader.setMat4("model", model);
+
+            buffer.render();
+         }
       }
    }
 

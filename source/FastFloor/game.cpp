@@ -48,7 +48,7 @@ bool FastFloor::createUser()
       plate2.m_texture2 = textureId1;
       plate2.m_shader = shaderId2;
       plate2.m_buffer = bufferId2;
-      plate2.m_shapeId = square1;
+      //plate2.m_shapeId = square1;
       m_plates.push_back(plate2);
       m_objects.push_back(plate2);
 
