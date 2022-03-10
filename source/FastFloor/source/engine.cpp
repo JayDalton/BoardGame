@@ -313,17 +313,19 @@ void ogl::GameEngine::OnRenderWorld(Duration duration)
 
    //m_objCache.renderAll(projection * view);
 
-   for (auto&& object : m_objects)
-   {
-      auto shape = object.m_shapeId;
-      if (m_shapes.contains(shape))
-      {
-         // projection * view * model
-         auto posi = projection * view * object.getPosition();
+   updateUser();
 
-         m_shapes.at(shape)->render(posi); // need renderObj
-      }
-   }
+   //for (auto&& object : m_objects)
+   //{
+   //   auto shape = object.m_shapeId;
+   //   if (m_shapes.contains(shape))
+   //   {
+   //      // projection * view * model
+   //      auto posi = projection * view * object.getPosition();
+
+   //      m_shapes.at(shape)->render(posi); // need renderObj
+   //   }
+   //}
 
    //// ViewPort buttom-left
    //glViewport(0, 0, windowSize.x / 4, windowSize.y / 4);
@@ -448,21 +450,102 @@ void ogl::GameEngine::initGeometry()
    //      "images/container.jpg"));
 }
 
-void ogl::GameEngine::render(const RenderOpt& object)
+void ogl::GameEngine::render(ogl::Drawable drawable)
 {
-   glActiveTexture(GL_TEXTURE0);
-   glBindTexture(GL_TEXTURE_2D, object.textureId1());
-   glActiveTexture(GL_TEXTURE1);
-   glBindTexture(GL_TEXTURE_2D, object.textureId2());
+   auto bufferId = drawable.m_buffer;
+   auto shaderId = drawable.m_shader;
+   auto textureId = drawable.m_texture1;
 
-   // render container
-   //object.m_shader.useShader();
-   //object.m_shader.setMat4();
-   //Shader::useShader();
-   //Shader::setMat4("model", model);
+   if (m_buffer.contains(bufferId))
+   {
+      auto& buffer = m_buffer.at(bufferId);
+      auto& shader = m_shader.at(shaderId);
+      auto& texture = m_texture.at(textureId);
 
-   //glBindVertexArray(m_VAO);
-   //glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+      auto projection = glm::perspective(
+         glm::radians(45.0f),
+         800.f / 600.f,          // wie funktioniert das?
+         0.1f, 100.0f);
+
+      auto view = glm::lookAt(
+         m_cameraPosition,
+         m_cameraTarget,
+         m_cameraUpside);
+
+      auto posi = drawable.getPosition();
+
+      //// projection * view * model
+      auto model = projection * view * posi;
+
+      //m_shapes.at(shape)->render(posi); // need renderObj
+
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, texture.id());
+      //glActiveTexture(GL_TEXTURE1);
+      //glBindTexture(GL_TEXTURE_2D, texture.id());
+
+      // render container
+      shader.useShader();
+      //shader.setMat4("model", model);
+
+      buffer.render();
+   }
+}
+
+ogl::ShaderId ogl::GameEngine::createShader(std::string_view vertex, std::string_view fragment)
+{
+   ogl::Shader shader;
+   shader.createShaders(vertex, fragment);
+   return append(shader);
+}
+
+ogl::TextureId ogl::GameEngine::createTexture(std::string_view texture)
+{
+   ogl::Texture tex;
+   tex.createTexture(texture);
+   return append(tex);
+}
+
+ogl::BufferId ogl::GameEngine::createSquare(ogl::SizeF size, ogl::Color color)
+{
+   auto normal = glm::normalize(size);
+
+   ogl::Buffer buffer{};
+   buffer.bindBuffer({
+      Buffer::create({ +normal.x, +normal.y, 0.f }, color),
+      Buffer::create({ +normal.x, -normal.y, 0.f }, color),
+      Buffer::create({ -normal.x, -normal.y, 0.f }, color),
+      Buffer::create({ -normal.x, +normal.y, 0.f }, color) },
+      { 0u, 1u, 3u, 1u, 2u, 3u }
+   );
+
+   return append(buffer);
+}
+
+ogl::BufferId ogl::GameEngine::createHexagon(ogl::Color color)
+{
+   ogl::Coords texBase(-1.0f, -1.0f);
+
+   ogl::Buffer buffer{};
+   buffer.bindBuffer({
+      Buffer::create({ 0.5f, 0.5f }, ogl::Vertex{ 0.f }, color),
+      Buffer::create(texBase, Geometry::circlePoint(030.f, 1.f), color),
+      Buffer::create(texBase, Geometry::circlePoint(090.f, 1.f), color),
+      Buffer::create(texBase, Geometry::circlePoint(150.f, 1.f), color),
+      Buffer::create(texBase, Geometry::circlePoint(210.f, 1.f), color),
+      Buffer::create(texBase, Geometry::circlePoint(270.f, 1.f), color),
+      Buffer::create(texBase, Geometry::circlePoint(330.f, 1.f), color) },
+      {
+      0u, 1u, 2u,
+      0u, 2u, 3u,
+      0u, 3u, 4u,
+      0u, 4u, 5u,
+      0u, 5u, 6u,
+      0u, 6u, 1u,
+      }
+   );
+
+   return append(buffer);
 }
 
 //ogl::Size ogl::GameEngine::getWindowSize()

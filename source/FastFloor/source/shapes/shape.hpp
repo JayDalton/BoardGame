@@ -12,6 +12,10 @@ namespace ogl
       std::int16_t m_ident{ -1 };
       auto operator<=>(const Ident&) const = default;
       explicit operator bool() const { return m_ident != -1; }
+      std::size_t operator()(const Ident& k) const
+      {
+         return std::hash<int>()(m_ident);
+      }
    };
 
    struct Geometry
@@ -44,6 +48,15 @@ namespace ogl
       std::vector<IndexType> m_indices;
       Color m_color{ Colors::White };
       unsigned m_indexSize{};
+
+      ~Buffer();
+
+      void bindBuffer(
+         const std::vector<Element>& vertices,
+         const std::vector<IndexType>& indices
+      );
+
+      void render();
 
       std::int32_t getVerticesSize() const 
       {
@@ -87,7 +100,18 @@ namespace ogl
          };
       };
 
-      Element create(Vertex vertex, Color color)
+      static Element create(Coords uvBase, Vertex vertex, Color color)
+      {
+         auto coords{ (ogl::Coords(vertex) - uvBase) * 0.5f };
+
+         return {
+            vertex.x, vertex.y, vertex.z,
+            color.r, color.g, color.b,
+            coords.x, coords.y 
+         };
+      };
+
+      static Element create(Vertex vertex, Color color)
       {
          return {
             vertex.x, vertex.y, vertex.z,
@@ -95,11 +119,11 @@ namespace ogl
             0.0f, 0.0f 
          };
       };
-   };
 
-   struct Render
-   {
-
+   protected:
+      unsigned int m_VBO{ 0 };
+      unsigned int m_VAO{ 0 };
+      unsigned int m_EBO{ 0 };
    };
 
   class Shape : 
@@ -113,11 +137,7 @@ namespace ogl
       virtual ~Shape();
 
       virtual void render(Matrix pos) const = 0;
-      void render2(Matrix pos) const;
-      void render2(Render pos) const;
-      //virtual void update() const = 0;
-      //virtual void start() const = 0;
-      //virtual void stop() const = 0;
+      static void render(Buffer& buffer, Shader& shader);
 
    protected:
       void bindBuffer(std::vector<unsigned>&& indices);

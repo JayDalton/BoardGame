@@ -12,7 +12,6 @@ namespace ogl
 
       ~Texture();
 
-   protected:
       bool createTexture(std::string_view path);
 
   	   std::string getTypeName() const;

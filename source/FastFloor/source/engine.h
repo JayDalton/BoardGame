@@ -18,12 +18,22 @@
 
 namespace ogl
 {
+   struct BufferId final : public Ident {};
+   struct ShaderId final : public Ident {};
+   struct TextureId final : public Ident {};
+
    struct Drawable
    {
       unsigned m_shapeId{ 0 }; // geometry
       Vertex m_position{ 0 };  // raus
       Matrix m_matrix{ 1.0f };
       // calculated matrix
+
+      ogl::BufferId m_buffer;
+      ogl::ShaderId m_shader;
+      ogl::TextureId m_texture1;
+      ogl::TextureId m_texture2;
+      //ogl::Color m_color{ ogl::Colors::White };
 
       void update(Duration delta)
       {
@@ -39,31 +49,31 @@ namespace ogl
 
    using DrawableList = std::vector<ogl::Drawable>;
 
-   struct RenderOpt
-   {
-      unsigned m_shapeId{ 0 }; // geometry
-      Vertex m_position{ 0 };  // raus
-      Matrix m_matrix{ 1.0f };
-      // calculated matrix
+   //struct RenderOpt
+   //{
+   //   unsigned m_shapeId{ 0 }; // geometry
+   //   Vertex m_position{ 0 };  // raus
+   //   Matrix m_matrix{ 1.0f };
+   //   // calculated matrix
 
-      // Texture
-      // Shader
-      using ShaderType = std::variant<glm::mat4, glm::vec3>;
-      std::unordered_map<std::string, ShaderType> m_shaderParam{
-         { "model", glm::mat4{}}
-      };
+   //   // Texture
+   //   // Shader
+   //   using ShaderType = std::variant<glm::mat4, glm::vec3>;
+   //   std::unordered_map<std::string, ShaderType> m_shaderParam{
+   //      { "model", glm::mat4{}}
+   //   };
 
-      const Matrix& matrix() const { return m_matrix; }
-      unsigned textureId1() const { return m_texture1; }
-      unsigned textureId2() const { return m_texture2; }
+   //   const Matrix& matrix() const { return m_matrix; }
+   //   unsigned textureId1() const { return m_texture1; }
+   //   unsigned textureId2() const { return m_texture2; }
 
-   //private:
-      Buffer m_buffer;
-      Shader m_shader;
-      Texture m_texture;
-      unsigned m_texture1{};
-      unsigned m_texture2{};
-   };
+   ////private:
+   //   Buffer m_buffer;
+   //   Shader m_shader;
+   //   Texture m_texture;
+   //   unsigned m_texture1{};
+   //   unsigned m_texture2{};
+   //};
 
    class GameEngine
    {
@@ -78,6 +88,15 @@ namespace ogl
 
       virtual bool createUser() = 0;
       virtual bool updateUser() = 0;
+
+
+      ShaderId createShader(std::string_view vertex, std::string_view fragment);
+      TextureId createTexture(std::string_view texture);
+
+      BufferId createSquare(ogl::SizeF size, ogl::Color color);
+      BufferId createHexagon(ogl::Color color);
+
+      void render(ogl::Drawable drawable);
 
    protected:
 
@@ -112,10 +131,34 @@ namespace ogl
          m_objects.push_back(objects);
       }
 
+      BufferId append(ogl::Buffer buffer) 
+      {
+         static short bufferCounter{ 200 };
+         m_buffer.insert_or_assign(BufferId{ bufferCounter }, buffer);
+         return BufferId{ bufferCounter++ };
+      }
+
+      ShaderId append(ogl::Shader shader)
+      {
+         static short shaderCounter{ 300 };
+         m_shader.insert_or_assign(ShaderId{ shaderCounter }, shader);
+         return ShaderId{ shaderCounter++ };
+      }
+
+      TextureId append(ogl::Texture shader)
+      {
+         static short counter{ 400 };
+         m_texture.insert_or_assign(TextureId{ counter }, shader);
+         return TextureId{ counter++ };
+      }
+
       ogl::Camera m_camera;
       ogl::Camera m_screen;
 
       std::vector<Drawable> m_objects;
+      std::unordered_map<BufferId, Buffer, Ident> m_buffer;
+      std::unordered_map<ShaderId, Shader, Ident> m_shader;
+      std::unordered_map<TextureId, Texture, Ident> m_texture;
       std::unordered_map<unsigned, ShapePtr> m_shapes;
 
    private:
@@ -133,8 +176,6 @@ namespace ogl
 
       void initTextures();
       void initGeometry();
-
-      void render(const RenderOpt& object);
 
       //ogl::Size getWindowSize();
 

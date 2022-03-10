@@ -79,9 +79,14 @@ struct Layout
 
 struct GamePlate /*: public ogl::Drawable*/
 {
-   unsigned m_shapeId{};
-   ogl::Vertex m_position{};
+   //unsigned m_shapeId{};
+   //ogl::Vertex m_position{};
    ogl::Drawable m_drawable;
+
+   //ogl::Color m_color{ ogl::Colors::White };
+   //ogl::BufferId m_buffer;
+   //ogl::ShaderId m_shader;
+   //ogl::TextureId m_texture;
 };
 
 struct PlateAccess
