@@ -46,8 +46,8 @@ namespace ogl
       // Element: x, y, z, r, g, b, u, v
       using Element = std::array<VertexType, 8>;
 
-      //std::vector<VertexType> m_vertices;
-      //std::vector<IndexType> m_indices;
+      std::vector<VertexType> m_vertices;
+      std::vector<IndexType> m_indices;
       Color m_color{ Colors::White };
       unsigned m_indexSize{};
       unsigned m_vertexSize{};
@@ -73,8 +73,8 @@ namespace ogl
 
       void append(Element element)
       {
-         //std::copy(element.cbegin(), element.cend(),
-         //   std::back_inserter(m_vertices));
+         std::copy(element.cbegin(), element.cend(),
+            std::back_inserter(m_vertices));
       };
 
       //void create(std::vector<Element> geometry)

@@ -311,25 +311,19 @@ void ogl::GameEngine::OnRenderWorld(Duration duration)
       m_cameraTarget, 
       m_cameraUpside);
 
-   //m_objCache.renderAll(projection * view);
-
    //updateUser();
    for (auto&& object : m_objects)
    {
-      render(object);
+      if (object.m_shapeId)
+      {
+         auto posi = projection * view * object.getPosition();
+         m_shapes.at(object.m_shapeId)->render(posi); // need renderObj
+      }
+      else
+      {
+         //render(object);
+      }
    }
-
-   //for (auto&& object : m_objects)
-   //{
-   //   auto shape = object.m_shapeId;
-   //   if (m_shapes.contains(shape))
-   //   {
-   //      // projection * view * model
-   //      auto posi = projection * view * object.getPosition();
-
-   //      m_shapes.at(shape)->render(posi); // need renderObj
-   //   }
-   //}
 
    //// ViewPort buttom-left
    //glViewport(0, 0, windowSize.x / 4, windowSize.y / 4);
@@ -504,7 +498,7 @@ ogl::TextureId ogl::GameEngine::createTexture(std::string_view texture)
    return append(tex);
 }
 
-ogl::BufferId ogl::GameEngine::createSquare(ogl::SizeF size, ogl::Color color)
+ogl::BufferId ogl::GameEngine::createSquare(ogl::Color color)
 {
    ogl::Buffer buffer{};
    buffer.bindBuffer({
@@ -514,14 +508,6 @@ ogl::BufferId ogl::GameEngine::createSquare(ogl::SizeF size, ogl::Color color)
       Buffer::create({ -1.0f, +1.0f, 0.f }, color) },
       { 0u, 1u, 3u, 1u, 2u, 3u }
    );
-   //auto normal = glm::normalize(size);
-   //buffer.bindBuffer({
-   //   Buffer::create({ +normal.x, +normal.y, 0.f }, color),
-   //   Buffer::create({ +normal.x, -normal.y, 0.f }, color),
-   //   Buffer::create({ -normal.x, -normal.y, 0.f }, color),
-   //   Buffer::create({ -normal.x, +normal.y, 0.f }, color) },
-   //   { 0u, 1u, 3u, 1u, 2u, 3u }
-   //);
 
    return append(buffer);
 }

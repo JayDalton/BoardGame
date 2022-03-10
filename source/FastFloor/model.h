@@ -113,6 +113,7 @@ struct PlateAccess
 
    void createHexagons(int radius, GamePlate plate)
    {
+      m_hexSet.clear();
       m_hexMap.clear();
       for (int q = -radius; q <= radius; q++) 
       {
@@ -121,44 +122,35 @@ struct PlateAccess
          for (int r = r1; r <= r2; r++) 
          {
             HexCoord hex{ q, r, -q - r };
-            auto pos = hex_to_pixel(Layout{}, hex);
-            //m_hexSet.insert(HexCoord(q, r, -q - r));
+            //auto pos = hex_to_pixel(Layout{}, hex);
+            m_hexSet.insert(HexCoord(q, r, -q - r));
             //m_hexMap.emplace(hex, GamePlate{});
             m_hexMap.emplace(hex, plate);
          }
       }
    }
 
-   auto mapPayground(unsigned shapeId) -> ogl::DrawableList
+   auto mapPayground(ogl::Drawable drawable) -> ogl::DrawableList
    {
       ogl::DrawableList result;
-      result.reserve(m_hexMap.size());
+      result.reserve(m_hexSet.size());
 
-      for (auto&& [hex, plate] : m_hexMap)
-      {
-         auto position = hex_to_pixel(Layout{}, hex);
-         result.push_back(plate.m_drawable);
-      }
-
-      //for (auto&& hex : m_hexSet)
+      //for (auto&& [hex, plate] : m_hexMap)
       //{
       //   auto position = hex_to_pixel(Layout{}, hex);
-      //   result.push_back(create(shapeId, position));
-      //   result.push_back(ogl::Drawable(shapeId, position));
+      //   result.push_back(plate.m_drawable);
       //}
+
+      for (auto&& hex : m_hexSet)
+      {
+         auto position = hex_to_pixel(Layout{}, hex);
+         drawable.m_position = position;
+         result.push_back(drawable);
+         //result.push_back(ogl::Drawable(shapeId, position));
+      }
 
       return result;
    }
-
-   //unsigned nextPlateIdent()
-   //{
-   //   return ++m_plateCounter;
-   //}
-
-   //GamePlate create(unsigned shapeId, ogl::Vertex position)
-   //{
-   //   return GamePlate{ shapeId, position};
-   //}
 
 protected:
    HexCoord get_neighbor(HexCoord hex, Direction direction)

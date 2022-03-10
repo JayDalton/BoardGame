@@ -30,6 +30,8 @@ namespace ogl
       TextureId m_texture2;
       Vertex m_position{ 0 };  // raus
 
+      unsigned m_shapeId{ 0 }; // debug
+
       //Matrix m_matrix{ 1.0f };
       //ogl::Color m_color{ ogl::Colors::White };
 
@@ -64,7 +66,7 @@ namespace ogl
       ShaderId createShader(std::string_view vertex, std::string_view fragment);
       TextureId createTexture(std::string_view texture);
 
-      BufferId createSquare(ogl::SizeF size, ogl::Color color);
+      BufferId createSquare(ogl::Color color);
       BufferId createHexagon(ogl::Color color);
 
       void render(ogl::Drawable drawable);
@@ -86,11 +88,11 @@ namespace ogl
       glm::vec3 m_cameraTarget = glm::vec3(0.0, 0.0, 0.0);
       glm::vec3 m_cameraUpside = glm::vec3(0.0, 0.0, 1.0);
 
-      //unsigned append(std::string_view ident, ShapePtr&& shape) {
-      //   static unsigned shapeCounter{ 100 };
-      //   m_shapes.insert_or_assign(shapeCounter, std::move(shape));
-      //   return shapeCounter++;
-      //}
+      unsigned append(std::string_view ident, ShapePtr&& shape) {
+         static unsigned shapeCounter{ 100 };
+         m_shapes.insert_or_assign(shapeCounter, std::move(shape));
+         return shapeCounter++;
+      }
 
       //void append(const std::vector<Drawable>& objects)
       //{
@@ -130,7 +132,7 @@ namespace ogl
       std::unordered_map<BufferId, Buffer, Ident> m_buffer;
       std::unordered_map<ShaderId, Shader, Ident> m_shader;
       std::unordered_map<TextureId, Texture, Ident> m_texture;
-      //std::unordered_map<unsigned, ShapePtr> m_shapes;
+      std::unordered_map<unsigned, ShapePtr> m_shapes;
 
    private:
       void OnReceiveLocal();
