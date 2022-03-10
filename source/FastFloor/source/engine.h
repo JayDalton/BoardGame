@@ -86,34 +86,34 @@ namespace ogl
       glm::vec3 m_cameraTarget = glm::vec3(0.0, 0.0, 0.0);
       glm::vec3 m_cameraUpside = glm::vec3(0.0, 0.0, 1.0);
 
-      unsigned append(std::string_view ident, ShapePtr&& shape) {
-         static unsigned shapeCounter{ 100 };
-         m_shapes.insert_or_assign(shapeCounter, std::move(shape));
-         return shapeCounter++;
-      }
+      //unsigned append(std::string_view ident, ShapePtr&& shape) {
+      //   static unsigned shapeCounter{ 100 };
+      //   m_shapes.insert_or_assign(shapeCounter, std::move(shape));
+      //   return shapeCounter++;
+      //}
 
-      void append(const std::vector<Drawable>& objects)
-      {
-         m_objects.insert(m_objects.begin(), objects.cbegin(), objects.cend());
-      }
+      //void append(const std::vector<Drawable>& objects)
+      //{
+      //   m_objects.insert(m_objects.begin(), objects.cbegin(), objects.cend());
+      //}
 
-      void append(Drawable&& objects)
-      {
-         m_objects.push_back(objects);
-      }
+      //void append(Drawable&& objects)
+      //{
+      //   m_objects.push_back(objects);
+      //}
 
       BufferId append(ogl::Buffer buffer) 
       {
-         static short bufferCounter{ 200 };
-         m_buffer.insert_or_assign(BufferId{ bufferCounter }, buffer);
-         return BufferId{ bufferCounter++ };
+         static short counter{ 200 };
+         m_buffer.insert_or_assign(BufferId{ counter }, buffer);
+         return BufferId{ counter++ };
       }
 
       ShaderId append(ogl::Shader shader)
       {
-         static short shaderCounter{ 300 };
-         m_shader.insert_or_assign(ShaderId{ shaderCounter }, shader);
-         return ShaderId{ shaderCounter++ };
+         static short counter{ 300 };
+         m_shader.insert_or_assign(ShaderId{ counter }, shader);
+         return ShaderId{ counter++ };
       }
 
       TextureId append(ogl::Texture shader)
@@ -130,7 +130,7 @@ namespace ogl
       std::unordered_map<BufferId, Buffer, Ident> m_buffer;
       std::unordered_map<ShaderId, Shader, Ident> m_shader;
       std::unordered_map<TextureId, Texture, Ident> m_texture;
-      std::unordered_map<unsigned, ShapePtr> m_shapes;
+      //std::unordered_map<unsigned, ShapePtr> m_shapes;
 
    private:
       void OnReceiveLocal();

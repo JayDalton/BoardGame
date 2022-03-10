@@ -289,16 +289,16 @@ void ogl::GameEngine::OnReceiveRemote()
 void ogl::GameEngine::OnUpdateWorld(Duration duration)
 {
    //m_objCache.updateAll(duration);
-   for (auto&& object : m_objects)
-   {
-      object.update(duration);
-   }
+   //for (auto&& object : m_objects)
+   //{
+   //   object.update(duration);
+   //}
 }
 
 void ogl::GameEngine::OnRenderWorld(Duration duration)
 {
    // Hintergrund
-   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
    auto projection = glm::perspective(
@@ -313,7 +313,11 @@ void ogl::GameEngine::OnRenderWorld(Duration duration)
 
    //m_objCache.renderAll(projection * view);
 
-   updateUser();
+   //updateUser();
+   for (auto&& object : m_objects)
+   {
+      render(object);
+   }
 
    //for (auto&& object : m_objects)
    //{
@@ -337,7 +341,7 @@ void ogl::GameEngine::OnRenderWorld(Duration duration)
 
 void ogl::GameEngine::OnRemoveWorld()
 {
-   m_shapes.clear();
+   //m_shapes.clear();
 }
 
 void ogl::GameEngine::initWindow()
@@ -476,7 +480,7 @@ void ogl::GameEngine::render(ogl::Drawable drawable)
       auto model = projection * view * drawable.getPosition();
       //m_shapes.at(shape)->render(posi); // need renderObj
 
-      texture.useTexture();
+      //texture.useTexture();
 
       shader.useShader();
       shader.setMat4("model", model);
@@ -520,20 +524,6 @@ ogl::BufferId ogl::GameEngine::createHexagon(ogl::Color color)
    ogl::Coords texBase(-1.0f, -1.0f);
 
    ogl::Buffer buffer{};
-   //buffer.append();
-
-   //for (auto&& elem : {
-   //   Buffer::create({ 0.5f, 0.5f }, ogl::Vertex{ 0.f }, color),
-   //   Buffer::create(texBase, Geometry::circlePoint(030.f, 1.f), color),
-   //   Buffer::create(texBase, Geometry::circlePoint(090.f, 1.f), color),
-   //   Buffer::create(texBase, Geometry::circlePoint(150.f, 1.f), color),
-   //   Buffer::create(texBase, Geometry::circlePoint(210.f, 1.f), color),
-   //   Buffer::create(texBase, Geometry::circlePoint(270.f, 1.f), color),
-   //   Buffer::create(texBase, Geometry::circlePoint(330.f, 1.f), color) })
-   //{
-   //}
-
-
    buffer.bindBuffer({
       Buffer::create({ 0.5f, 0.5f }, ogl::Vertex{ 0.f }, color),
       Buffer::create(texBase, Geometry::circlePoint(030.f, 1.f), color),
