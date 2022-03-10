@@ -57,7 +57,7 @@ void HexagonalShape::render(ogl::Matrix model) const
    Shader::setMat4("model", model);
 
    glBindVertexArray(m_VAO);
-   glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+   glDrawElements(GL_TRIANGLES, m_indexSize, GL_UNSIGNED_INT, 0);
 }
 
 

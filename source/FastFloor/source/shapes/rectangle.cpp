@@ -42,7 +42,7 @@ void ogl::Square::render(Matrix model) const
    //Shape::useShape(); ???
    glBindVertexArray(m_VAO);
    //glDrawElements(GL_LINE_STRIP, m_indices.size(), GL_UNSIGNED_INT, 0);
-   glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+   glDrawElements(GL_TRIANGLES, m_indexSize, GL_UNSIGNED_INT, 0);
 }
 
 // #########################################################
@@ -90,7 +90,7 @@ void ogl::Rectangle::render(Matrix model) const
    Shader::setMat4("model", model);
 
    glBindVertexArray(m_VAO);
-   glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+   glDrawElements(GL_TRIANGLES, m_indexSize, GL_UNSIGNED_INT, 0);
 }
 
 // #########################################################
@@ -153,5 +153,5 @@ void ogl::Hexagon::render(Matrix model) const
    Shader::setMat4("model", model);
 
    glBindVertexArray(m_VAO);
-   glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+   glDrawElements(GL_TRIANGLES, m_indexSize, GL_UNSIGNED_INT, 0);
 }

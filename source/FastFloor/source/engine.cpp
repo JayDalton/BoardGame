@@ -520,6 +520,20 @@ ogl::BufferId ogl::GameEngine::createHexagon(ogl::Color color)
    ogl::Coords texBase(-1.0f, -1.0f);
 
    ogl::Buffer buffer{};
+   //buffer.append();
+
+   //for (auto&& elem : {
+   //   Buffer::create({ 0.5f, 0.5f }, ogl::Vertex{ 0.f }, color),
+   //   Buffer::create(texBase, Geometry::circlePoint(030.f, 1.f), color),
+   //   Buffer::create(texBase, Geometry::circlePoint(090.f, 1.f), color),
+   //   Buffer::create(texBase, Geometry::circlePoint(150.f, 1.f), color),
+   //   Buffer::create(texBase, Geometry::circlePoint(210.f, 1.f), color),
+   //   Buffer::create(texBase, Geometry::circlePoint(270.f, 1.f), color),
+   //   Buffer::create(texBase, Geometry::circlePoint(330.f, 1.f), color) })
+   //{
+   //}
+
+
    buffer.bindBuffer({
       Buffer::create({ 0.5f, 0.5f }, ogl::Vertex{ 0.f }, color),
       Buffer::create(texBase, Geometry::circlePoint(030.f, 1.f), color),

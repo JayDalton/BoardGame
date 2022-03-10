@@ -17,25 +17,23 @@ bool FastFloor::createUser()
    std::uniform_real_distribution<> distSize(0.3, 0.7);
    std::uniform_real_distribution<> distColor(0, 255);
 
-   auto bufferId = createHexagon(ogl::Colors::White);
+   auto bufferId = createHexagon(ogl::Colors::Red);
    auto shaderId1 = createShader("shader/Complex.vs", "shader/Complex.fs");
    auto shaderId2 = createShader("shader/Complex.vs", "shader/Colored.fs");
    auto textureId1 = createTexture("images/container.jpg");
    auto textureId2 = createTexture("images/awesomeface.png");
 
-   for (auto idx{0}; idx < 10; idx++)
+   for (auto idx{0}; idx < 1; idx++)
    {
       ogl::SizeF size{distSize(eng), distSize(eng)};
       ogl::Vertex pos{distArea(eng), distArea(eng), 0.f};
       ogl::Color color{distColor(eng), distColor(eng), distColor(eng), 1.0f};
 
       ogl::Drawable plate;
-      //plate.m_position.x = 0.5f;
-      //plate.m_position.y = 0.5f;
-      plate.m_position.x = distArea(eng);
-      plate.m_position.y = distArea(eng);
-      //plate.m_buffer = createSquare(size, color);
-      //plate.m_buffer = createHexagon(color);
+      //plate.m_position.x = distArea(eng);
+      //plate.m_position.y = distArea(eng);
+      plate.m_position.x = 0.5f;
+      plate.m_position.y = 0.5f;
       plate.m_texture1 = textureId2;
       plate.m_texture2 = textureId1;
       plate.m_shader = shaderId1;

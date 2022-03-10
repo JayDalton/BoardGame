@@ -42,12 +42,15 @@ namespace ogl
    {
       using VertexType = float;
       using IndexType = unsigned;
+
+      // Element: x, y, z, r, g, b, u, v
       using Element = std::array<VertexType, 8>;
 
-      std::vector<VertexType> m_vertices;
-      std::vector<IndexType> m_indices;
+      //std::vector<VertexType> m_vertices;
+      //std::vector<IndexType> m_indices;
       Color m_color{ Colors::White };
       unsigned m_indexSize{};
+      unsigned m_vertexSize{};
 
       ~Buffer();
 
@@ -60,18 +63,18 @@ namespace ogl
 
       std::int32_t getVerticesSize() const 
       {
-         return sizeof(VertexType) * m_vertices.size();
+         return sizeof(VertexType) * m_vertexSize;
       }
 
       std::int32_t getIndicesSize() const
       {
-         return sizeof(IndexType) * m_indices.size();
+         return sizeof(IndexType) * m_indexSize;
       }
 
       void append(Element element)
       {
-         std::copy(element.cbegin(), element.cend(),
-            std::back_inserter(m_vertices));
+         //std::copy(element.cbegin(), element.cend(),
+         //   std::back_inserter(m_vertices));
       };
 
       //void create(std::vector<Element> geometry)
