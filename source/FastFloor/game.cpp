@@ -18,7 +18,7 @@ bool FastFloor::createUser()
    std::uniform_real_distribution<> distColor(0, 255);
 
    auto bufferId1 = createHexagon(ogl::Colors::Red);
-   auto bufferId2 = createSquare(ogl::SizeF{0.7f, 0.4f}, ogl::Colors::Blue);
+   auto bufferId2 = createSquare(ogl::SizeF{0.7f, 0.4f}, ogl::Colors::Green);
    auto shaderId1 = createShader("shader/Complex.vs", "shader/Complex.fs");
    auto shaderId2 = createShader("shader/Complex.vs", "shader/Colored.fs");
    auto textureId1 = createTexture("images/container.jpg");

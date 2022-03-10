@@ -142,5 +142,5 @@ void ogl::Buffer::render()
 {
    glBindVertexArray(m_VAO);
    glDrawElements(GL_TRIANGLES, m_indexSize, GL_UNSIGNED_INT, 0);
-   glDrawElements(GL_LINE_STRIP, m_indexSize, GL_UNSIGNED_INT, 0);
+   //glDrawElements(GL_LINE_STRIP, m_indexSize, GL_UNSIGNED_INT, 0);
 }

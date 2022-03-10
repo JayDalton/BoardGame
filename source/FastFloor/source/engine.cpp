@@ -477,7 +477,8 @@ void ogl::GameEngine::render(ogl::Drawable drawable)
          m_cameraUpside);
 
       //// projection * view * model
-      auto model = projection * view * drawable.getPosition();
+      auto position = drawable.getPosition();
+      auto model = projection * view * position;
       //m_shapes.at(shape)->render(posi); // need renderObj
 
       //texture.useTexture();
@@ -505,16 +506,22 @@ ogl::TextureId ogl::GameEngine::createTexture(std::string_view texture)
 
 ogl::BufferId ogl::GameEngine::createSquare(ogl::SizeF size, ogl::Color color)
 {
-   auto normal = glm::normalize(size);
-
    ogl::Buffer buffer{};
    buffer.bindBuffer({
-      Buffer::create({ +normal.x, +normal.y, 0.f }, color),
-      Buffer::create({ +normal.x, -normal.y, 0.f }, color),
-      Buffer::create({ -normal.x, -normal.y, 0.f }, color),
-      Buffer::create({ -normal.x, +normal.y, 0.f }, color) },
+      Buffer::create({ +1.0f, +1.0f, 0.f }, color),
+      Buffer::create({ +1.0f, -1.0f, 0.f }, color),
+      Buffer::create({ -1.0f, -1.0f, 0.f }, color),
+      Buffer::create({ -1.0f, +1.0f, 0.f }, color) },
       { 0u, 1u, 3u, 1u, 2u, 3u }
    );
+   //auto normal = glm::normalize(size);
+   //buffer.bindBuffer({
+   //   Buffer::create({ +normal.x, +normal.y, 0.f }, color),
+   //   Buffer::create({ +normal.x, -normal.y, 0.f }, color),
+   //   Buffer::create({ -normal.x, -normal.y, 0.f }, color),
+   //   Buffer::create({ -normal.x, +normal.y, 0.f }, color) },
+   //   { 0u, 1u, 3u, 1u, 2u, 3u }
+   //);
 
    return append(buffer);
 }
