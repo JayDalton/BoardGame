@@ -314,13 +314,13 @@ void ogl::GameEngine::OnRenderWorld(Duration duration)
    //updateUser();
    for (auto&& object : m_objects)
    {
-      //if (object.m_shapeId)
-      //{
-      //   auto model = projection * view * object.getPosition();
-      //   auto& shape = m_shapes.at(object.m_shapeId);
-      //   shape->render(model);
-      //}
-      //else
+      if (object.m_shapeId)
+      {
+         auto model = projection * view * object.getPosition();
+         auto& shape = m_shapes.at(object.m_shapeId);
+         shape->render(model);
+      }
+      else
       {
          //render(object);
          auto bufferId = object.m_buffer;
@@ -524,14 +524,14 @@ ogl::TextureId ogl::GameEngine::createTexture(std::string_view texture)
    return append(tex);
 }
 
-ogl::BufferId ogl::GameEngine::createSquare(ogl::Color color)
+ogl::BufferId ogl::GameEngine::createSquare(float radius, ogl::Color color)
 {
    ogl::Buffer buffer{};
    buffer.bindBuffer({
-      Buffer::create({ +1.0f, +1.0f, 0.f }, color, { 1.0f, 1.0f }),
-      Buffer::create({ +1.0f, -1.0f, 0.f }, color, { 1.0f, 0.0f }),
-      Buffer::create({ -1.0f, -1.0f, 0.f }, color, { 0.0f, 0.0f }),
-      Buffer::create({ -1.0f, +1.0f, 0.f }, color, { 0.0f, 1.0f }) },
+      Buffer::create({ +radius, +radius, 0.f }, color, { 1.0f, 1.0f }),
+      Buffer::create({ +radius, -radius, 0.f }, color, { 1.0f, 0.0f }),
+      Buffer::create({ -radius, -radius, 0.f }, color, { 0.0f, 0.0f }),
+      Buffer::create({ -radius, +radius, 0.f }, color, { 0.0f, 1.0f }) },
       { 0u, 1u, 3u, 1u, 2u, 3u }
    );
 
@@ -550,6 +550,11 @@ ogl::BufferId ogl::GameEngine::createRect(ogl::SizeF size, ogl::Color color)
    );
 
    return append(buffer);
+}
+
+ogl::BufferId ogl::GameEngine::createCircle(unsigned radius, ogl::Color color)
+{
+   return {};
 }
 
 ogl::BufferId ogl::GameEngine::createHexagon(ogl::Color color)

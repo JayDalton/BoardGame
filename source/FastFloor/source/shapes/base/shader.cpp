@@ -45,6 +45,8 @@ bool ogl::Shader::createShaders(
    glDeleteShader(vertex);
    glDeleteShader(fragment);
 
+   std::cout << std::format("\nShaderId: {}", m_programId);
+
    return true;
 }
 

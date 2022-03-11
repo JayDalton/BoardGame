@@ -30,6 +30,8 @@ namespace ogl
       TextureId m_texture2;
       Vertex m_position{ 0 };  // raus
 
+      unsigned m_shapeId{ 0 };
+
       //Matrix m_matrix{ 1.0f };
       //ogl::Color m_color{ ogl::Colors::White };
 
@@ -64,7 +66,7 @@ namespace ogl
       ShaderId createShader(std::string_view vertex, std::string_view fragment);
       TextureId createTexture(std::string_view texture);
 
-      BufferId createSquare(ogl::Color color);
+      BufferId createSquare(float radius, ogl::Color color);
       BufferId createRect(ogl::SizeF size, ogl::Color color);
       BufferId createCircle(unsigned radius, ogl::Color color);
       BufferId createHexagon(ogl::Color color);
