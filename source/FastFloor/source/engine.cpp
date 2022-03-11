@@ -311,47 +311,12 @@ void ogl::GameEngine::OnRenderWorld(Duration duration)
       m_cameraTarget, 
       m_cameraUpside);
 
-   //updateUser();
    for (auto&& object : m_objects)
    {
-      if (object.m_shapeId)
-      {
-         auto model = projection * view * object.getPosition();
-         auto& shape = m_shapes.at(object.m_shapeId);
-         shape->render(model);
-      }
-      else
-      {
-         //render(object);
-
-         if (m_texture.contains(object.m_texture1))
-         {
-            auto& texture = m_texture.at(object.m_texture1);
-            texture.useTexture();
-         }
-
-         if (m_texture.contains(object.m_texture2))
-         {
-            auto& texture = m_texture.at(object.m_texture2);
-            texture.useTexture();
-         }
-
-         if (m_shader.contains(object.m_shader))
-         {
-            auto& shader = m_shader.at(object.m_shader);
-            auto model = projection * view * object.getPosition();
-
-            shader.useShader();
-            shader.setMat4("model", model);
-         }
-
-         if (m_buffer.contains(object.m_buffer))
-         {
-            auto& buffer = m_buffer.at(object.m_buffer);
-            buffer.render();
-         }
-      }
+      render(object, projection * view);
    }
+
+   updateUser(projection * view);
 
    //// ViewPort buttom-left
    //glViewport(0, 0, windowSize.x / 4, windowSize.y / 4);
@@ -476,36 +441,30 @@ void ogl::GameEngine::initGeometry()
    //      "images/container.jpg"));
 }
 
-void ogl::GameEngine::render(ogl::Drawable drawable)
+void ogl::GameEngine::render(ogl::Drawable object, ogl::Matrix view)
 {
-   auto bufferId = drawable.m_buffer;
-   auto shaderId = drawable.m_shader;
-   auto textureId = drawable.m_texture1;
-
-   if (m_buffer.contains(bufferId))
+   if (m_texture.contains(object.m_texture1))
    {
-      auto& buffer = m_buffer.at(bufferId);
-      auto& shader = m_shader.at(shaderId);
-      auto& texture = m_texture.at(textureId);
-
-      auto projection = glm::perspective(
-         glm::radians(45.0f),
-         800.f / 600.f,          // wie funktioniert das?
-         0.1f, 100.0f);
-
-      auto view = glm::lookAt(
-         m_cameraPosition,
-         m_cameraTarget,
-         m_cameraUpside);
-
-      auto position = drawable.getPosition();
-      auto model = projection * view * position;
-
+      auto& texture = m_texture.at(object.m_texture1);
       texture.useTexture();
+   }
 
+   if (m_texture.contains(object.m_texture2))
+   {
+      auto& texture = m_texture.at(object.m_texture2);
+      texture.useTexture();
+   }
+
+   if (m_shader.contains(object.m_shader))
+   {
+      auto& shader = m_shader.at(object.m_shader);
       shader.useShader();
-      shader.setMat4("model", model);
+      shader.setMat4("model", view * object.getPosition());
+   }
 
+   if (m_buffer.contains(object.m_buffer))
+   {
+      auto& buffer = m_buffer.at(object.m_buffer);
       buffer.render();
    }
 }

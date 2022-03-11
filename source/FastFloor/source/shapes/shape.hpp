@@ -52,8 +52,6 @@ namespace ogl
       unsigned m_indexSize{};
       unsigned m_vertexSize{};
 
-      //~Buffer();
-
       void freeBuffer();
       void bindBuffer(
          const std::vector<Element>& vertices,
@@ -141,32 +139,32 @@ namespace ogl
       unsigned int m_EBO{ 0 };
    };
 
-  class Shape : 
-     public Ident
-     , public Buffer
-     , public Shader
-     , public Texture
-     , public Geometry
-  {
-    public:
-      virtual ~Shape();
+  //class Shape : 
+  //   public Ident
+  //   , public Buffer
+  //   , public Shader
+  //   , public Texture
+  //   , public Geometry
+  //{
+  //  public:
+  //    virtual ~Shape();
 
-      virtual void render(Matrix pos) const = 0;
-      //static void render(Buffer& buffer, Shader& shader);
+  //    virtual void render(Matrix pos) const = 0;
+  //    //static void render(Buffer& buffer, Shader& shader);
 
-   protected:
-      void bindBuffer(std::vector<unsigned>&& indices);
-      //void bindBuffer(
-      //   const std::vector<Element>& vertices,
-      //   const std::vector<IndexType>& indices
-      //);
+  // protected:
+  //    void bindBuffer(std::vector<unsigned>&& indices);
+  //    //void bindBuffer(
+  //    //   const std::vector<Element>& vertices,
+  //    //   const std::vector<IndexType>& indices
+  //    //);
 
-   protected:
-      unsigned int m_VBO{ 0 };
-      unsigned int m_VAO{ 0 };
-      unsigned int m_EBO{ 0 };
-  };
+  // protected:
+  //    unsigned int m_VBO{ 0 };
+  //    unsigned int m_VAO{ 0 };
+  //    unsigned int m_EBO{ 0 };
+  //};
 
 }
-using ShapePtr = std::unique_ptr<ogl::Shape>;
+//using ShapePtr = std::unique_ptr<ogl::Shape>;
 

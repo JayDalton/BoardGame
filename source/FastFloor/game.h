@@ -13,7 +13,7 @@ public:
 
    bool createUser() override;
    
-   bool updateUser() override;
+   bool updateUser(ogl::Matrix view) override;
 
 private:
    PlateAccess m_cache;

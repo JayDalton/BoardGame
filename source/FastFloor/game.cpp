@@ -13,7 +13,7 @@ bool FastFloor::createUser()
 {
    std::random_device rd;
    std::mt19937 eng(rd());
-   std::uniform_real_distribution<> distArea(-3, +3);
+   std::uniform_real_distribution<> distArea(-15, +15);
    std::uniform_real_distribution<> distSize(0.5, 4);
    std::uniform_real_distribution<> distColor(0, 1);
 
@@ -28,7 +28,7 @@ bool FastFloor::createUser()
    auto textureId1 = createTexture("images/container.jpg");
    auto textureId2 = createTexture("images/awesomeface.png");
 
-   for (auto idx{0}; idx < 3; idx++)
+   for (auto idx{0}; idx < 15; idx++)
    {
       ogl::SizeF size{distSize(eng), distSize(eng)};
       ogl::Vertex pos{distArea(eng), distArea(eng), 0.f};
@@ -39,12 +39,11 @@ bool FastFloor::createUser()
       plate.m_shader = shaderId1;
       plate.m_texture1 = textureId1;
       //plate.m_texture2 = textureId2;
+      plate.m_buffer = createSquare(distSize(eng), color);
       //plate.m_buffer = createSquare(color);
       //plate.m_buffer = createRect(size, color);
-      plate.m_buffer = bufferId5;
-      //plate.m_shapeId = hexFace;
+      //plate.m_buffer = bufferId5;
       m_plates.push_back(plate);
-      m_objects.push_back(plate);
 
    }
 
@@ -56,16 +55,16 @@ bool FastFloor::createUser()
    return true;
 }
 
-bool FastFloor::updateUser()
+bool FastFloor::updateUser(ogl::Matrix view)
 {
    static int counter{ 0 };
 
    //setWindowTitle(std::format("{:5}", counter++));
 
-   //for (auto&& object : m_plates)
-   //{
-   //   render(object);
-   //}
+   for (auto&& object : m_plates)
+   {
+      render(object, view);
+   }
 
    return true;
 }
