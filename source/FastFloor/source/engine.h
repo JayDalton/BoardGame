@@ -30,8 +30,6 @@ namespace ogl
       TextureId m_texture2;
       Vertex m_position{ 0 };  // raus
 
-      unsigned m_shapeId{ 0 }; // debug
-
       //Matrix m_matrix{ 1.0f };
       //ogl::Color m_color{ ogl::Colors::White };
 
@@ -67,6 +65,8 @@ namespace ogl
       TextureId createTexture(std::string_view texture);
 
       BufferId createSquare(ogl::Color color);
+      BufferId createRect(ogl::SizeF size, ogl::Color color);
+      BufferId createCircle(unsigned radius, ogl::Color color);
       BufferId createHexagon(ogl::Color color);
 
       void render(ogl::Drawable drawable);
@@ -88,7 +88,7 @@ namespace ogl
       glm::vec3 m_cameraTarget = glm::vec3(0.0, 0.0, 0.0);
       glm::vec3 m_cameraUpside = glm::vec3(0.0, 0.0, 1.0);
 
-      unsigned append(std::string_view ident, ShapePtr&& shape) {
+      unsigned append(ShapePtr&& shape) {
          static unsigned shapeCounter{ 100 };
          m_shapes.insert_or_assign(shapeCounter, std::move(shape));
          return shapeCounter++;
@@ -110,6 +110,16 @@ namespace ogl
          m_buffer.insert_or_assign(BufferId{ counter }, buffer);
          return BufferId{ counter++ };
       }
+
+      //BufferId create(
+      //   const std::vector<ogl::Buffer::Element>& elementList, 
+      //   const std::vector<ogl::Buffer::IndexType>& indexList) 
+      //{
+      //   static short counter{ 200 };
+      //   m_buffer.insert_or_assign(BufferId{ counter }, buffer);
+      //   m_buffer.try_emplace();
+      //   return BufferId{ counter++ };
+      //}
 
       ShaderId append(ogl::Shader shader)
       {

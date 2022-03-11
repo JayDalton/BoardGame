@@ -29,9 +29,9 @@ ogl::Square::Square(std::string_view vertex
 
 void ogl::Square::render(Matrix model) const
 {
-   //Texture::useTexture(); ???
-   glActiveTexture(GL_TEXTURE0);
-   glBindTexture(GL_TEXTURE_2D, Texture::id());
+   Texture::useTexture();
+   //glActiveTexture(GL_TEXTURE0);
+   //glBindTexture(GL_TEXTURE_2D, Texture::id());
    //glActiveTexture(GL_TEXTURE1);
    //glBindTexture(GL_TEXTURE_2D, Texture::m_id2);
 
@@ -82,8 +82,9 @@ ogl::Rectangle::Rectangle(ogl::SizeF size
 
 void ogl::Rectangle::render(Matrix model) const
 {
-   glActiveTexture(GL_TEXTURE0);
-   glBindTexture(GL_TEXTURE_2D, Texture::id());
+   Texture::useTexture();
+   //glActiveTexture(GL_TEXTURE0);
+   //glBindTexture(GL_TEXTURE_2D, Texture::id());
 
    // render container
    Shader::useShader();
@@ -143,8 +144,9 @@ ogl::Hexagon::Hexagon(std::string_view vertex
 
 void ogl::Hexagon::render(Matrix model) const
 {
-   glActiveTexture(GL_TEXTURE0);
-   glBindTexture(GL_TEXTURE_2D, Texture::id());
+   Texture::useTexture();
+   //glActiveTexture(GL_TEXTURE0);
+   //glBindTexture(GL_TEXTURE_2D, Texture::id());
    //glActiveTexture(GL_TEXTURE1);
    //glBindTexture(GL_TEXTURE_2D, Texture::m_id2);
 

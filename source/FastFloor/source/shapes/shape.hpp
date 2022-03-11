@@ -52,21 +52,33 @@ namespace ogl
       unsigned m_indexSize{};
       unsigned m_vertexSize{};
 
-      ~Buffer();
+      //~Buffer();
 
+      void freeBuffer();
       void bindBuffer(
          const std::vector<Element>& vertices,
          const std::vector<IndexType>& indices
       );
 
+      static auto zipElementList(std::vector<Element>&& elementList)
+      {
+         std::vector<VertexType> vertexBuffer;
+         vertexBuffer.reserve(elementList.size() * sizeof(VertexType));
+         for (auto&& element : elementList)
+         {
+            std::copy(element.cbegin(), element.cend(), std::back_inserter(vertexBuffer));
+         }
+         return vertexBuffer;
+      }
+
       void render();
 
-      std::int32_t getVerticesSize() const 
+      std::int32_t getVerticesByteSize() const 
       {
          return sizeof(VertexType) * m_vertexSize;
       }
 
-      std::int32_t getIndicesSize() const
+      std::int32_t getIndicesByteSize() const
       {
          return sizeof(IndexType) * m_indexSize;
       }
@@ -103,7 +115,7 @@ namespace ogl
          };
       };
 
-      static Element create(Coords uvBase, Vertex vertex, Color color)
+      static Element create(Vertex vertex, Color color, Coords uvBase)
       {
          auto coords{ (ogl::Coords(vertex) - uvBase) * 0.5f };
 
@@ -144,10 +156,10 @@ namespace ogl
 
    protected:
       void bindBuffer(std::vector<unsigned>&& indices);
-      void bindBuffer(
-         const std::vector<Element>& vertices,
-         const std::vector<IndexType>& indices
-      );
+      //void bindBuffer(
+      //   const std::vector<Element>& vertices,
+      //   const std::vector<IndexType>& indices
+      //);
 
    protected:
       unsigned int m_VBO{ 0 };

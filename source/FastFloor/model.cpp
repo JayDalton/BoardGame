@@ -49,8 +49,9 @@ HexagonalShape::HexagonalShape(std::string_view vertex,
 
 void HexagonalShape::render(ogl::Matrix model) const
 {
-   glActiveTexture(GL_TEXTURE0);
-   glBindTexture(GL_TEXTURE_2D, Texture::id());
+   Texture::useTexture();
+   //glActiveTexture(GL_TEXTURE0);
+   //glBindTexture(GL_TEXTURE_2D, Texture::id());
 
    // render container
    Shader::useShader();

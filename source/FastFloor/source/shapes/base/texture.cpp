@@ -5,7 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-ogl::Texture::~Texture()
+void ogl::Texture::freeTexture()
 {
    glDeleteTextures(1, &m_id);
 }
@@ -40,7 +40,7 @@ bool ogl::Texture::createTexture(std::string_view path)
    return false;
 }
 
-void ogl::Texture::useTexture()
+void ogl::Texture::useTexture() const
 {
    glActiveTexture(GL_TEXTURE0);
    glBindTexture(GL_TEXTURE_2D, m_id);
