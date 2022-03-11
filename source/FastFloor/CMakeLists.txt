@@ -61,6 +61,8 @@ target_sources(${PROJECT_NAME} PRIVATE
    "source/objects/camera.cpp"
    "source/objects/camera.hpp"
 
+   "source/shapes/base/buffer.cpp"
+   "source/shapes/base/buffer.hpp"
    "source/shapes/base/common.hpp"
    "source/shapes/base/mesh.cpp"
    "source/shapes/base/mesh.hpp"
@@ -81,8 +83,8 @@ target_sources(${PROJECT_NAME} PRIVATE
 #   "source/shapes/line.hpp"
 #   "source/shapes/polyline.cpp"
 #   "source/shapes/polyline.hpp"
-   "source/shapes/rectangle.cpp"
-   "source/shapes/rectangle.hpp"
+#   "source/shapes/rectangle.cpp"
+#   "source/shapes/rectangle.hpp"
    "source/shapes/shape.hpp"
    "source/shapes/shape.cpp"
 

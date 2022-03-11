@@ -37,7 +37,7 @@ bool FastFloor::createUser()
 
       ogl::Drawable plate;
       plate.m_position = pos;
-      plate.m_shader = shaderId2;
+      plate.m_shader = shaderId1;
       plate.m_texture1 = textureId2;
       //plate.m_texture2 = textureId2;
       //plate.m_buffer = createRect(size, color);

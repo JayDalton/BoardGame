@@ -18,31 +18,6 @@
 
 namespace ogl
 {
-   struct BufferId final : public Ident {};
-   struct ShaderId final : public Ident {};
-   struct TextureId final : public Ident {};
-
-   struct Drawable
-   {
-      BufferId m_buffer;
-      ShaderId m_shader;
-      TextureId m_texture1;
-      TextureId m_texture2;
-      Vertex m_position{ 0 };
-
-      Matrix getPosition() const
-      {
-         return glm::translate(Matrix{ 1.0f }, m_position);
-      }
-
-      void update(Duration delta)
-      {
-         // ???
-      }
-   };
-
-   using DrawableList = std::vector<ogl::Drawable>;
-
    class GameEngine
    {
    public:

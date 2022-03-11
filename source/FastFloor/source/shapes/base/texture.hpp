@@ -6,10 +6,6 @@ namespace ogl
 {
    struct Texture
    {
-      //unsigned id() const {
-      //   return m_id;
-      //}
-
       void freeTexture();
       bool createTexture(std::string_view path);
 
