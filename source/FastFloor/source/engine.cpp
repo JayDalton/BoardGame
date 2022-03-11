@@ -145,7 +145,7 @@ void ogl::GameEngine::start()
       SDL_Delay(1000 / 60);
    }
 
-   //OnDestroyWorld();
+   OnRemoveWorld();
 
    SDL_GL_DeleteContext(m_context);
    SDL_DestroyWindow(m_window.get());
@@ -328,7 +328,18 @@ void ogl::GameEngine::OnRenderWorld(Duration duration)
 
 void ogl::GameEngine::OnRemoveWorld()
 {
-   //m_shapes.clear();
+   for (auto&& [id, tex] : m_texture)
+   {
+      tex.freeTexture();
+   }
+   for (auto&& [id, tex] : m_shader)
+   {
+      tex.freeShader();
+   }
+   for (auto&& [id, tex] : m_buffer)
+   {
+      tex.freeBuffer();
+   }
 }
 
 void ogl::GameEngine::initWindow()

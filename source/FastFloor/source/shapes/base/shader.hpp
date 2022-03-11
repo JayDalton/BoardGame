@@ -6,6 +6,7 @@ namespace ogl
 {
    struct Shader
    {
+      void freeShader();
       bool createShaders(
          std::string_view vertex,
          std::string_view fragment);

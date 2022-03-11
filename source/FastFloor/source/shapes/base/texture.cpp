@@ -29,8 +29,8 @@ bool ogl::Texture::createTexture(std::string_view path)
    if (auto* data = stbi_load(path.data(), &m_width, &m_height, &m_compo, 0))
    {
       m_type = (m_compo == 4) ? GL_RGBA : (m_compo == 3) ? GL_RGB : GL_NONE;
-      std::cout << std::format("\nTexturId: {}, Compo: {}, W: {}, H: {}, T: {}"
-         , m_id, m_compo, m_width, m_height, getTypeName());
+      //std::cout << std::format("\nTexturId: {}, Compo: {}, W: {}, H: {}, T: {}"
+      //   , m_id, m_compo, m_width, m_height, getTypeName());
 
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, m_type, GL_UNSIGNED_BYTE, data);
       glGenerateMipmap(GL_TEXTURE_2D);

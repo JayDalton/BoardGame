@@ -2,6 +2,11 @@
 
 #include <GL/glew.h>
 
+void ogl::Shader::freeShader()
+{
+   glDeleteProgram(m_programId);
+}
+
 bool ogl::Shader::createShaders(
    std::string_view vertexPath, 
    std::string_view fragmentPath)
@@ -45,7 +50,7 @@ bool ogl::Shader::createShaders(
    glDeleteShader(vertex);
    glDeleteShader(fragment);
 
-   std::cout << std::format("\nShaderId: {}", m_programId);
+   //std::cout << std::format("\nShaderId: {}", m_programId);
 
    return true;
 }

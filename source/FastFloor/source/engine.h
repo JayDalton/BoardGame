@@ -57,17 +57,6 @@ namespace ogl
       virtual bool createUser() = 0;
       virtual bool updateUser(ogl::Matrix view) = 0;
 
-
-      ShaderId createShader(std::string_view vertex, std::string_view fragment);
-      TextureId createTexture(std::string_view texture);
-
-      BufferId createSquare(float radius, ogl::Color color);
-      BufferId createRect(ogl::SizeF size, ogl::Color color);
-      BufferId createCircle(unsigned radius, ogl::Color color);
-      BufferId createHexagon(ogl::Color color);
-
-      void render(ogl::Drawable drawable, ogl::Matrix view);
-
    protected:
 
       struct MouseInfo 
@@ -85,38 +74,23 @@ namespace ogl
       glm::vec3 m_cameraTarget = glm::vec3(0.0, 0.0, 0.0);
       glm::vec3 m_cameraUpside = glm::vec3(0.0, 0.0, 1.0);
 
-      //unsigned append(ShapePtr&& shape) {
-      //   static unsigned shapeCounter{ 100 };
-      //   m_shapes.insert_or_assign(shapeCounter, std::move(shape));
-      //   return shapeCounter++;
-      //}
+      BufferId createSquare(float radius, ogl::Color color);
+      BufferId createRect(ogl::SizeF size, ogl::Color color);
+      BufferId createCircle(unsigned radius, ogl::Color color);
+      BufferId createHexagon(ogl::Color color);
 
-      //void append(const std::vector<Drawable>& objects)
-      //{
-      //   m_objects.insert(m_objects.begin(), objects.cbegin(), objects.cend());
-      //}
+      ShaderId createShader(std::string_view vertex, std::string_view fragment);
+      TextureId createTexture(std::string_view texture);
 
-      //void append(Drawable&& objects)
-      //{
-      //   m_objects.push_back(objects);
-      //}
+      void render(ogl::Drawable drawable, ogl::Matrix view);
 
+   private:
       BufferId append(ogl::Buffer buffer) 
       {
          static short counter{ 200 };
          m_buffer.insert_or_assign(BufferId{ counter }, buffer);
          return BufferId{ counter++ };
       }
-
-      //BufferId create(
-      //   const std::vector<ogl::Buffer::Element>& elementList, 
-      //   const std::vector<ogl::Buffer::IndexType>& indexList) 
-      //{
-      //   static short counter{ 200 };
-      //   m_buffer.insert_or_assign(BufferId{ counter }, buffer);
-      //   m_buffer.try_emplace();
-      //   return BufferId{ counter++ };
-      //}
 
       ShaderId append(ogl::Shader shader)
       {
@@ -139,7 +113,6 @@ namespace ogl
       std::unordered_map<BufferId, Buffer, Ident> m_buffer;
       std::unordered_map<ShaderId, Shader, Ident> m_shader;
       std::unordered_map<TextureId, Texture, Ident> m_texture;
-      //std::unordered_map<unsigned, ShapePtr> m_shapes;
 
    private:
       void OnReceiveLocal();

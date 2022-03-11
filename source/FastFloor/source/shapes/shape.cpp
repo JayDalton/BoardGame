@@ -134,13 +134,8 @@ void ogl::Buffer::bindBuffer(const std::vector<Element>& elementList, const std:
    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Element), (void*)(6 * sizeof(float)));
    glEnableVertexAttribArray(2);
 
-   //auto Format = [](std::string str, auto value) {
-   //   return std::move(str) + ',' + std::to_string(value);
-   //};
-   //std::cout << std::format("\n--NEW--------------------------");
-   std::cout << std::format("\nBufferId: {}, VBO: {}, EBO: {}, IndexSize: {}, VertexSize: {}", m_VAO, m_VBO, m_EBO, m_indexSize, m_vertexSize);
-   //std::cout << std::format("\nIndexList: {}", std::accumulate(std::next(indexList.begin()), indexList.end(), std::to_string(indexList[0]), Format));
-   //std::cout << std::format("\nVertexList: {}", std::accumulate(std::next(vertexBuffer.begin()), vertexBuffer.end(), std::to_string(vertexBuffer[0]), Format));
+   //std::cout << std::format("\nBufferId: {}, VBO: {}, EBO: {}, IndexSize: {}, VertexSize: {}"
+   //   , m_VAO, m_VBO, m_EBO, m_indexSize, m_vertexSize);
 }
 
 void ogl::Buffer::render()

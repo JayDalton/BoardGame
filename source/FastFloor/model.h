@@ -6,26 +6,6 @@
 #include "source/engine.h"
 #include "source/shapes/shape.hpp"
 
-//class HexagonalShape : public ogl::Shape
-//{
-//public:
-//   explicit HexagonalShape(
-//      std::string_view vertex,
-//      std::string_view fragment,
-//      ogl::Color color
-//   );
-//
-//   explicit HexagonalShape(
-//      std::string_view vertex,
-//      std::string_view fragment,
-//      std::string_view texture
-//   );
-//
-//   void render(ogl::Matrix position) const override;
-//
-//private:
-//};
-
 enum class Direction
 {
    Right, Left, 
@@ -77,16 +57,9 @@ struct Layout
       0.0, 3.0 / 2.0 };
 };
 
-struct GamePlate /*: public ogl::Drawable*/
+struct GamePlate : public ogl::Drawable
 {
-   //unsigned m_shapeId{};
-   //ogl::Vertex m_position{};
-   ogl::Drawable m_drawable;
-
-   //ogl::Color m_color{ ogl::Colors::White };
-   //ogl::BufferId m_buffer;
-   //ogl::ShaderId m_shader;
-   //ogl::TextureId m_texture;
+   HexCoord m_hex{};
 };
 
 struct PlateAccess
@@ -111,10 +84,9 @@ struct PlateAccess
       }
    }
 
-   void createHexagons(int radius, GamePlate plate)
+   auto calculateHexagonPosition(int radius)
    {
-      m_hexSet.clear();
-      m_hexMap.clear();
+      std::vector<ogl::Vertex> result;
       for (int q = -radius; q <= radius; q++) 
       {
          int r1 = std::max(-radius, -q - radius);
@@ -122,33 +94,10 @@ struct PlateAccess
          for (int r = r1; r <= r2; r++) 
          {
             HexCoord hex{ q, r, -q - r };
-            //auto pos = hex_to_pixel(Layout{}, hex);
-            m_hexSet.insert(HexCoord(q, r, -q - r));
-            //m_hexMap.emplace(hex, GamePlate{});
-            m_hexMap.emplace(hex, plate);
+            auto pos = hex_to_pixel(Layout{}, hex);
+            result.push_back(pos);
          }
       }
-   }
-
-   auto mapPayground(ogl::Drawable drawable) -> ogl::DrawableList
-   {
-      ogl::DrawableList result;
-      result.reserve(m_hexSet.size());
-
-      //for (auto&& [hex, plate] : m_hexMap)
-      //{
-      //   auto position = hex_to_pixel(Layout{}, hex);
-      //   result.push_back(plate.m_drawable);
-      //}
-
-      for (auto&& hex : m_hexSet)
-      {
-         auto position = hex_to_pixel(Layout{}, hex);
-         drawable.m_position = position;
-         result.push_back(drawable);
-         //result.push_back(ogl::Drawable(shapeId, position));
-      }
-
       return result;
    }
 
@@ -191,27 +140,6 @@ protected:
 
 
 private:
-   //ogl::Vertex getNewPosition(const ogl::Vertex& vertex, Direction side)
-   //{
-   //   auto pi = std::numbers::pi_v<float>;
-   //   auto radius = std::cos(pi / 6) * 2;
-   //   return ogl::Geometry::circlePoint(vertex, getAngle(side), radius);
-   //}
-
-   //float getAngle(Direction direction) const
-   //{
-   //   switch (direction)
-   //   {
-   //   case Direction::Right: return 0.f;
-   //   case Direction::TopRight: return 60.f;
-   //   case Direction::TopLeft: return 120.f;
-   //   case Direction::Left: return 180;
-   //   case Direction::BottomLeft: return 240.f;
-   //   case Direction::BottomRight: return 300.f;
-   //   default: return -1;
-   //   }
-   //}
-
    unsigned m_plateCounter{ 1001 };
 
    using HexMap = std::unordered_map<HexCoord, GamePlate, HexCoord>;
