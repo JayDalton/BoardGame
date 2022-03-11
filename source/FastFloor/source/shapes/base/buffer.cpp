@@ -4,6 +4,15 @@
 
 #include <numeric>
 
+void ogl::Buffer::useBuffer()
+{
+   glBindVertexArray(m_VAO);
+   glDrawElements(GL_TRIANGLES, m_indexSize, GL_UNSIGNED_INT, 0);
+   //glDrawElements(GL_TRIANGLE_STRIP, m_indexSize, GL_UNSIGNED_INT, 0);
+   //glDrawElements(GL_TRIANGLE_FAN, m_indexSize, GL_UNSIGNED_INT, 0);
+   //glDrawElements(GL_LINE_STRIP, m_indexSize, GL_UNSIGNED_INT, 0);
+}
+
 void ogl::Buffer::freeBuffer()
 {
    glDeleteVertexArrays(1, &m_VAO);
@@ -12,10 +21,12 @@ void ogl::Buffer::freeBuffer()
    m_VAO = m_VBO = m_EBO = 0;
 }
 
-void ogl::Buffer::bindBuffer(const std::vector<Element>& elementList, const std::vector<IndexType>& indexList)
+void ogl::Buffer::bindBuffer(
+   const std::vector<Element>& elementList, 
+   const std::vector<IndexType>& indexList)
 {
-   std::vector<VertexType> vertexBuffer;
-   vertexBuffer.reserve(elementList.size() * sizeof(VertexType));
+   std::vector<ElemItemType> vertexBuffer;
+   vertexBuffer.reserve(elementList.size() * sizeof(ElemItemType));
    for (auto&& element : elementList)
    {
       std::copy(element.cbegin(), element.cend(), std::back_inserter(vertexBuffer));
@@ -50,13 +61,4 @@ void ogl::Buffer::bindBuffer(const std::vector<Element>& elementList, const std:
 
    //std::cout << std::format("\nBufferId: {}, VBO: {}, EBO: {}, IndexSize: {}, VertexSize: {}"
    //   , m_VAO, m_VBO, m_EBO, m_indexSize, m_vertexSize);
-}
-
-void ogl::Buffer::render()
-{
-   glBindVertexArray(m_VAO);
-   glDrawElements(GL_TRIANGLES, m_indexSize, GL_UNSIGNED_INT, 0);
-   //glDrawElements(GL_TRIANGLE_STRIP, m_indexSize, GL_UNSIGNED_INT, 0);
-   //glDrawElements(GL_TRIANGLE_FAN, m_indexSize, GL_UNSIGNED_INT, 0);
-   //glDrawElements(GL_LINE_STRIP, m_indexSize, GL_UNSIGNED_INT, 0);
 }

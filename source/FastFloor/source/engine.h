@@ -55,7 +55,7 @@ namespace ogl
       BufferId createHexagon(ogl::Color color);
 
       ShaderId createShader(std::string_view vertex, std::string_view fragment);
-      TextureId createTexture(std::string_view texture);
+      TextureId createTexture(std::string_view fileName);
 
       void render(ogl::Drawable drawable, ogl::Matrix view);
 
@@ -74,10 +74,10 @@ namespace ogl
          return ShaderId{ counter++ };
       }
 
-      TextureId append(ogl::Texture shader)
+      TextureId append(ogl::Texture texture)
       {
          static short counter{ 400 };
-         m_texture.insert_or_assign(TextureId{ counter }, shader);
+         m_texture.insert_or_assign(TextureId{ counter }, texture);
          return TextureId{ counter++ };
       }
 

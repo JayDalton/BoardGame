@@ -39,8 +39,6 @@ bool FastFloor::createUser()
       plate.m_position = pos;
       plate.m_shader = shaderId1;
       plate.m_texture1 = textureId2;
-      //plate.m_texture2 = textureId2;
-      //plate.m_buffer = createRect(size, color);
       plate.m_buffer = bufferId5;
       m_plates.push_back(plate);
    }

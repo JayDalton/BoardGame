@@ -107,7 +107,7 @@ void ogl::GameEngine::start()
 
    //initCamera();
    //initLights();
-   //initGeometry();
+   initGeometry();
 
    createUser();
 
@@ -204,18 +204,21 @@ void ogl::GameEngine::OnReceiveLocal()
             m_cameraPosition += cameraSpeed * (m_cameraTarget - m_cameraPosition);
             std::cout << std::format("Camera UP {}\n", glm::to_string(m_cameraPosition));
             break;
-         case SDL_SCANCODE_A:
-         case SDL_SCANCODE_LEFT:
-            m_cameraPosition -= glm::normalize(glm::cross((m_cameraTarget - m_cameraPosition), m_cameraUpside)) * cameraSpeed;
-            break;
          case SDL_SCANCODE_S:
          case SDL_SCANCODE_DOWN:
             m_cameraPosition -= cameraSpeed * (m_cameraTarget - m_cameraPosition);
             std::cout << std::format("Camera DOWN {}\n", glm::to_string(m_cameraPosition));
             break;
+         case SDL_SCANCODE_A:
+         case SDL_SCANCODE_LEFT:
+            m_cameraPosition -= glm::normalize(glm::cross((m_cameraTarget - m_cameraPosition), m_cameraUpside)) * cameraSpeed;
+            std::cout << std::format("Camera LEFT {}\n", glm::to_string(m_cameraPosition));
+            //cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+            break;
          case SDL_SCANCODE_D:
          case SDL_SCANCODE_RIGHT:
             m_cameraPosition += glm::normalize(glm::cross((m_cameraTarget - m_cameraPosition), m_cameraUpside)) * cameraSpeed;
+            std::cout << std::format("Camera RIGHT {}\n", glm::to_string(m_cameraPosition));
             break;
          default:
             std::cout 
@@ -298,7 +301,7 @@ void ogl::GameEngine::OnUpdateWorld(Duration duration)
 void ogl::GameEngine::OnRenderWorld(Duration duration)
 {
    // Hintergrund
-   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+   glClearColor(0.3f, 0.5f, 0.4f, 1.0f);
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
    auto projection = glm::perspective(
@@ -416,40 +419,21 @@ void ogl::GameEngine::initLights()
 
 void ogl::GameEngine::initGeometry()
 {
-   //m_shapes.push_back(
-   //   std::make_unique<Square>(
-   //      "shader/Simple.vs",
-   //      "shader/Simple.fs",
-   //      ogl::Colors::Blue));
-   //m_shapes.push_back(
-   //   std::make_unique<Square>(
-   //      "shader/Texture.vs",
-   //      "shader/Texture.fs",
-   //      "images/container.jpg"));
+   auto bufferId1 = createSquare(10, Color{1.0f, 1.0f, 1.0f, 0.4f});
+   auto shaderId1 = createShader("shader/Complex.vs", "shader/Colored.fs");
 
-   //m_shapes.push_back(
-   //   std::make_unique<Hexagon>(
-   //      "shader/Simple.vs",
-   //      "shader/Simple.fs",
-   //      ogl::Colors::Green));
-   //m_shapes.push_back(
-   //   std::make_unique<Hexagon>(
-   //      "shader/Texture.vs",
-   //      "shader/Texture.fs",
-   //      "images/container.jpg"));
+   glm::mat4 model = glm::mat4(1.0f);
+   model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-   //m_shapes.push_back(
-   //   std::make_unique<Rectangle>(
-   //      ogl::Size{200, 400},
-   //      "shader/Simple.vs",
-   //      "shader/Simple.fs",
-   //      ogl::Colors::Red));
-   //m_shapes.push_back(
-   //   std::make_unique<Rectangle>(
-   //      ogl::Size{100, 400},
-   //      "shader/Texture.vs",
-   //      "shader/Texture.fs",
-   //      "images/container.jpg"));
+   Drawable plate;
+   plate.m_position = Vertex{0.0f};
+   plate.m_shader = shaderId1;
+   plate.m_buffer = bufferId1;
+   //plate.m_localMat = model;
+   m_objects.push_back(plate);
+
+
+
 }
 
 void ogl::GameEngine::render(ogl::Drawable object, ogl::Matrix view)
@@ -476,7 +460,7 @@ void ogl::GameEngine::render(ogl::Drawable object, ogl::Matrix view)
    if (m_buffer.contains(object.m_buffer))
    {
       auto& buffer = m_buffer.at(object.m_buffer);
-      buffer.render();
+      buffer.useBuffer();
    }
 }
 
@@ -487,11 +471,11 @@ ogl::ShaderId ogl::GameEngine::createShader(std::string_view vertex, std::string
    return append(shader);
 }
 
-ogl::TextureId ogl::GameEngine::createTexture(std::string_view texture)
+ogl::TextureId ogl::GameEngine::createTexture(std::string_view fileName)
 {
-   ogl::Texture tex;
-   tex.createTexture(texture);
-   return append(tex);
+   ogl::Texture texture;
+   texture.createTexture(fileName);
+   return append(texture);
 }
 
 ogl::BufferId ogl::GameEngine::createSquare(float radius, ogl::Color color)
