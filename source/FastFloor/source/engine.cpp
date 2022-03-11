@@ -323,29 +323,31 @@ void ogl::GameEngine::OnRenderWorld(Duration duration)
       else
       {
          //render(object);
-         auto bufferId = object.m_buffer;
-         auto shaderId = object.m_shader;
-         auto textureId = object.m_texture1;
 
-         if (m_texture.contains(textureId))
+         if (m_texture.contains(object.m_texture1))
          {
-            auto& texture = m_texture.at(textureId);
+            auto& texture = m_texture.at(object.m_texture1);
             texture.useTexture();
          }
 
-         if (m_shader.contains(shaderId))
+         if (m_texture.contains(object.m_texture2))
          {
-            auto& shader = m_shader.at(shaderId);
-            //// projection * view * model
+            auto& texture = m_texture.at(object.m_texture2);
+            texture.useTexture();
+         }
+
+         if (m_shader.contains(object.m_shader))
+         {
+            auto& shader = m_shader.at(object.m_shader);
             auto model = projection * view * object.getPosition();
 
             shader.useShader();
             shader.setMat4("model", model);
          }
 
-         if (m_buffer.contains(bufferId))
+         if (m_buffer.contains(object.m_buffer))
          {
-            auto& buffer = m_buffer.at(bufferId);
+            auto& buffer = m_buffer.at(object.m_buffer);
             buffer.render();
          }
       }
@@ -496,10 +498,8 @@ void ogl::GameEngine::render(ogl::Drawable drawable)
          m_cameraTarget,
          m_cameraUpside);
 
-      //// projection * view * model
       auto position = drawable.getPosition();
       auto model = projection * view * position;
-      //m_shapes.at(shape)->render(posi); // need renderObj
 
       texture.useTexture();
 
@@ -559,17 +559,15 @@ ogl::BufferId ogl::GameEngine::createCircle(unsigned radius, ogl::Color color)
 
 ogl::BufferId ogl::GameEngine::createHexagon(ogl::Color color)
 {
-   ogl::Coords texBase(-1.0f, -1.0f);
-
    ogl::Buffer buffer{};
    buffer.bindBuffer({
       Buffer::create(ogl::Vertex{ 0.f }, color, { 0.5f, 0.5f }),
-      Buffer::create(Geometry::circlePoint(030.f, 1.f), color, texBase),
-      Buffer::create(Geometry::circlePoint(090.f, 1.f), color, texBase),
-      Buffer::create(Geometry::circlePoint(150.f, 1.f), color, texBase),
-      Buffer::create(Geometry::circlePoint(210.f, 1.f), color, texBase),
-      Buffer::create(Geometry::circlePoint(270.f, 1.f), color, texBase),
-      Buffer::create(Geometry::circlePoint(330.f, 1.f), color, texBase) },
+      Buffer::create(Geometry::circlePoint(030.f, 1.f), color),
+      Buffer::create(Geometry::circlePoint(090.f, 1.f), color),
+      Buffer::create(Geometry::circlePoint(150.f, 1.f), color),
+      Buffer::create(Geometry::circlePoint(210.f, 1.f), color),
+      Buffer::create(Geometry::circlePoint(270.f, 1.f), color),
+      Buffer::create(Geometry::circlePoint(330.f, 1.f), color) },
       {
       0u, 1u, 2u,
       0u, 2u, 3u,

@@ -115,10 +115,8 @@ namespace ogl
          };
       };
 
-      static Element create(Vertex vertex, Color color, Coords uvBase)
+      static Element create(Vertex vertex, Color color, Coords coords)
       {
-         auto coords{ (ogl::Coords(vertex) - uvBase) * 0.5f };
-
          return {
             vertex.x, vertex.y, vertex.z,
             color.r, color.g, color.b,
@@ -128,10 +126,12 @@ namespace ogl
 
       static Element create(Vertex vertex, Color color)
       {
+         auto coords{ (ogl::Coords(vertex) - ogl::Coords(-1.0f, -1.0f)) * 0.5f };
+
          return {
             vertex.x, vertex.y, vertex.z,
             color.r, color.g, color.b,
-            0.0f, 0.0f 
+            coords.x, coords.y
          };
       };
 
