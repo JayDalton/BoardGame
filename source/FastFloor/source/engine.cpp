@@ -360,14 +360,14 @@ void ogl::GameEngine::initOpenGL()
 
 void ogl::GameEngine::initCamera()
 {
-   m_camera = ogl::Camera(
+   m_camera = Camera(
       glm::perspective(60.0f, 4.0f / 3.0f, 0.1f, 1000.0f),
       glm::vec3(0.0f, 0.0f, 8.0f),
       glm::vec3(0.0f, 0.0f, 0.0f),
       glm::vec3(0.0f, 1.0f, 0.0f)
    );
 
-   m_screen = ogl::Camera(
+   m_screen = Camera(
       glm::ortho(-40.0f, 40.0f, -30.0f, 30.0f, 0.1f, 1000.0f),
       glm::vec3(0.0f, 0.0f, 1.0f),
       glm::vec3(0.0f, 0.0f, 0.0f),
@@ -419,6 +419,8 @@ void ogl::GameEngine::initLights()
 
 void ogl::GameEngine::initGeometry()
 {
+   // 3D Koordinatensystem
+
    auto bufferId1 = createSquare(10, Color{1.0f, 1.0f, 1.0f, 0.4f});
    auto shaderId1 = createShader("shader/Complex.vs", "shader/Colored.fs");
 
@@ -436,7 +438,7 @@ void ogl::GameEngine::initGeometry()
 
 }
 
-void ogl::GameEngine::render(ogl::Drawable object, ogl::Matrix view)
+void ogl::GameEngine::render(Drawable object, Matrix view)
 {
    if (m_texture.contains(object.m_texture1))
    {
@@ -466,35 +468,35 @@ void ogl::GameEngine::render(ogl::Drawable object, ogl::Matrix view)
 
 ogl::ShaderId ogl::GameEngine::createShader(std::string_view vertex, std::string_view fragment)
 {
-   ogl::Shader shader;
+   Shader shader;
    shader.createShaders(vertex, fragment);
    return append(shader);
 }
 
 ogl::TextureId ogl::GameEngine::createTexture(std::string_view fileName)
 {
-   ogl::Texture texture;
+   Texture texture;
    texture.createTexture(fileName);
    return append(texture);
 }
 
-ogl::BufferId ogl::GameEngine::createSquare(float radius, ogl::Color color)
+ogl::BufferId ogl::GameEngine::createSquare(float size, Color color)
 {
-   ogl::Buffer buffer{};
+   Buffer buffer{};
    buffer.bindBuffer({
-      Buffer::create({ +radius, +radius, 0.f }, color, { 1.0f, 1.0f }),
-      Buffer::create({ +radius, -radius, 0.f }, color, { 1.0f, 0.0f }),
-      Buffer::create({ -radius, -radius, 0.f }, color, { 0.0f, 0.0f }),
-      Buffer::create({ -radius, +radius, 0.f }, color, { 0.0f, 1.0f }) },
+      Buffer::create({ +size, +size, 0.f }, color, { 1.0f, 1.0f }),
+      Buffer::create({ +size, -size, 0.f }, color, { 1.0f, 0.0f }),
+      Buffer::create({ -size, -size, 0.f }, color, { 0.0f, 0.0f }),
+      Buffer::create({ -size, +size, 0.f }, color, { 0.0f, 1.0f }) },
       { 0u, 1u, 3u, 1u, 2u, 3u }
    );
 
    return append(buffer);
 }
 
-ogl::BufferId ogl::GameEngine::createRect(ogl::SizeF size, ogl::Color color)
+ogl::BufferId ogl::GameEngine::createRect(SizeF size, Color color)
 {
-   ogl::Buffer buffer{};
+   Buffer buffer{};
    buffer.bindBuffer({
       Buffer::create({ +size.x, +size.y, 0.f }, color, { 1.0f, 1.0f }),
       Buffer::create({ +size.x, -size.y, 0.f }, color, { 1.0f, 0.0f }),
@@ -506,22 +508,22 @@ ogl::BufferId ogl::GameEngine::createRect(ogl::SizeF size, ogl::Color color)
    return append(buffer);
 }
 
-ogl::BufferId ogl::GameEngine::createCircle(unsigned radius, ogl::Color color)
+ogl::BufferId ogl::GameEngine::createCircle(float size, Color color)
 {
    return {};
 }
 
-ogl::BufferId ogl::GameEngine::createHexagon(ogl::Color color)
+ogl::BufferId ogl::GameEngine::createHexagon(float size, Color color)
 {
-   ogl::Buffer buffer{};
+   Buffer buffer{};
    buffer.bindBuffer({
-      Buffer::create(ogl::Vertex{ 0.f }, color, { 0.5f, 0.5f }),
-      Buffer::create(Geometry::circlePoint(030.f, 1.f), color),
-      Buffer::create(Geometry::circlePoint(090.f, 1.f), color),
-      Buffer::create(Geometry::circlePoint(150.f, 1.f), color),
-      Buffer::create(Geometry::circlePoint(210.f, 1.f), color),
-      Buffer::create(Geometry::circlePoint(270.f, 1.f), color),
-      Buffer::create(Geometry::circlePoint(330.f, 1.f), color) },
+      Buffer::create(Vertex{ 0.f }, color, { 0.5f, 0.5f }),
+      Buffer::create(Geometry::circlePoint(030.f, size), color),
+      Buffer::create(Geometry::circlePoint(090.f, size), color),
+      Buffer::create(Geometry::circlePoint(150.f, size), color),
+      Buffer::create(Geometry::circlePoint(210.f, size), color),
+      Buffer::create(Geometry::circlePoint(270.f, size), color),
+      Buffer::create(Geometry::circlePoint(330.f, size), color) },
       {
       0u, 1u, 2u,
       0u, 2u, 3u,
@@ -531,6 +533,59 @@ ogl::BufferId ogl::GameEngine::createHexagon(ogl::Color color)
       0u, 6u, 1u,
       }
    );
+
+   return append(buffer);
+}
+
+ogl::BufferId ogl::GameEngine::createHexoid(float size, Color color)
+{
+   return {};
+}
+
+ogl::BufferId ogl::GameEngine::createCuboid(float size, Color color)
+{
+   Buffer buffer{};
+   buffer.bindBuffer({
+      Buffer::create(Vertex{ 0.f }, color, { 0.5f, 0.5f }),
+      Buffer::create(Geometry::circlePoint(030.f, size), color),
+      Buffer::create(Geometry::circlePoint(090.f, size), color),
+      Buffer::create(Geometry::circlePoint(150.f, size), color),
+      Buffer::create(Geometry::circlePoint(210.f, size), color),
+      Buffer::create(Geometry::circlePoint(270.f, size), color),
+      Buffer::create(Geometry::circlePoint(330.f, size), color) },
+      {
+      0u, 1u, 2u,
+      0u, 2u, 3u,
+      0u, 3u, 4u,
+      0u, 4u, 5u,
+      0u, 5u, 6u,
+      0u, 6u, 1u,
+      }
+      );
+
+   return append(buffer);
+}
+
+ogl::BufferId ogl::GameEngine::createSphere(float size, Color color)
+{
+   Buffer buffer{};
+   buffer.bindBuffer({
+      Buffer::create(Vertex{ 0.f }, color, { 0.5f, 0.5f }),
+      Buffer::create(Geometry::circlePoint(030.f, size), color),
+      Buffer::create(Geometry::circlePoint(090.f, size), color),
+      Buffer::create(Geometry::circlePoint(150.f, size), color),
+      Buffer::create(Geometry::circlePoint(210.f, size), color),
+      Buffer::create(Geometry::circlePoint(270.f, size), color),
+      Buffer::create(Geometry::circlePoint(330.f, size), color) },
+      {
+      0u, 1u, 2u,
+      0u, 2u, 3u,
+      0u, 3u, 4u,
+      0u, 4u, 5u,
+      0u, 5u, 6u,
+      0u, 6u, 1u,
+      }
+      );
 
    return append(buffer);
 }

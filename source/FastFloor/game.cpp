@@ -21,7 +21,10 @@ bool FastFloor::createUser()
    auto bufferId2 = createSquare(1.5, ogl::Colors::Green);
    auto bufferId3 = createRect({1.5, 0.7}, ogl::Colors::Red);
    auto bufferId4 = createRect({0.5, 1.7}, ogl::Colors::Blue);
-   auto bufferId5 = createHexagon(ogl::Colors::Green);
+   auto bufferId5 = createHexagon(1.0f, ogl::Colors::Green);
+   auto bufferId6 = createHexoid(1.0f, ogl::Colors::Green);
+   auto bufferId7 = createCuboid(1.0f, ogl::Colors::Green);
+   auto bufferId8 = createSphere(1.0f, ogl::Colors::Green);
 
    auto shaderId1 = createShader("shader/Complex.vs", "shader/Complex.fs");
    auto shaderId2 = createShader("shader/Complex.vs", "shader/Colored.fs");
