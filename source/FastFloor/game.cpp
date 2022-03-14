@@ -23,28 +23,36 @@ bool FastFloor::createUser()
    auto bufferId4 = createRect({0.5, 1.7}, ogl::Colors::Blue);
    auto bufferId5 = createHexagon(1.0f, ogl::Colors::Green);
    auto bufferId6 = createHexoid(1.0f, ogl::Colors::Green);
-   auto bufferId7 = createCuboid(1.0f, ogl::Colors::Green);
-   auto bufferId8 = createSphere(1.0f, ogl::Colors::Green);
+
+   auto cuboidId = createCuboid(1.0f, ogl::Colors::Green);
+   auto sphereId = createSphere(1.0f, ogl::Colors::Green);
 
    auto shaderId1 = createShader("shader/Complex.vs", "shader/Complex.fs");
    auto shaderId2 = createShader("shader/Complex.vs", "shader/Colored.fs");
    auto textureId1 = createTexture("images/container.jpg");
    auto textureId2 = createTexture("images/awesomeface.png");
 
-   //for (auto idx{0}; idx < 15; idx++)
-   for (auto&& pos : m_cache.calculateHexagonPosition(4))
-   {
-      //ogl::SizeF size{distSize(eng), distSize(eng)};
-      //ogl::Vertex pos{distArea(eng), distArea(eng), 0.f};
-      //ogl::Color color{distColor(eng), distColor(eng), distColor(eng), 1.0f};
+   ogl::Drawable plate;
+   plate.m_position = {1.0, 1.0, 1.0};
+   plate.m_shader = shaderId2;
+   plate.m_buffer = cuboidId;
+   m_plates.push_back(plate);
 
-      ogl::Drawable plate;
-      plate.m_position = pos;
-      plate.m_shader = shaderId1;
-      plate.m_texture1 = textureId2;
-      plate.m_buffer = bufferId5;
-      m_plates.push_back(plate);
-   }
+
+   ////for (auto idx{0}; idx < 15; idx++)
+   //for (auto&& pos : m_cache.calculateHexagonPosition(4))
+   //{
+   //   //ogl::SizeF size{distSize(eng), distSize(eng)};
+   //   //ogl::Vertex pos{distArea(eng), distArea(eng), 0.f};
+   //   //ogl::Color color{distColor(eng), distColor(eng), distColor(eng), 1.0f};
+
+   //   ogl::Drawable plate;
+   //   plate.m_position = pos;
+   //   plate.m_shader = shaderId1;
+   //   plate.m_texture1 = textureId2;
+   //   plate.m_buffer = bufferId5;
+   //   m_plates.push_back(plate);
+   //}
 
    return true;
 }

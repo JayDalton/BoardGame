@@ -432,9 +432,7 @@ void ogl::GameEngine::initGeometry()
    plate.m_shader = shaderId1;
    plate.m_buffer = bufferId1;
    //plate.m_localMat = model;
-   m_objects.push_back(plate);
-
-
+   //m_objects.push_back(plate);
 
 }
 
@@ -542,24 +540,103 @@ ogl::BufferId ogl::GameEngine::createHexoid(float size, Color color)
    return {};
 }
 
+//const GLfloat ogl::Cuboid::VERTICES[][11] = {
+//
+//  {-1, 1, 1,   0, 1, 0,   1, 1, 1,   0.000000f, 0.50f},   // unten links
+//  { 1, 1, 1,   0, 1, 0,   1, 1, 1,   0.333333f, 0.50f},   // unten rechts (top)
+//  { 1, 1,-1,   0, 1, 0,   1, 1, 1,   0.333333f, 1.00f},   // oben rechts
+//  {-1, 1,-1,   0, 1, 0,   1, 1, 1,   0.000000f, 1.00f},  // oben links
+//
+//  {-1,-1, 1,   0, 0, 1,   1, 1, 1,   0.333333f, 0.50f},   // unten links
+//  { 1,-1, 1,   0, 0, 1,   1, 1, 1,   0.666666f, 0.50f},   // unten rechts
+//  { 1, 1, 1,   0, 0, 1,   1, 1, 1,   0.666666f, 1.00f},   // oben rechts (front)
+//  {-1, 1, 1,   0, 0, 1,   1, 1, 1,   0.333333f, 1.00f},  // oben links
+//
+//  { 1,-1, 1,   1, 0, 0,   1, 1, 1,   0.666666f, 0.50f},   // unten links
+//  { 1,-1,-1,   1, 0, 0,   1, 1, 1,   1.000000f, 0.50f},   // unten rechts
+//  { 1, 1,-1,   1, 0, 0,   1, 1, 1,   1.000000f, 1.00f},   // oben rechts
+//  { 1, 1, 1,   1, 0, 0,   1, 1, 1,   0.666666f, 1.00f},  // oben links (right)
+//
+//  { 1,-1,-1,   0, 0,-1,   1, 1, 1,   0.000000f, 0.00f},   // unten links (back)
+//  {-1,-1,-1,   0, 0,-1,   1, 1, 1,   0.333333f, 0.00f},   // unten rechts
+//  {-1, 1,-1,   0, 0,-1,   1, 1, 1,   0.333333f, 0.50f},   // oben rechts
+//  { 1, 1,-1,   0, 0,-1,   1, 1, 1,   0.000000f, 0.50f},  // oben links
+//
+//  {-1,-1,-1,  -1, 0, 0,   1, 1, 1,   0.333333f, 0.00f},   // unten links
+//  {-1,-1, 1,  -1, 0, 0,   1, 1, 1,   0.666666f, 0.00f},   // unten rechts
+//  {-1, 1, 1,  -1, 0, 0,   1, 1, 1,   0.666666f, 0.50f},   // oben rechts (left)
+//  {-1, 1,-1,  -1, 0, 0,   1, 1, 1,   0.333333f, 0.50f},  // oben links
+//
+//  {-1,-1,-1,   0,-1, 0,   1, 1, 1,   0.666666f, 0.00f},   // unten links (bottom)
+//  { 1,-1,-1,   0,-1, 0,   1, 1, 1,   1.000000f, 0.00f},   // unten rechts
+//  { 1,-1, 1,   0,-1, 0,   1, 1, 1,   1.000000f, 0.50f},   // oben rechts
+//  {-1,-1, 1,   0,-1, 0,   1, 1, 1,   0.666666f, 0.50f}   // oben links
+//
+//};
+
+//const GLuint ogl::Cuboid::INDICES[] = {
+//   0, 1, 2,   2, 3, 0,      // front
+//   4, 5, 6,   6, 7, 4,      // right
+//   8, 9,10,  10,11, 8,      // top
+//  12,13,14,  14,15,12,      // left
+//  16,17,18,  18,19,16,      // bottom
+//  20,21,22,  22,23,20       // back
+//};
+
+//############################################################################
+/** |
+    ((V, N, C, T), (V, N, C, T), ...)
+    ((vx,vy,vz, nx,ny,nz, cr,cg,cb, tx,ty), (...), ...)
+
+
+//    v6----- v5
+//   /|      /|
+//  v3------v2|
+//  | |     | |
+//  | |v7---|-|v4
+//  |/      |/
+//  v0------v1
+*/
 ogl::BufferId ogl::GameEngine::createCuboid(float size, Color color)
 {
    Buffer buffer{};
    buffer.bindBuffer({
-      Buffer::create(Vertex{ 0.f }, color, { 0.5f, 0.5f }),
-      Buffer::create(Geometry::circlePoint(030.f, size), color),
-      Buffer::create(Geometry::circlePoint(090.f, size), color),
-      Buffer::create(Geometry::circlePoint(150.f, size), color),
-      Buffer::create(Geometry::circlePoint(210.f, size), color),
-      Buffer::create(Geometry::circlePoint(270.f, size), color),
-      Buffer::create(Geometry::circlePoint(330.f, size), color) },
+      Buffer::create({ -1, 1, 1 }, color, { 0.000000f, 0.50f }),
+      Buffer::create({  1, 1, 1 }, color, { 0.333333f, 0.50f }),
+      Buffer::create({  1, 1,-1 }, color, { 0.333333f, 1.00f }),
+      Buffer::create({ -1, 1,-1 }, color, { 0.000000f, 1.00f }),
+
+      Buffer::create({ -1,-1, 1 }, color, { 0.333333f, 0.50f }),
+      Buffer::create({  1,-1, 1 }, color, { 0.666666f, 0.50f }),
+      Buffer::create({  1, 1, 1 }, color, { 0.666666f, 1.00f }),
+      Buffer::create({ -1, 1, 1 }, color, { 0.333333f, 1.00f }),
+
+      Buffer::create({  1,-1, 1 }, color, { 0.666666f, 0.50f }),
+      Buffer::create({  1,-1,-1 }, color, { 1.000000f, 0.50f }),
+      Buffer::create({  1, 1,-1 }, color, { 1.000000f, 1.00f }),
+      Buffer::create({  1, 1, 1 }, color, { 0.666666f, 1.00f }),
+
+      Buffer::create({  1,-1,-1 }, color, { 0.000000f, 0.00f }),
+      Buffer::create({ -1,-1,-1 }, color, { 0.333333f, 0.00f }),
+      Buffer::create({ -1, 1,-1 }, color, { 0.333333f, 0.50f }),
+      Buffer::create({  1, 1,-1 }, color, { 0.000000f, 0.50f }),
+
+      Buffer::create({ -1,-1,-1 }, color, { 0.333333f, 0.00f }),
+      Buffer::create({ -1,-1, 1 }, color, { 0.666666f, 0.00f }),
+      Buffer::create({ -1, 1, 1 }, color, { 0.666666f, 0.50f }),
+      Buffer::create({ -1, 1,-1 }, color, { 0.333333f, 0.50f }),
+
+      Buffer::create({ -1,-1,-1 }, color, { 0.666666f, 0.00f }),
+      Buffer::create({  1,-1,-1 }, color, { 1.000000f, 0.00f }),
+      Buffer::create({  1,-1, 1 }, color, { 1.000000f, 0.50f }),
+      Buffer::create({ -1,-1, 1 }, color, { 0.666666f, 0.50f }) },
       {
-      0u, 1u, 2u,
-      0u, 2u, 3u,
-      0u, 3u, 4u,
-      0u, 4u, 5u,
-      0u, 5u, 6u,
-      0u, 6u, 1u,
+         0, 1, 2,   2, 3, 0,      // front
+         4, 5, 6,   6, 7, 4,      // right
+         8, 9,10,  10,11, 8,      // top
+        12,13,14,  14,15,12,      // left
+        16,17,18,  18,19,16,      // bottom
+        20,21,22,  22,23,20       // back
       }
       );
 

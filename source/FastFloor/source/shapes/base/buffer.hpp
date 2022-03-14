@@ -12,6 +12,9 @@ namespace ogl
       // Element: x, y, z, r, g, b, u, v
       using Element = std::array<ElemItemType, 8>;
 
+      // Element: vx, vy, vz, nx, ny, nz, cr, cg, cb, tu, tv
+      using Element2 = std::array<ElemItemType, 11>;
+
       void useBuffer();
       void freeBuffer();
       void bindBuffer(
@@ -28,6 +31,15 @@ namespace ogl
       {
          return sizeof(IndexType) * m_indexSize;
       }
+
+      static Element create(Vertex vertex, Vertex normal, Color color, Coords coords)
+      {
+         return {
+            vertex.x, vertex.y, vertex.z,
+            color.r, color.g, color.b,
+            coords.x, coords.y
+         };
+      };
 
       static Element create(Vertex vertex, Color color, Coords coords)
       {
