@@ -25,8 +25,8 @@ void ogl::Buffer::bindBuffer(
    const std::vector<Element>& elementList, 
    const std::vector<IndexType>& indexList)
 {
-   std::vector<ElemItemType> vertexBuffer;
-   vertexBuffer.reserve(elementList.size() * sizeof(ElemItemType));
+   std::vector<ItemType> vertexBuffer;
+   vertexBuffer.reserve(elementList.size() * sizeof(ItemType));
    for (auto&& element : elementList)
    {
       std::copy(element.cbegin(), element.cend(), std::back_inserter(vertexBuffer));
@@ -51,13 +51,17 @@ void ogl::Buffer::bindBuffer(
    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Element), (void*)0);
    glEnableVertexAttribArray(0);
 
-   // color attribute
-   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Element), (void*)(3 * sizeof(float)));
+   // normal attribute
+   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Element), (void*)(3 * sizeof(ItemType)));
    glEnableVertexAttribArray(1);
 
-   // texture coord attribute
-   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Element), (void*)(6 * sizeof(float)));
+   // color attribute
+   glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Element), (void*)(6 * sizeof(ItemType)));
    glEnableVertexAttribArray(2);
+
+   // texture coord attribute
+   glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Element), (void*)(9 * sizeof(ItemType)));
+   glEnableVertexAttribArray(3);
 
    //std::cout << std::format("\nBufferId: {}, VBO: {}, EBO: {}, IndexSize: {}, VertexSize: {}"
    //   , m_VAO, m_VBO, m_EBO, m_indexSize, m_vertexSize);

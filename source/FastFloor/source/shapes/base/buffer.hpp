@@ -6,14 +6,14 @@ namespace ogl
 {
    struct Buffer
    {
-      using ElemItemType = float;
+      using ItemType = float;
       using IndexType = unsigned;
 
       // Element: x, y, z, r, g, b, u, v
-      using Element = std::array<ElemItemType, 8>;
+      //using Element = std::array<ElemItemType, 8>;
 
       // Element: vx, vy, vz, nx, ny, nz, cr, cg, cb, tu, tv
-      using Element2 = std::array<ElemItemType, 11>;
+      using Element = std::array<ItemType, 11>;
 
       void useBuffer();
       void freeBuffer();
@@ -24,7 +24,7 @@ namespace ogl
 
       std::int32_t getVerticesByteSize() const
       {
-         return sizeof(ElemItemType) * m_vertexSize;
+         return sizeof(ItemType) * m_vertexSize;
       }
 
       std::int32_t getIndicesByteSize() const
@@ -36,6 +36,7 @@ namespace ogl
       {
          return {
             vertex.x, vertex.y, vertex.z,
+            normal.x, normal.y, normal.z,
             color.r, color.g, color.b,
             coords.x, coords.y
          };
@@ -43,8 +44,11 @@ namespace ogl
 
       static Element create(Vertex vertex, Color color, Coords coords)
       {
+         Vertex normal{ 0.0f, 0.0f, 1.0f };
+
          return {
             vertex.x, vertex.y, vertex.z,
+            normal.x, normal.y, normal.z,
             color.r, color.g, color.b,
             coords.x, coords.y
          };
@@ -52,10 +56,12 @@ namespace ogl
 
       static Element create(Vertex vertex, Color color)
       {
+         Vertex normal{ 0.0f, 0.0f, 1.0f };
          auto coords{ (glm::vec2{vertex} - glm::vec2{-1.0f, -1.0f}) * 0.5f };
 
          return {
             vertex.x, vertex.y, vertex.z,
+            normal.x, normal.y, normal.z,
             color.r, color.g, color.b,
             coords.x, coords.y
          };

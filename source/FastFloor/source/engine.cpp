@@ -105,6 +105,7 @@ void ogl::GameEngine::start()
 {
    //m_windowSize = updateViewport(m_window.get());
 
+   initOpenGL();
    //initCamera();
    //initLights();
    initGeometry();
@@ -353,7 +354,7 @@ void ogl::GameEngine::initWindow()
 void ogl::GameEngine::initOpenGL()
 {
    //glClearDepthf(1.0f);
-   //glEnable(GL_DEPTH_TEST);
+   glEnable(GL_DEPTH_TEST);
    //glDepthFunc(GL_LEQUAL);
    //glEnable(GL_CULL_FACE);
 }
@@ -589,11 +590,11 @@ ogl::BufferId ogl::GameEngine::createHexoid(float size, Color color)
     ((vx,vy,vz, nx,ny,nz, cr,cg,cb, tx,ty), (...), ...)
 
 
-//    v6----- v5
+//    v7----- v6
 //   /|      /|
 //  v3------v2|
 //  | |     | |
-//  | |v7---|-|v4
+//  | |v4---|-|v5
 //  |/      |/
 //  v0------v1
 */
@@ -601,35 +602,59 @@ ogl::BufferId ogl::GameEngine::createCuboid(float size, Color color)
 {
    Buffer buffer{};
    buffer.bindBuffer({
-      Buffer::create({ -1, 1, 1 }, color, { 0.000000f, 0.50f }),
-      Buffer::create({  1, 1, 1 }, color, { 0.333333f, 0.50f }),
-      Buffer::create({  1, 1,-1 }, color, { 0.333333f, 1.00f }),
-      Buffer::create({ -1, 1,-1 }, color, { 0.000000f, 1.00f }),
 
-      Buffer::create({ -1,-1, 1 }, color, { 0.333333f, 0.50f }),
-      Buffer::create({  1,-1, 1 }, color, { 0.666666f, 0.50f }),
-      Buffer::create({  1, 1, 1 }, color, { 0.666666f, 1.00f }),
-      Buffer::create({ -1, 1, 1 }, color, { 0.333333f, 1.00f }),
+      //Buffer::create({  size, size, size }, { 0, 0, 1 }, color, { 1, 0 }),
+      //Buffer::create({ -size, size, size }, { 0, 0, 1 }, color, { 0, 0 }),
+      //Buffer::create({ -size,-size, size }, { 0, 0, 1 }, color, { 0, 1 }),
+      //Buffer::create({  size,-size, size }, { 0, 0, 1 }, color, { 1, 1 }),
 
-      Buffer::create({  1,-1, 1 }, color, { 0.666666f, 0.50f }),
-      Buffer::create({  1,-1,-1 }, color, { 1.000000f, 0.50f }),
-      Buffer::create({  1, 1,-1 }, color, { 1.000000f, 1.00f }),
-      Buffer::create({  1, 1, 1 }, color, { 0.666666f, 1.00f }),
+      //Buffer::create({  size, size, size }, { 1, 0, 0 }, color, { 0, 0 }),
+      //Buffer::create({  size,-size, size }, { 1, 0, 0 }, color, { 0, 1 }),
+      //Buffer::create({  size,-size,-size }, { 1, 0, 0 }, color, { 1, 1 }),
+      //Buffer::create({  size, size,-size }, { 1, 0, 0 }, color, { 1, 0 }),
 
-      Buffer::create({  1,-1,-1 }, color, { 0.000000f, 0.00f }),
-      Buffer::create({ -1,-1,-1 }, color, { 0.333333f, 0.00f }),
-      Buffer::create({ -1, 1,-1 }, color, { 0.333333f, 0.50f }),
-      Buffer::create({  1, 1,-1 }, color, { 0.000000f, 0.50f }),
+      //Buffer::create({  size, size, size }, { 0, 1, 0 }, color, { 1, 1 }),
+      //Buffer::create({  size, size,-size }, { 0, 1, 0 }, color, { 1, 0 }),
+      //Buffer::create({ -size, size,-size }, { 0, 1, 0 }, color, { 0, 0 }),
+      //Buffer::create({ -size, size, size }, { 0, 1, 0 }, color, { 0, 1 }),
 
-      Buffer::create({ -1,-1,-1 }, color, { 0.333333f, 0.00f }),
-      Buffer::create({ -1,-1, 1 }, color, { 0.666666f, 0.00f }),
-      Buffer::create({ -1, 1, 1 }, color, { 0.666666f, 0.50f }),
-      Buffer::create({ -1, 1,-1 }, color, { 0.333333f, 0.50f }),
+      //Buffer::create({ -size, size, size }, { -1, 0, 0 }, color, { 1, 0 }),
+      //Buffer::create({ -size, size,-size }, { -1, 0, 0 }, color, { 0, 0 }),
+      //Buffer::create({ -size,-size,-size }, { -1, 0, 0 }, color, { 0, 1 }),
+      //Buffer::create({ -size,-size, size }, { -1, 0, 0 }, color, { 1, 1 }),
 
-      Buffer::create({ -1,-1,-1 }, color, { 0.666666f, 0.00f }),
-      Buffer::create({  1,-1,-1 }, color, { 1.000000f, 0.00f }),
-      Buffer::create({  1,-1, 1 }, color, { 1.000000f, 0.50f }),
-      Buffer::create({ -1,-1, 1 }, color, { 0.666666f, 0.50f }) },
+      //Buffer::create({ -size,-size,-size }, {  0,-1, 0 }, color, { 0, 1 }),
+      //Buffer::create({  size,-size,-size }, {  0,-1, 0 }, color, { 1, 1 }),
+      //Buffer::create({  size,-size, size }, {  0,-1, 0 }, color, { 1, 0 }),
+      //Buffer::create({ -size,-size, size }, {  0,-1, 0 }, color, { 0, 0 }),
+
+      //Buffer::create({  size,-size,-size }, {  0, 0,-1 }, color, { 0, 1 }),
+      //Buffer::create({ -size,-size,-size }, {  0, 0,-1 }, color, { 1, 1 }),
+      //Buffer::create({ -size, size,-size }, {  0, 0,-1 }, color, { 1, 0 }),
+      //Buffer::create({  size, size,-size }, {  0, 0,-1 }, color, { 0, 0 }),
+
+
+      Buffer::create({ -size,-size,+size }, { 0, 0, +1 }, color, { 0, 1 }), // V0
+      Buffer::create({ +size,-size,+size }, { 0, 0, +1 }, color, { 1, 1 }), // V1
+      Buffer::create({ +size,+size,+size }, { 0, 0, +1 }, color, { 1, 0 }), // V2
+      Buffer::create({ -size,+size,+size }, { 0, 0, +1 }, color, { 0, 0 }), // V3
+
+      Buffer::create({ -size,-size,-size }, { 0, +1, 0 }, color, { 0, 1 }), // V1
+      Buffer::create({ +size,-size,-size }, { 0, +1, 0 }, color, { 1, 1 }), // V5
+      Buffer::create({ +size,+size,-size }, { 0, +1, 0 }, color, { 1, 0 }), // V6
+      Buffer::create({ -size,+size,-size }, { 0, +1, 0 }, color, { 0, 0 }), // V2
+
+      Buffer::create({ -size,-size,-size }, { 0, 0, -1 }, color, { 0, 1 }), // V5
+      Buffer::create({ +size,-size,-size }, { 0, 0, -1 }, color, { 1, 1 }), // V4
+      Buffer::create({ +size,+size,-size }, { 0, 0, -1 }, color, { 1, 0 }), // V7
+      Buffer::create({ -size,+size,-size }, { 0, 0, -1 }, color, { 0, 0 }), // V6
+
+      Buffer::create({ -size,-size,-size }, { 0, -1, 0 }, color, { 0, 1 }), // V4
+      Buffer::create({ +size,-size,-size }, { 0, -1, 0 }, color, { 1, 1 }), // V0
+      Buffer::create({ +size,+size,-size }, { 0, -1, 0 }, color, { 1, 0 }), // V3
+      Buffer::create({ -size,+size,-size }, { 0, -1, 0 }, color, { 0, 0 }), // V7
+
+      },
       {
          0, 1, 2,   2, 3, 0,      // front
          4, 5, 6,   6, 7, 4,      // right
@@ -638,6 +663,14 @@ ogl::BufferId ogl::GameEngine::createCuboid(float size, Color color)
         16,17,18,  18,19,16,      // bottom
         20,21,22,  22,23,20       // back
       }
+      //{
+      //   0, 1, 2,   2, 3, 0,      // front
+      //   4, 5, 6,   6, 7, 4,      // right
+      //   8, 9,10,  10,11, 8,      // top
+      //  12,13,14,  14,15,12,      // left
+      //  16,17,18,  18,19,16,      // bottom
+      //  20,21,22,  22,23,20       // back
+      //}
       );
 
    return append(buffer);
