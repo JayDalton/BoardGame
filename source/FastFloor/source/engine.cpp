@@ -421,20 +421,29 @@ void ogl::GameEngine::initLights()
 void ogl::GameEngine::initGeometry()
 {
    // 3D Koordinatensystem
-
-   auto bufferId1 = createSquare(10, Color{1.0f, 1.0f, 1.0f, 0.4f});
+   auto model = glm::mat4(1.0f);
    auto shaderId1 = createShader("shader/Complex.vs", "shader/Colored.fs");
 
-   glm::mat4 model = glm::mat4(1.0f);
-   model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+   Drawable planeX;
+   planeX.m_buffer = createRect({5.0, 5.0}, Colors::Red);
+   planeX.m_shader = shaderId1;
+   planeX.m_position = {+2.5, -2.5, 0};
+   //planeX.m_localMat = glm::translate(model, {});
+   m_objects.push_back(planeX);
 
-   Drawable plate;
-   plate.m_position = Vertex{0.0f};
-   plate.m_shader = shaderId1;
-   plate.m_buffer = bufferId1;
-   //plate.m_localMat = model;
-   //m_objects.push_back(plate);
+   Drawable planeY;
+   planeY.m_buffer = createRect({1.0, 0.5}, Colors::Green);
+   planeY.m_shader = shaderId1;
+   planeY.m_position = {};
+   planeY.m_localMat = glm::rotate(model, glm::radians(90.0f), { 0.0f, 1.0f, 0.0f });
+   m_objects.push_back(planeY);
 
+   Drawable planeZ;
+   planeZ.m_buffer = createRect({0.5, 1.0}, Colors::Blue);
+   planeZ.m_shader = shaderId1;
+   planeZ.m_position = {};
+   planeZ.m_localMat = glm::rotate(model, glm::radians(90.0f), { 1.0f, 0.0f, 0.0f });
+   m_objects.push_back(planeZ);
 }
 
 void ogl::GameEngine::render(Drawable object, Matrix view)
@@ -541,6 +550,11 @@ ogl::BufferId ogl::GameEngine::createHexoid(float size, Color color)
    return {};
 }
 
+ogl::BufferId ogl::GameEngine::createCylinder(float radius, float hight, Color color)
+{
+   return {};
+}
+
 //const GLfloat ogl::Cuboid::VERTICES[][11] = {
 //
 //  {-1, 1, 1,   0, 1, 0,   1, 1, 1,   0.000000f, 0.50f},   // unten links
@@ -603,58 +617,46 @@ ogl::BufferId ogl::GameEngine::createCuboid(float size, Color color)
    Buffer buffer{};
    buffer.bindBuffer({
 
-      //Buffer::create({  size, size, size }, { 0, 0, 1 }, color, { 1, 0 }),
-      //Buffer::create({ -size, size, size }, { 0, 0, 1 }, color, { 0, 0 }),
-      //Buffer::create({ -size,-size, size }, { 0, 0, 1 }, color, { 0, 1 }),
-      //Buffer::create({  size,-size, size }, { 0, 0, 1 }, color, { 1, 1 }),
-
-      //Buffer::create({  size, size, size }, { 1, 0, 0 }, color, { 0, 0 }),
-      //Buffer::create({  size,-size, size }, { 1, 0, 0 }, color, { 0, 1 }),
-      //Buffer::create({  size,-size,-size }, { 1, 0, 0 }, color, { 1, 1 }),
-      //Buffer::create({  size, size,-size }, { 1, 0, 0 }, color, { 1, 0 }),
-
-      //Buffer::create({  size, size, size }, { 0, 1, 0 }, color, { 1, 1 }),
-      //Buffer::create({  size, size,-size }, { 0, 1, 0 }, color, { 1, 0 }),
-      //Buffer::create({ -size, size,-size }, { 0, 1, 0 }, color, { 0, 0 }),
-      //Buffer::create({ -size, size, size }, { 0, 1, 0 }, color, { 0, 1 }),
-
-      //Buffer::create({ -size, size, size }, { -1, 0, 0 }, color, { 1, 0 }),
-      //Buffer::create({ -size, size,-size }, { -1, 0, 0 }, color, { 0, 0 }),
-      //Buffer::create({ -size,-size,-size }, { -1, 0, 0 }, color, { 0, 1 }),
-      //Buffer::create({ -size,-size, size }, { -1, 0, 0 }, color, { 1, 1 }),
-
-      //Buffer::create({ -size,-size,-size }, {  0,-1, 0 }, color, { 0, 1 }),
-      //Buffer::create({  size,-size,-size }, {  0,-1, 0 }, color, { 1, 1 }),
-      //Buffer::create({  size,-size, size }, {  0,-1, 0 }, color, { 1, 0 }),
-      //Buffer::create({ -size,-size, size }, {  0,-1, 0 }, color, { 0, 0 }),
-
-      //Buffer::create({  size,-size,-size }, {  0, 0,-1 }, color, { 0, 1 }),
-      //Buffer::create({ -size,-size,-size }, {  0, 0,-1 }, color, { 1, 1 }),
-      //Buffer::create({ -size, size,-size }, {  0, 0,-1 }, color, { 1, 0 }),
-      //Buffer::create({  size, size,-size }, {  0, 0,-1 }, color, { 0, 0 }),
-
-
-      Buffer::create({ -size,-size,+size }, { 0, 0, +1 }, color, { 0, 1 }), // V0
       Buffer::create({ +size,-size,+size }, { 0, 0, +1 }, color, { 1, 1 }), // V1
       Buffer::create({ +size,+size,+size }, { 0, 0, +1 }, color, { 1, 0 }), // V2
       Buffer::create({ -size,+size,+size }, { 0, 0, +1 }, color, { 0, 0 }), // V3
+      Buffer::create({ -size,-size,+size }, { 0, 0, +1 }, color, { 0, 1 }), // V0
 
-      Buffer::create({ -size,-size,-size }, { 0, +1, 0 }, color, { 0, 1 }), // V1
-      Buffer::create({ +size,-size,-size }, { 0, +1, 0 }, color, { 1, 1 }), // V5
-      Buffer::create({ +size,+size,-size }, { 0, +1, 0 }, color, { 1, 0 }), // V6
-      Buffer::create({ -size,+size,-size }, { 0, +1, 0 }, color, { 0, 0 }), // V2
+      Buffer::create({ +size,-size,+size }, { +1, 0, 0 }, color, { 0, 1 }), // V1
+      Buffer::create({ +size,-size,-size }, { +1, 0, 0 }, color, { 1, 1 }), // V5
+      Buffer::create({ +size,+size,-size }, { +1, 0, 0 }, color, { 1, 0 }), // V6
+      Buffer::create({ +size,+size,+size }, { +1, 0, 0 }, color, { 0, 0 }), // V2
 
-      Buffer::create({ -size,-size,-size }, { 0, 0, -1 }, color, { 0, 1 }), // V5
-      Buffer::create({ +size,-size,-size }, { 0, 0, -1 }, color, { 1, 1 }), // V4
-      Buffer::create({ +size,+size,-size }, { 0, 0, -1 }, color, { 1, 0 }), // V7
-      Buffer::create({ -size,+size,-size }, { 0, 0, -1 }, color, { 0, 0 }), // V6
+      Buffer::create({ +size,-size,-size }, { 0, 0, -1 }, color, { 1, 1 }), // V5
+      Buffer::create({ +size,+size,-size }, { 0, 0, -1 }, color, { 1, 0 }), // V6
+      Buffer::create({ -size,+size,-size }, { 0, 0, -1 }, color, { 0, 0 }), // V7
+      Buffer::create({ -size,-size,-size }, { 0, 0, -1 }, color, { 0, 1 }), // V4
 
+      Buffer::create({ -size,-size,-size }, { -1, 0, 0 }, color, { 1, 0 }), // V4
+      Buffer::create({ -size,-size,+size }, { -1, 0, 0 }, color, { 0, 0 }), // V0
+      Buffer::create({ -size,+size,+size }, { -1, 0, 0 }, color, { 0, 1 }), // V3
+      Buffer::create({ -size,+size,-size }, { -1, 0, 0 }, color, { 1, 1 }), // V7
+
+      Buffer::create({ -size,-size,+size }, { 0, -1, 0 }, color, { 0, 0 }), // V0
       Buffer::create({ -size,-size,-size }, { 0, -1, 0 }, color, { 0, 1 }), // V4
-      Buffer::create({ +size,-size,-size }, { 0, -1, 0 }, color, { 1, 1 }), // V0
-      Buffer::create({ +size,+size,-size }, { 0, -1, 0 }, color, { 1, 0 }), // V3
-      Buffer::create({ -size,+size,-size }, { 0, -1, 0 }, color, { 0, 0 }), // V7
+      Buffer::create({ +size,-size,-size }, { 0, -1, 0 }, color, { 1, 1 }), // V5
+      Buffer::create({ +size,-size,+size }, { 0, -1, 0 }, color, { 1, 0 }), // V1
+
+      Buffer::create({ -size,+size,+size }, { 0, +1, 0 }, color, { 0, 0 }), // V0
+      Buffer::create({ -size,+size,-size }, { 0, +1, 0 }, color, { 0, 1 }), // V4
+      Buffer::create({ +size,+size,-size }, { 0, +1, 0 }, color, { 1, 1 }), // V5
+      Buffer::create({ +size,+size,+size }, { 0, +1, 0 }, color, { 1, 0 }), // V1
 
       },
+//    Y
+//    v7----- v6
+//   /|      /|
+//  v3------v2|
+//  | |     | |
+//  | |v4---|-|v5
+//  |/      |/
+//  v0------v1 X
+// Z
       {
          0, 1, 2,   2, 3, 0,      // front
          4, 5, 6,   6, 7, 4,      // right
@@ -663,14 +665,6 @@ ogl::BufferId ogl::GameEngine::createCuboid(float size, Color color)
         16,17,18,  18,19,16,      // bottom
         20,21,22,  22,23,20       // back
       }
-      //{
-      //   0, 1, 2,   2, 3, 0,      // front
-      //   4, 5, 6,   6, 7, 4,      // right
-      //   8, 9,10,  10,11, 8,      // top
-      //  12,13,14,  14,15,12,      // left
-      //  16,17,18,  18,19,16,      // bottom
-      //  20,21,22,  22,23,20       // back
-      //}
       );
 
    return append(buffer);

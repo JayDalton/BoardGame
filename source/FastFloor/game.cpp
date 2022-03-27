@@ -29,24 +29,33 @@ bool FastFloor::createUser()
 
    auto complexShader = createShader("shader/Complex.vs", "shader/Complex.fs");
    auto coloredShader = createShader("shader/Complex.vs", "shader/Colored.fs");
-   auto textureId1 = createTexture("images/container.jpg");
    auto textureId2 = createTexture("images/awesomeface.png");
+   auto textureId1 = createTexture("images/container.jpg");
+
+   ogl::Drawable plate;
+   plate.m_position = {3.0, 3.0, 3.0};
+   //plate.m_shader = coloredShader;
+   plate.m_shader = complexShader;
+   plate.m_texture1 = textureId1;
+   plate.m_buffer = cuboidId;
+   m_plates.push_back(plate);
 
    //for (auto idx{0}; idx < 15; idx++)
-   for (auto&& pos : m_cache.calculateHexagonPosition(4))
-   {
-      //ogl::SizeF size{distSize(eng), distSize(eng)};
-      //ogl::Vertex pos{distArea(eng), distArea(eng), 0.f};
-      //ogl::Color color{distColor(eng), distColor(eng), distColor(eng), 1.0f};
+   //for (auto&& pos : m_cache.calculateHexagonPosition(4))
+   //{
+   //   //ogl::SizeF size{distSize(eng), distSize(eng)};
+   //   //ogl::Vertex pos{distArea(eng), distArea(eng), 0.f};
+   //   //ogl::Color color{distColor(eng), distColor(eng), distColor(eng), 1.0f};
 
-      ogl::Drawable plate;
-      plate.m_position = pos;
-      //plate.m_shader = coloredShader;
-      plate.m_shader = complexShader;
-      plate.m_texture1 = textureId2;
-      plate.m_buffer = square1;
-      m_plates.push_back(plate);
-   }
+   //   ogl::Drawable plate;
+   //   plate.m_position = pos;
+   //   //plate.m_shader = coloredShader;
+   //   plate.m_shader = complexShader;
+   //   plate.m_texture1 = textureId1;
+   //   plate.m_texture2 = textureId2;
+   //   plate.m_buffer = square1;
+   //   m_plates.push_back(plate);
+   //}
 
    return true;
 }

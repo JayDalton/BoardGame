@@ -45,9 +45,9 @@ namespace ogl
       } m_mouse;
 
       // camera
-      glm::vec3 m_cameraPosition = glm::vec3(0.0, -15.0, 15.0);
-      glm::vec3 m_cameraTarget = glm::vec3(0.0, 0.0, 0.0);
-      glm::vec3 m_cameraUpside = glm::vec3(0.0, 0.0, 1.0);
+      glm::vec3 m_cameraPosition = { 15.0, 15.0, 15.0 };
+      glm::vec3 m_cameraTarget = {0.0, 0.0, 0.0};
+      glm::vec3 m_cameraUpside = {0.0, 0.0, 1.0};
 
       BufferId createSquare(float size, Color color);
       BufferId createRect(SizeF size, Color color);
@@ -56,6 +56,7 @@ namespace ogl
       BufferId createSphere(float size, Color color);
       BufferId createHexagon(float size, Color color);
       BufferId createHexoid(float size, Color color);
+      BufferId createCylinder(float radius, float hight, Color color);
 
       ShaderId createShader(std::string_view vertex, std::string_view fragment);
       TextureId createTexture(std::string_view fileName);
