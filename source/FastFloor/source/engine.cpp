@@ -550,11 +550,6 @@ ogl::BufferId ogl::GameEngine::createHexoid(float size, Color color)
    return {};
 }
 
-ogl::BufferId ogl::GameEngine::createCylinder(float radius, float hight, Color color)
-{
-   return {};
-}
-
 //const GLfloat ogl::Cuboid::VERTICES[][11] = {
 //
 //  {-1, 1, 1,   0, 1, 0,   1, 1, 1,   0.000000f, 0.50f},   // unten links
@@ -615,6 +610,7 @@ ogl::BufferId ogl::GameEngine::createCylinder(float radius, float hight, Color c
 ogl::BufferId ogl::GameEngine::createCuboid(float size, Color color)
 {
    Buffer buffer{};
+   buffer.setDrawMode(Buffer::DrawMode::LineStrip);
    buffer.bindBuffer({
 
       Buffer::create({ +size,-size,+size }, { 0, 0, +1 }, color, { 1, 1 }), // V1
@@ -690,6 +686,31 @@ ogl::BufferId ogl::GameEngine::createSphere(float size, Color color)
       0u, 6u, 1u,
       }
       );
+
+   return append(buffer);
+}
+
+ogl::BufferId ogl::GameEngine::createCylinder(float radius, float hight, Color color)
+{
+   Buffer buffer{};
+   buffer.setDrawMode(Buffer::DrawMode::Triangles);
+   //buffer.bindBuffer({
+   //   Buffer::create(Vertex{ 0.f }, color, { 0.5f, 0.5f }),
+   //   Buffer::create(Geometry::circlePoint(030.f, size), color),
+   //   Buffer::create(Geometry::circlePoint(090.f, size), color),
+   //   Buffer::create(Geometry::circlePoint(150.f, size), color),
+   //   Buffer::create(Geometry::circlePoint(210.f, size), color),
+   //   Buffer::create(Geometry::circlePoint(270.f, size), color),
+   //   Buffer::create(Geometry::circlePoint(330.f, size), color) },
+   //   {
+   //   0u, 1u, 2u,
+   //   0u, 2u, 3u,
+   //   0u, 3u, 4u,
+   //   0u, 4u, 5u,
+   //   0u, 5u, 6u,
+   //   0u, 6u, 1u,
+   //   }
+   //   );
 
    return append(buffer);
 }
