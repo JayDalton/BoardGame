@@ -9,11 +9,11 @@ namespace ogl
       using ItemType = float;
       using IndexType = unsigned;
 
-      // Element: x, y, z, r, g, b, u, v
-      //using Element = std::array<ElemItemType, 8>;
-
       // Element: vx, vy, vz, nx, ny, nz, cr, cg, cb, tu, tv
       using Element = std::array<ItemType, 11>;
+
+      enum class DrawMode{ Triangles, TriangleFan, TriangleStrip, LineStrip };
+      void setDrawMode(DrawMode mode);
 
       void useBuffer();
       void freeBuffer();
@@ -67,14 +67,13 @@ namespace ogl
          };
       };
 
-   protected:
+   private:
       unsigned int m_VBO{ 0 };
       unsigned int m_VAO{ 0 };
       unsigned int m_EBO{ 0 };
-
-   private:
       unsigned m_indexSize{0};
       unsigned m_vertexSize{0};
+      DrawMode m_mode{ DrawMode::Triangles };
    };
 }
 

@@ -4,13 +4,30 @@
 
 #include <numeric>
 
+void ogl::Buffer::setDrawMode(DrawMode mode)
+{
+   m_mode = mode;
+}
+
 void ogl::Buffer::useBuffer()
 {
    glBindVertexArray(m_VAO);
-   glDrawElements(GL_TRIANGLES, m_indexSize, GL_UNSIGNED_INT, 0);
-   //glDrawElements(GL_TRIANGLE_STRIP, m_indexSize, GL_UNSIGNED_INT, 0);
-   //glDrawElements(GL_TRIANGLE_FAN, m_indexSize, GL_UNSIGNED_INT, 0);
-   //glDrawElements(GL_LINE_STRIP, m_indexSize, GL_UNSIGNED_INT, 0);
+   switch (m_mode)
+   {
+   case ogl::Buffer::DrawMode::TriangleFan:
+      glDrawElements(GL_TRIANGLE_FAN, m_indexSize, GL_UNSIGNED_INT, 0);
+      break;
+   case ogl::Buffer::DrawMode::TriangleStrip:
+      glDrawElements(GL_TRIANGLE_STRIP, m_indexSize, GL_UNSIGNED_INT, 0);
+      break;
+   case ogl::Buffer::DrawMode::LineStrip:
+      glDrawElements(GL_LINE_STRIP, m_indexSize, GL_UNSIGNED_INT, 0);
+      break;
+   case ogl::Buffer::DrawMode::Triangles:
+   default:
+      glDrawElements(GL_TRIANGLES, m_indexSize, GL_UNSIGNED_INT, 0);
+      break;
+   }
 }
 
 void ogl::Buffer::freeBuffer()

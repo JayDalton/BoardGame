@@ -425,17 +425,17 @@ void ogl::GameEngine::initGeometry()
    auto shaderId1 = createShader("shader/Complex.vs", "shader/Colored.fs");
 
    Drawable planeX;
-   planeX.m_buffer = createRect({5.0, 5.0}, Colors::Red);
+   planeX.m_buffer = createRect({5, 5}, Colors::Red);
    planeX.m_shader = shaderId1;
-   planeX.m_position = {+2.5, -2.5, 0};
+   planeX.m_position = {5, 5, 0};
    //planeX.m_localMat = glm::translate(model, {});
    m_objects.push_back(planeX);
 
    Drawable planeY;
-   planeY.m_buffer = createRect({1.0, 0.5}, Colors::Green);
+   planeY.m_buffer = createRect({5.0, 5.0}, Colors::Green);
    planeY.m_shader = shaderId1;
-   planeY.m_position = {};
-   planeY.m_localMat = glm::rotate(model, glm::radians(90.0f), { 0.0f, 1.0f, 0.0f });
+   planeY.m_position = {0.0,0.0,0.5};
+   //planeY.m_localMat = glm::rotate(model, glm::radians(90.0f), { 0.0f, 1.0f, 0.0f });
    m_objects.push_back(planeY);
 
    Drawable planeZ;
