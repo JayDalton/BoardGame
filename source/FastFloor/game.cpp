@@ -24,6 +24,7 @@ bool FastFloor::createUser()
    auto heagon1 = createHexagon(1.0f, ogl::Colors::Green);
    auto hexoid1 = createHexoid(1.0f, ogl::Colors::Green);
 
+   auto circleId = createCircle(1.0f, ogl::Colors::Red);
    auto cuboidId = createCuboid(1.0f, ogl::Colors::Green);
    auto sphereId = createSphere(1.0f, ogl::Colors::Green);
 
@@ -33,11 +34,11 @@ bool FastFloor::createUser()
    auto textureId1 = createTexture("images/container.jpg");
 
    ogl::Drawable plate;
-   plate.m_position = {3.0, 3.0, 3.0};
-   //plate.m_shader = coloredShader;
-   plate.m_shader = complexShader;
+   //plate.m_position = {3.0, 3.0, 3.0};
+   //plate.m_shader = complexShader;
+   plate.m_shader = coloredShader;
    plate.m_texture1 = textureId1;
-   plate.m_buffer = cuboidId;
+   plate.m_buffer = circleId;
    m_plates.push_back(plate);
 
    //for (auto idx{0}; idx < 15; idx++)

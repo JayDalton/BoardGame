@@ -604,7 +604,22 @@ ogl::BufferId ogl::GameEngine::createGrid(SizeU size, Color color)
 
 ogl::BufferId ogl::GameEngine::createCircle(float size, Color color)
 {
-   return {};
+   const auto sectorCount{ 16 };
+   const auto angleStep{ 360.0f / sectorCount };
+   std::vector<Buffer::Element> res{ Buffer::create(Vertex{ 0.f }, color) };
+
+   for (auto step : std::views::iota(0, sectorCount + 1))
+   {
+      res.push_back(Buffer::create(Geometry::circlePoint(step * angleStep, size), color));
+   }
+
+   std::vector<Buffer::IndexType> idx(res.size());
+   std::iota(idx.begin(), idx.end(), 0);
+
+   Buffer buffer{};
+   buffer.setDrawMode(Buffer::DrawMode::TriangleFan);
+   buffer.bindBuffer(res, idx);
+   return append(buffer);
 }
 
 ogl::BufferId ogl::GameEngine::createHexagon(float size, Color color)
