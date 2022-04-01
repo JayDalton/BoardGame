@@ -156,7 +156,8 @@ void ogl::GameEngine::start()
 void ogl::GameEngine::OnReceiveLocal()
 {
    //float cameraSpeed = 0.05;// m_deltaTime * 2.5;
-   float cameraSpeed = 1.5 * m_deltaTime.count();
+   //float cameraSpeed = 2.5 * m_deltaTime.count();
+   float cameraSpeed = 1.0;
 
    //std::cout << std::format("DeltaTime: {}", m_deltaTime) << std::endl;
 
@@ -191,49 +192,132 @@ void ogl::GameEngine::OnReceiveLocal()
          }
          break;
 
-      case SDL_KEYDOWN:
+      case SDL_MOUSEWHEEL:
+      {
+         auto direction{ glm::normalize(m_cameraTarget - m_cameraEye) };
+         auto distance{ glm::distance(m_cameraTarget, m_cameraEye) };
+
+         if (0 < distance)
+         {
+         }
+
+         if (event.wheel.y > 0) // scroll up
+         {
+            auto factor = std::abs(event.wheel.y);
+            auto stepLength = factor * cameraSpeed * direction;
+            std::cout << std::format("Scroll UP {} {} {}\n", factor, cameraSpeed, glm::to_string(stepLength));
+            //if (glm::distance(m_cameraTarget, stepLength) < distance)
+            {
+               m_cameraEye += stepLength;
+            }
+         }
+         else if (event.wheel.y < 0) // scroll down
+         {
+            auto factor = std::abs(event.wheel.y);
+            auto stepLength = factor * cameraSpeed * direction;
+            std::cout << std::format("Scroll DOWN {} {} {}\n", factor, cameraSpeed, glm::to_string(stepLength));
+            //if (glm::distance(m_cameraTarget, stepLength) < distance)
+            {
+               m_cameraEye -= stepLength;
+            }
+         }
+
+         if (event.wheel.x > 0) // scroll right
+         {
+            std::cout << std::format("Scroll RIGHT {}\n", event.wheel.x);
+         }
+         else if (event.wheel.x < 0) // scroll left
+         {
+            std::cout << std::format("Scroll LEFT {}\n", event.wheel.x);
+         }
+      }
+      break;
+
+      case SDL_KEYDOWN: {
+         auto direction{ glm::normalize(m_cameraTarget - m_cameraEye) };
+         auto cameraRight{ glm::normalize(glm::cross(m_cameraUpside, direction)) };
+         auto cameraFront{ glm::normalize(glm::cross(m_cameraUpside, cameraRight)) };
+
          switch (event.key.keysym.scancode) {
          case SDL_SCANCODE_ESCAPE:
             m_running = false;
             return;
-         case SDL_SCANCODE_R:
-            m_cameraPosition = glm::vec3(0.0, -15.0, 15.0);
-            std::cout << std::format("Reset Camera {}\n", glm::to_string(m_cameraPosition));
-            break;
+
+         case SDL_SCANCODE_SPACE: {
+            m_cameraEye = glm::vec3(0.0, -15.0, 15.0);
+            std::cout << std::format("Reset Camera {}\n", glm::to_string(m_cameraEye));
+         }
+         break;
+
          case SDL_SCANCODE_W:
-         case SDL_SCANCODE_UP:
-            m_cameraPosition += cameraSpeed * (m_cameraTarget - m_cameraPosition);
-            std::cout << std::format("Camera UP {}\n", glm::to_string(m_cameraPosition));
-            break;
+         case SDL_SCANCODE_UP: { // translate eye + target on plane
+            m_cameraEye -= cameraFront;
+            m_cameraTarget -= cameraFront;
+            std::cout << std::format("Camera UP {}\n", glm::to_string(m_cameraEye));
+         }
+         break;
+
          case SDL_SCANCODE_S:
-         case SDL_SCANCODE_DOWN:
-            m_cameraPosition -= cameraSpeed * (m_cameraTarget - m_cameraPosition);
-            std::cout << std::format("Camera DOWN {}\n", glm::to_string(m_cameraPosition));
-            break;
+         case SDL_SCANCODE_DOWN: { // translate eye + target on plane
+            m_cameraEye += cameraFront;
+            m_cameraTarget += cameraFront;
+            std::cout << std::format("Camera DOWN {}\n", glm::to_string(m_cameraEye));
+         }
+         break;
+
          case SDL_SCANCODE_A:
-         case SDL_SCANCODE_LEFT:
-            m_cameraPosition -= glm::normalize(glm::cross((m_cameraTarget - m_cameraPosition), m_cameraUpside)) * cameraSpeed;
-            std::cout << std::format("Camera LEFT {}\n", glm::to_string(m_cameraPosition));
-            //cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-            break;
+         case SDL_SCANCODE_LEFT: { // translate eye + target on plane
+            m_cameraEye += cameraRight;
+            m_cameraTarget += cameraRight;
+            std::cout << std::format("Camera LEFT {}\n", glm::to_string(m_cameraEye));
+         }
+         break;
+
          case SDL_SCANCODE_D:
-         case SDL_SCANCODE_RIGHT:
-            m_cameraPosition += glm::normalize(glm::cross((m_cameraTarget - m_cameraPosition), m_cameraUpside)) * cameraSpeed;
-            std::cout << std::format("Camera RIGHT {}\n", glm::to_string(m_cameraPosition));
-            break;
+         case SDL_SCANCODE_RIGHT: { // translate eye + target on plane
+            m_cameraEye -= cameraRight;
+            m_cameraTarget -= cameraRight;
+            std::cout << std::format("Camera RIGHT {}\n", glm::to_string(m_cameraEye));
+         }
+         break;
+
+         case SDL_SCANCODE_E: { // right rotate by CameraUp
+            m_cameraEye += glm::normalize(glm::cross(direction, m_cameraUpside)) * cameraSpeed;
+            std::cout << std::format("Camera LEFT {}\n", glm::to_string(m_cameraEye));
+         }
+         break;
+
+         case SDL_SCANCODE_Q: { // left rotate by CameraUp
+            m_cameraEye -= glm::normalize(glm::cross(direction, m_cameraUpside)) * cameraSpeed;
+            std::cout << std::format("Camera RIGHT {}\n", glm::to_string(m_cameraEye));
+         }
+         break;
+
+         case SDL_SCANCODE_R: { // neigen hoch
+            m_cameraEye += glm::normalize(glm::cross(direction, cameraRight)) * cameraSpeed;
+            std::cout << std::format("Camera RIGHT {}\n", glm::to_string(m_cameraEye));
+         }
+         break;
+
+         case SDL_SCANCODE_F: { // neigen runter
+            m_cameraEye -= glm::normalize(glm::cross(direction, cameraRight)) * cameraSpeed;
+            std::cout << std::format("Camera RIGHT {}\n", glm::to_string(m_cameraEye));
+         }
+         break;
+
          default:
-            std::cout 
-               << "Code: " << event.key.keysym.scancode 
-               << " Sym: " << event.key.keysym.sym 
+            std::cout
+               << "Code: " << event.key.keysym.scancode
+               << " Sym: " << event.key.keysym.sym
                << " Sym: " << SDL_GetScancodeName(event.key.keysym.scancode)
                << " Sym: " << SDL_GetKeyName(event.key.keysym.sym)
                << std::endl;
             break;
          }
-         break;
+      }
+      break;
 
-      case SDL_MOUSEMOTION:
-      //{
+      case SDL_MOUSEMOTION: {
       //   auto xpos = event.motion.x;
       //   auto ypos = event.motion.y;
 
@@ -267,21 +351,9 @@ void ogl::GameEngine::OnReceiveLocal()
       //   front.y = sin(glm::radians(m_mouse.pitch));
       //   front.z = sin(glm::radians(m_mouse.yaw)) * cos(glm::radians(m_mouse.pitch));
       //   m_cameraFront = glm::normalize(front);
-      //}
+      }
       break;
 
-      case SDL_MOUSEWHEEL:
-      {
-         auto yoffset = event.wheel.y;
-         m_mouse.fov -= (float)yoffset;
-
-         if (m_mouse.fov < 1.0f)
-            m_mouse.fov = 1.0f;
-
-         if (m_mouse.fov > 45.0f)
-            m_mouse.fov = 45.0f;
-      }
-         break;
       }
    }
 }
@@ -305,22 +377,22 @@ void ogl::GameEngine::OnRenderWorld(Duration duration)
    glClearColor(0.3f, 0.5f, 0.4f, 1.0f);
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-   auto projection = glm::perspective(
-      glm::radians(45.0f),
-      800.f / 600.f,          // wie funktioniert das?
-      0.1f, 100.0f);
+   //auto projection = glm::perspective(
+   //   glm::radians(45.0f),
+   //   800.f / 600.f,          // wie funktioniert das?
+   //   0.1f, 100.0f);
 
    auto view = glm::lookAt(
-      m_cameraPosition, 
+      m_cameraEye, 
       m_cameraTarget, 
       m_cameraUpside);
 
    for (auto&& object : m_objects)
    {
-      render(object, projection * view);
+      render(object, m_projection * view);
    }
 
-   updateUser(projection * view);
+   updateUser(m_projection * view);
 
    //// ViewPort buttom-left
    //glViewport(0, 0, windowSize.x / 4, windowSize.y / 4);

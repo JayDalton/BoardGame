@@ -44,10 +44,14 @@ namespace ogl
          float fov = 45.0f;
       } m_mouse;
 
+      // Projektion
+      glm::mat4 m_projection{ glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 100.0f) };
+      //glm::mat4 m_projection{ glm::ortho(-80.0f, 80.0f, -60.0f, 60.0f, -50.0f, 100.0f) };
+
       // camera
-      glm::vec3 m_cameraPosition = { 15.0, 15.0, 15.0 };
-      glm::vec3 m_cameraTarget = {0.0, 0.0, 0.0};
-      glm::vec3 m_cameraUpside = {0.0, 0.0, 1.0};
+      glm::vec3 m_cameraEye{ 15.0, 15.0, 15.0 };
+      glm::vec3 m_cameraTarget{0.0, 0.0, 0.0};
+      glm::vec3 m_cameraUpside{0.0, 0.0, 1.0};
 
       BufferId createSquare(float size, Color color);
       BufferId createRect(SizeF size, Color color);
