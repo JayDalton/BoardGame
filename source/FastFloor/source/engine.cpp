@@ -493,23 +493,16 @@ void ogl::GameEngine::initGeometry()
    auto shaderId1 = createShader("shader/Complex.vs", "shader/Colored.fs");
 
    Drawable planeX;
-   planeX.m_buffer = createGrid({5, 5}, Colors::Red);
+   planeX.m_buffer = createGrid({50, 50}, Colors::Silver);
    planeX.m_shader = shaderId1;
+   planeX.m_position = { -25, -25, 0};
    m_objects.push_back(planeX);
 
    //Drawable planeY;
-   //planeY.m_buffer = createRect({5.0, 5.0}, Colors::Green);
+   //planeY.m_buffer = createGrid({5, 5}, Colors::Green);
    //planeY.m_shader = shaderId1;
-   //planeY.m_position = {0.0,0.0,0.5};
-   ////planeY.m_localMat = glm::rotate(model, glm::radians(90.0f), { 0.0f, 1.0f, 0.0f });
+   //planeY.m_localMat = glm::rotate(model, glm::radians(90.0f), { 0.0f, 0.0f, 1.0f });
    //m_objects.push_back(planeY);
-
-   //Drawable planeZ;
-   //planeZ.m_buffer = createRect({0.5, 1.0}, Colors::Blue);
-   //planeZ.m_shader = shaderId1;
-   //planeZ.m_position = {};
-   //planeZ.m_localMat = glm::rotate(model, glm::radians(90.0f), { 1.0f, 0.0f, 0.0f });
-   //m_objects.push_back(planeZ);
 }
 
 void ogl::GameEngine::render(Drawable object, Matrix view)
@@ -703,7 +696,7 @@ ogl::BufferId ogl::GameEngine::createHexoid(float size, Color color)
 ogl::BufferId ogl::GameEngine::createCuboid(float size, Color color)
 {
    Buffer buffer{};
-   buffer.setDrawMode(Buffer::DrawMode::LineStrip);
+   //buffer.setDrawMode(Buffer::DrawMode::LineStrip);
    buffer.bindBuffer({
 
       Buffer::create({ +size,-size,+size }, { 0, 0, +1 }, color, { 1, 1 }), // V1

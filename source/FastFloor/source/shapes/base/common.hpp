@@ -55,5 +55,7 @@ namespace ogl
       static constexpr Color Red{ 1.0f, 0.0f, 0.0f, 1.0f };
       static constexpr Color Green{ 0.0f, 1.0f, 0.0f, 1.0f };
       static constexpr Color Blue{ 0.0f, 0.0f, 1.0f, 1.0f };
+      static constexpr Color Grey{ 0.5f, 0.5f, 0.5f, 1.0f };
+      static constexpr Color Silver{ 0.6f, 0.6f, 0.6f, 1.0f };
    };
 }
