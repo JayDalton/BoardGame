@@ -39,8 +39,14 @@ namespace ogl
 
    struct Size
    {
-      int x{ 0 }, y{ 0 };
+      std::int32_t x{ 0 }, y{ 0 };
       auto operator<=>(const Size&) const = default;
+   };
+
+   struct SizeU
+   {
+      std::uint32_t x{ 0 }, y{ 0 };
+      auto operator<=>(const SizeU&) const = default;
    };
 
    struct Colors {

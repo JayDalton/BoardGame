@@ -493,25 +493,23 @@ void ogl::GameEngine::initGeometry()
    auto shaderId1 = createShader("shader/Complex.vs", "shader/Colored.fs");
 
    Drawable planeX;
-   planeX.m_buffer = createRect({5, 5}, Colors::Red);
+   planeX.m_buffer = createGrid({5, 5}, Colors::Red);
    planeX.m_shader = shaderId1;
-   planeX.m_position = {5, 5, 0};
-   //planeX.m_localMat = glm::translate(model, {});
    m_objects.push_back(planeX);
 
-   Drawable planeY;
-   planeY.m_buffer = createRect({5.0, 5.0}, Colors::Green);
-   planeY.m_shader = shaderId1;
-   planeY.m_position = {0.0,0.0,0.5};
-   //planeY.m_localMat = glm::rotate(model, glm::radians(90.0f), { 0.0f, 1.0f, 0.0f });
-   m_objects.push_back(planeY);
+   //Drawable planeY;
+   //planeY.m_buffer = createRect({5.0, 5.0}, Colors::Green);
+   //planeY.m_shader = shaderId1;
+   //planeY.m_position = {0.0,0.0,0.5};
+   ////planeY.m_localMat = glm::rotate(model, glm::radians(90.0f), { 0.0f, 1.0f, 0.0f });
+   //m_objects.push_back(planeY);
 
-   Drawable planeZ;
-   planeZ.m_buffer = createRect({0.5, 1.0}, Colors::Blue);
-   planeZ.m_shader = shaderId1;
-   planeZ.m_position = {};
-   planeZ.m_localMat = glm::rotate(model, glm::radians(90.0f), { 1.0f, 0.0f, 0.0f });
-   m_objects.push_back(planeZ);
+   //Drawable planeZ;
+   //planeZ.m_buffer = createRect({0.5, 1.0}, Colors::Blue);
+   //planeZ.m_shader = shaderId1;
+   //planeZ.m_position = {};
+   //planeZ.m_localMat = glm::rotate(model, glm::radians(90.0f), { 1.0f, 0.0f, 0.0f });
+   //m_objects.push_back(planeZ);
 }
 
 void ogl::GameEngine::render(Drawable object, Matrix view)
@@ -581,6 +579,33 @@ ogl::BufferId ogl::GameEngine::createRect(SizeF size, Color color)
       { 0u, 1u, 3u, 1u, 2u, 3u }
    );
 
+   return append(buffer);
+}
+
+ogl::BufferId ogl::GameEngine::createGrid(SizeU size, Color color)
+{
+   auto maxX{ size.x };
+   auto maxY{ size.y };
+   std::vector<Buffer::Element> res;
+
+   for (auto value : std::views::iota(0u, maxX + 1))
+   {
+      res.push_back(Buffer::create({ value, 0.f, 0.f }, color));
+      res.push_back(Buffer::create({ value, maxY, 0.f }, color));
+   }
+
+   for (auto value : std::views::iota(0u, maxY + 1))
+   {
+      res.push_back(Buffer::create({ 0.f, value, 0.f }, color));
+      res.push_back(Buffer::create({ maxX, value, 0.f }, color));
+   }
+
+   std::vector<Buffer::IndexType> idx(res.size());
+   std::iota(idx.begin(), idx.end(), 0);
+
+   Buffer buffer{};
+   buffer.setDrawMode(Buffer::DrawMode::Lines);
+   buffer.bindBuffer(res, idx);
    return append(buffer);
 }
 

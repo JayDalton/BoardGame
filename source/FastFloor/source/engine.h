@@ -10,6 +10,10 @@
 #include <string_view>
 #include <unordered_set>
 #include <unordered_map>
+#include <ranges>
+#include <numeric>
+#include <iostream>
+#include <algorithm>
 
 #include "sdl2.h"
 
@@ -55,6 +59,8 @@ namespace ogl
 
       BufferId createSquare(float size, Color color);
       BufferId createRect(SizeF size, Color color);
+      BufferId createGrid(SizeU size, Color color);
+
       BufferId createCircle(float size, Color color);
       BufferId createCuboid(float size, Color color);
       BufferId createSphere(float size, Color color);

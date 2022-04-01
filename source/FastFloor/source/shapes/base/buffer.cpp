@@ -20,6 +20,9 @@ void ogl::Buffer::useBuffer()
    case ogl::Buffer::DrawMode::TriangleStrip:
       glDrawElements(GL_TRIANGLE_STRIP, m_indexSize, GL_UNSIGNED_INT, 0);
       break;
+   case ogl::Buffer::DrawMode::Lines:
+      glDrawElements(GL_LINES, m_indexSize, GL_UNSIGNED_INT, 0);
+      break;
    case ogl::Buffer::DrawMode::LineStrip:
       glDrawElements(GL_LINE_STRIP, m_indexSize, GL_UNSIGNED_INT, 0);
       break;

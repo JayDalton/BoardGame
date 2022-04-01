@@ -12,7 +12,7 @@ namespace ogl
       // Element: vx, vy, vz, nx, ny, nz, cr, cg, cb, tu, tv
       using Element = std::array<ItemType, 11>;
 
-      enum class DrawMode{ Triangles, TriangleFan, TriangleStrip, LineStrip };
+      enum class DrawMode{ Triangles, TriangleFan, TriangleStrip, Lines, LineStrip };
       void setDrawMode(DrawMode mode);
 
       void useBuffer();
