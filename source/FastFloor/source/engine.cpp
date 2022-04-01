@@ -244,7 +244,8 @@ void ogl::GameEngine::OnReceiveLocal()
             return;
 
          case SDL_SCANCODE_SPACE: {
-            m_cameraEye = glm::vec3(0.0, -15.0, 15.0);
+            m_cameraEye = { 15.0, 15.0, 15.0 };
+            m_cameraTarget = { 0.0, 0.0, 0.0 };
             std::cout << std::format("Reset Camera {}\n", glm::to_string(m_cameraEye));
          }
          break;
@@ -376,11 +377,6 @@ void ogl::GameEngine::OnRenderWorld(Duration duration)
    // Hintergrund
    glClearColor(0.3f, 0.5f, 0.4f, 1.0f);
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-   //auto projection = glm::perspective(
-   //   glm::radians(45.0f),
-   //   800.f / 600.f,          // wie funktioniert das?
-   //   0.1f, 100.0f);
 
    auto view = glm::lookAt(
       m_cameraEye, 
