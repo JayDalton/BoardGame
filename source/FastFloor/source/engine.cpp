@@ -250,6 +250,26 @@ void ogl::GameEngine::OnReceiveLocal()
          }
          break;
 
+         case SDL_SCANCODE_2: {
+            auto stepLength = cameraSpeed * direction;
+            std::cout << std::format("Zoom - {} {}\n", cameraSpeed, glm::to_string(stepLength));
+            //if (glm::distance(m_cameraTarget, stepLength) < distance)
+            {
+               m_cameraEye += stepLength;
+            }
+         }
+         break;
+
+         case SDL_SCANCODE_3: {
+            auto stepLength = cameraSpeed * direction;
+            std::cout << std::format("Zoom + {} {}\n", cameraSpeed, glm::to_string(stepLength));
+            //if (glm::distance(m_cameraTarget, stepLength) < distance)
+            {
+               m_cameraEye -= stepLength;
+            }
+         }
+         break;
+
          case SDL_SCANCODE_W:
          case SDL_SCANCODE_UP: { // translate eye + target on plane
             m_cameraEye -= cameraFront;
@@ -791,28 +811,27 @@ ogl::BufferId ogl::GameEngine::createSphere(float size, Color color)
    return append(buffer);
 }
 
-ogl::BufferId ogl::GameEngine::createCylinder(float radius, float hight, Color color)
+ogl::BufferId ogl::GameEngine::createCylinder(float radius, float height, Color color)
 {
-   Buffer buffer{};
-   buffer.setDrawMode(Buffer::DrawMode::Triangles);
-   //buffer.bindBuffer({
-   //   Buffer::create(Vertex{ 0.f }, color, { 0.5f, 0.5f }),
-   //   Buffer::create(Geometry::circlePoint(030.f, size), color),
-   //   Buffer::create(Geometry::circlePoint(090.f, size), color),
-   //   Buffer::create(Geometry::circlePoint(150.f, size), color),
-   //   Buffer::create(Geometry::circlePoint(210.f, size), color),
-   //   Buffer::create(Geometry::circlePoint(270.f, size), color),
-   //   Buffer::create(Geometry::circlePoint(330.f, size), color) },
-   //   {
-   //   0u, 1u, 2u,
-   //   0u, 2u, 3u,
-   //   0u, 3u, 4u,
-   //   0u, 4u, 5u,
-   //   0u, 5u, 6u,
-   //   0u, 6u, 1u,
-   //   }
-   //   );
+   const auto sectorCount{ 16 };
+   const auto angle{ 360.0f / sectorCount };
+   std::vector<Buffer::Element> res{ Buffer::create(Vertex{ 0.f }, color) };
 
+   for (auto level : std::views::iota(0, 6))
+   {
+      Vertex center{ 0.f, 0.f, level};
+      for (auto step : std::views::iota(0, sectorCount + 1))
+      {
+         res.push_back(Buffer::create(Geometry::circlePoint(center, step * angle, radius), color));
+      }
+   }
+
+   std::vector<Buffer::IndexType> idx(res.size());
+   std::iota(idx.begin(), idx.end(), 0);
+
+   Buffer buffer{};
+   buffer.setDrawMode(Buffer::DrawMode::Lines);
+   buffer.bindBuffer(res, idx);
    return append(buffer);
 }
 

@@ -27,6 +27,7 @@ bool FastFloor::createUser()
    auto circleId = createCircle(1.0f, ogl::Colors::Red);
    auto cuboidId = createCuboid(1.0f, ogl::Colors::Green);
    auto sphereId = createSphere(1.0f, ogl::Colors::Green);
+   auto cyclinderId = createCylinder(1.0f, 1.f, ogl::Colors::Red);
 
    auto complexShader = createShader("shader/Complex.vs", "shader/Complex.fs");
    auto coloredShader = createShader("shader/Complex.vs", "shader/Colored.fs");
@@ -38,7 +39,7 @@ bool FastFloor::createUser()
    //plate.m_shader = complexShader;
    plate.m_shader = coloredShader;
    plate.m_texture1 = textureId1;
-   plate.m_buffer = circleId;
+   plate.m_buffer = cyclinderId;
    m_plates.push_back(plate);
 
    //for (auto idx{0}; idx < 15; idx++)
