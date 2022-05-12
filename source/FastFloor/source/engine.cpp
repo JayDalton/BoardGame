@@ -813,9 +813,11 @@ ogl::BufferId ogl::GameEngine::createSphere(float size, Color color)
 
 ogl::BufferId ogl::GameEngine::createCylinder(float radius, float height, Color color)
 {
-   const auto sectorCount{ 16 };
+   const auto sectorCount{ 36 };
    const auto angle{ 360.0f / sectorCount };
    std::vector<Buffer::Element> res{ Buffer::create(Vertex{ 0.f }, color) };
+
+
 
    for (auto level : std::views::iota(0, 6))
    {
