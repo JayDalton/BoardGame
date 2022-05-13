@@ -79,9 +79,9 @@ bool FastFloor::updateUser(ogl::Matrix view)
    }
    auto duration = clk::system_clock::now() - tpStart;
 
-   //appendConsole("Zeile 1", Colors::Green); // 
-   //appendConsole("Zeile 2", Colors::Red);
-   //appendConsole("Zeile 3", Colors::Green);
+   appendConsole("Zeile 1", ogl::Colors::Green); // 
+   appendConsole("Zeile 2", ogl::Colors::Red);
+   appendConsole("Zeile 3", ogl::Colors::Green);
 
    //renderText("Hello World", Pos, Size, Color); // free position
 

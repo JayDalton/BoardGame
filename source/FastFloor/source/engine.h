@@ -75,6 +75,8 @@ namespace ogl
       ShaderId createShader(std::string_view vertex, std::string_view fragment);
       TextureId createTexture(std::string_view fileName);
 
+      void appendConsole(std::string_view text, Color color);
+
       void render(Drawable drawable, Matrix view);
 
    private:
@@ -106,6 +108,19 @@ namespace ogl
       std::unordered_map<BufferId, Buffer, Ident> m_buffer;
       std::unordered_map<ShaderId, Shader, Ident> m_shader;
       std::unordered_map<TextureId, Texture, Ident> m_texture;
+
+      struct ConsoleText 
+      {
+         std::string m_text;
+         ogl::Color m_color;
+      };
+
+      const std::size_t m_consoleSize{ 5 };
+      std::vector<ConsoleText> m_console{
+         {"Zeile mit text 1", Colors::Red},
+         {"Zeile mit text 2", Colors::Red},
+         {"Zeile mit text 3", Colors::Red},
+      };
 
    private:
       void OnReceiveLocal();

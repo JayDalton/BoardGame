@@ -164,7 +164,20 @@ void ogl::GameEngine::start()
 
       // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
       if (show_demo_window)
+      {
          ImGui::ShowDemoWindow(&show_demo_window);
+      }
+
+      {
+         ImGui::Begin("Console Window");   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+         ImGui::Text("Hello from another window!");
+         for (const auto& [text, color] : m_console)
+         {
+            ImVec4 col{color.r, color.g, color.b, color.w};
+            ImGui::TextColored(col, text.c_str());
+         }
+         ImGui::End();
+      }
 
       // Rendering
       ImGui::Render();
@@ -181,6 +194,10 @@ void ogl::GameEngine::start()
    }
 
    OnRemoveWorld();
+
+   ImGui_ImplOpenGL3_Shutdown();
+   ImGui_ImplSDL2_Shutdown();
+   ImGui::DestroyContext();
 
    SDL_GL_DeleteContext(m_context);
    SDL_DestroyWindow(m_window.get());
@@ -599,6 +616,16 @@ ogl::TextureId ogl::GameEngine::createTexture(std::string_view fileName)
    Texture texture;
    texture.createTexture(fileName);
    return append(texture);
+}
+
+void ogl::GameEngine::appendConsole(std::string_view text, Color color)
+{
+   if (m_console.size() > m_consoleSize)
+   {
+      m_console.resize(m_consoleSize);
+   }
+
+   m_console.push_back({ std::string(text), color });
 }
 
 ogl::BufferId ogl::GameEngine::createSquare(float size, Color color)
