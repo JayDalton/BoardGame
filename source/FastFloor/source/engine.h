@@ -15,6 +15,10 @@
 #include <iostream>
 #include <algorithm>
 
+#include "imgui.h"
+#include "overlay/imgui_impl_sdl.h"
+#include "overlay/imgui_impl_opengl3.h"
+
 #include "sdl2.h"
 
 #include "objects/camera.hpp"

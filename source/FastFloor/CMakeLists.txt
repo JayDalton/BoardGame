@@ -10,6 +10,8 @@ find_package(spdlog CONFIG REQUIRED)
 find_package(GLEW CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
 
+find_package(freetype CONFIG REQUIRED)
+find_package(imgui CONFIG REQUIRED)
 find_package(Assimp CONFIG REQUIRED)
 
 add_executable(${PROJECT_NAME}) # WIN32
@@ -33,7 +35,10 @@ add_custom_command(
 #      ${CMAKE_CURRENT_BINARY_DIR}/input.txt)
 
 target_link_libraries(${PROJECT_NAME} 
-   SDL2::SDL2 SDL2::SDL2main glm::glm GLEW::GLEW 
+   SDL2::SDL2 SDL2::SDL2main 
+   glm::glm GLEW::GLEW 
+   imgui::imgui
+   freetype
 )
 
 target_sources(${PROJECT_NAME} PRIVATE
@@ -60,6 +65,18 @@ target_sources(${PROJECT_NAME} PRIVATE
 
    "source/objects/camera.cpp"
    "source/objects/camera.hpp"
+
+   "source/overlay/imgui_impl_opengl2.cpp"
+   "source/overlay/imgui_impl_opengl2.h"
+   "source/overlay/imgui_impl_opengl3.cpp"
+   "source/overlay/imgui_impl_opengl3.h"
+   "source/overlay/imgui_impl_opengl3_loader.h"
+   "source/overlay/imgui_impl_sdl.cpp"
+   "source/overlay/imgui_impl_sdl.h"
+   "source/overlay/imgui_impl_sdlrenderer.cpp"
+   "source/overlay/imgui_impl_sdlrenderer.h"
+   "source/overlay/imgui_impl_win32.cpp"
+   "source/overlay/imgui_impl_win32.h"
 
    "source/shapes/base/buffer.cpp"
    "source/shapes/base/buffer.hpp"

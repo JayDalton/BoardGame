@@ -84,6 +84,21 @@ bool ogl::GameEngine::construct(int width, int height)
       return false;
    }
 
+   // Setup Dear ImGui context
+   IMGUI_CHECKVERSION();
+   ImGui::CreateContext();
+   ImGuiIO& io = ImGui::GetIO(); (void)io;
+   //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+   //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+   // Setup Dear ImGui style
+   ImGui::StyleColorsDark();
+   //ImGui::StyleColorsClassic();
+
+   // Setup Platform/Renderer backends
+   ImGui_ImplSDL2_InitForOpenGL(m_window.get(), m_context);
+   ImGui_ImplOpenGL3_Init(glsl_version);
+
    Uint32 renderFlags{ SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC };
 
    if (!(m_render = sdl2::make_renderer(m_window.get(), -1, renderFlags)))
@@ -111,6 +126,9 @@ void ogl::GameEngine::start()
    initGeometry();
 
    createUser();
+
+   // Our state
+   bool show_demo_window = true;
 
    m_lastTime = SteadyClock::now();
 
@@ -140,6 +158,22 @@ void ogl::GameEngine::start()
       // Renderziel
       OnRenderWorld(m_deltaTime);
 
+      ImGui_ImplOpenGL3_NewFrame();
+      ImGui_ImplSDL2_NewFrame();
+      ImGui::NewFrame();
+
+      // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+      if (show_demo_window)
+         ImGui::ShowDemoWindow(&show_demo_window);
+
+      // Rendering
+      ImGui::Render();
+      //glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+      //glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+      //glClear(GL_COLOR_BUFFER_BIT);
+      ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
       SDL_GL_SwapWindow(m_window.get());
 
       // calculates to 60 fps
@@ -164,9 +198,9 @@ void ogl::GameEngine::OnReceiveLocal()
    SDL_Event event;
    while (SDL_PollEvent(&event))
    {
+      ImGui_ImplSDL2_ProcessEvent(&event);
       switch (event.type)
       {
-
       case SDL_QUIT:
          // handling of close button
          m_running = false;
@@ -832,7 +866,7 @@ ogl::BufferId ogl::GameEngine::createCylinder(float radius, float height, Color 
    std::iota(idx.begin(), idx.end(), 0);
 
    Buffer buffer{};
-   buffer.setDrawMode(Buffer::DrawMode::Lines);
+   //buffer.setDrawMode(Buffer::DrawMode::Lines);
    buffer.bindBuffer(res, idx);
    return append(buffer);
 }

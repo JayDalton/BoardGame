@@ -34,30 +34,28 @@ bool FastFloor::createUser()
    auto textureId2 = createTexture("images/awesomeface.png");
    auto textureId1 = createTexture("images/container.jpg");
 
-   ogl::Drawable plate;
-   //plate.m_position = {3.0, 3.0, 3.0};
-   //plate.m_shader = complexShader;
-   plate.m_shader = coloredShader;
-   plate.m_texture1 = textureId1;
-   plate.m_buffer = cyclinderId;
-   m_plates.push_back(plate);
+   //ogl::Drawable plate;
+   ////plate.m_position = {3.0, 3.0, 3.0};
+   ////plate.m_shader = complexShader;
+   //plate.m_shader = coloredShader;
+   //plate.m_texture1 = textureId1;
+   //plate.m_buffer = cyclinderId;
+   //m_plates.push_back(plate);
 
-   //for (auto idx{0}; idx < 15; idx++)
-   //for (auto&& pos : m_cache.calculateHexagonPosition(4))
-   //{
-   //   //ogl::SizeF size{distSize(eng), distSize(eng)};
-   //   //ogl::Vertex pos{distArea(eng), distArea(eng), 0.f};
-   //   //ogl::Color color{distColor(eng), distColor(eng), distColor(eng), 1.0f};
+   for (auto idx{0}; idx < 15; idx++)
+   {
+      ogl::SizeF size{distSize(eng), distSize(eng)};
+      ogl::Vertex pos{distArea(eng), distArea(eng), 0.f};
+      ogl::Color color{distColor(eng), distColor(eng), distColor(eng), 1.0f};
 
-   //   ogl::Drawable plate;
-   //   plate.m_position = pos;
-   //   //plate.m_shader = coloredShader;
-   //   plate.m_shader = complexShader;
-   //   plate.m_texture1 = textureId1;
-   //   plate.m_texture2 = textureId2;
-   //   plate.m_buffer = square1;
-   //   m_plates.push_back(plate);
-   //}
+
+      ogl::Drawable plate;
+      plate.m_position = pos;
+      plate.m_shader = coloredShader;
+      //plate.m_shader = complexShader;
+      plate.m_buffer = createRect(size, color);
+      m_plates.push_back(plate);
+   }
 
    return true;
 }
@@ -65,13 +63,27 @@ bool FastFloor::createUser()
 bool FastFloor::updateUser(ogl::Matrix view)
 {
    static int counter{ 0 };
-
    //setWindowTitle(std::format("{:5}", counter++));
 
+   namespace clk = std::chrono;
+   std::size_t objCount{ 0 };
+
+   auto tpStart = clk::system_clock::now();
    for (auto&& object : m_plates)
    {
+      if (false) // check for WorldRect.overlaps({obj.pos, obj.size})
+      {
+         // render only visible objects
+      }
       render(object, view);
    }
+   auto duration = clk::system_clock::now() - tpStart;
+
+   //appendConsole("Zeile 1", Colors::Green); // 
+   //appendConsole("Zeile 2", Colors::Red);
+   //appendConsole("Zeile 3", Colors::Green);
+
+   //renderText("Hello World", Pos, Size, Color); // free position
 
    return true;
 }
