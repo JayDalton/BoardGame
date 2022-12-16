@@ -35,3 +35,5 @@
 /Debug
 /RelWithDebInfo
 /out/build/windows-default
+.vscode/
+build/
